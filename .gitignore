@@ -1,0 +1,41 @@
+# Secrets — never commit
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Data: large, redistributable only under each source's own licence
+data/raw/
+data/interim/
+data/processed/
+*.parquet
+*.jsonl.part
+
+# Derived splits: regenerable from pipeline/splits.py, and 5 MB of corpus text
+# we have no licence to redistribute. The test-set LOCK file IS tracked, because
+# it is the fingerprint that proves the test set never changed.
+data/splits/*.jsonl
+!data/splits/test.lock.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Model artefacts (weights are exported deliberately, not scooped up by accident)
+*.pt
+*.ckpt
+
+# OS
+.DS_Store
+Thumbs.db

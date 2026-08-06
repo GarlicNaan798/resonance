@@ -1,0 +1,53 @@
+# Self-hosted Resonance.
+#
+# Deliberately minimal: an app container and a database. The encoder weights are
+# baked into the image at build time so nothing is fetched at runtime, which is
+# what makes the no-egress claim in docs/SELF_HOSTING.md verifiable.
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: resonance
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: resonance
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U resonance"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # Not published to the host: only the app container needs to reach it.
+    expose:
+      - "5432"
+
+  app:
+    build:
+      context: ./resonance
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://resonance:${POSTGRES_PASSWORD}@db:5432/resonance
+      RESONANCE_MODE: self-hosted
+      RESONANCE_REGION: self-hosted
+      RESONANCE_ENCRYPTION_IN_TRANSIT: "true"
+      RESONANCE_RETENTION_DAYS: ${RESONANCE_RETENTION_DAYS:-365}
+      RESONANCE_ALLOW_CROSS_REGION: "false"
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    # Hardening: the app writes only to the database, never to its own filesystem.
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /app/.next/cache
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  db-data:
