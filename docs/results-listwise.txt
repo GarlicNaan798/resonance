@@ -1,0 +1,15 @@
+pairwise training pairs : 78,634
+listwise training lists : 10,424 (mean 4.3 arms, max 17)
+dev pairs               : 14,791
+
+5 seeds per method
+
+  pairwise   single 0.6082 (sd 0.0062)   ensemble 0.6211 [0.6093, 0.6330]
+  listwise   single 0.6052 (sd 0.0039)   ensemble 0.6291 [0.6173, 0.6409]
+
+listwise vs pairwise, single seed : -0.0031
+listwise vs pairwise, ensemble    : +0.0080
+
+VERDICT: below threshold - keep pairwise  (threshold 0.02)
+
+Ceiling reminder: 0.7880. Dev numbers; a test read is required before anything here ships.
