@@ -104,7 +104,7 @@ Stated plainly, because a security review will ask:
 - **No outcome prediction.** The tool ranks variants and profiles copy. It does
   not forecast conversions or revenue — see `data/processed/model_card.md`.
 - **Global model accuracy is 59.4%** on held-out randomised experiments
-  (chance 50%, measured ceiling 78.8%). Recalibrating on your own campaigns is
+  (chance 50%, measured ceiling 66.2%). Recalibrating on your own campaigns is
   expected to beat that, and is the intended path.
 - **No neural or biochemical measurement.** Module names refer to functional
   systems from the literature; the scores are psychometric, computed from

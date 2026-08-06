@@ -47,9 +47,17 @@ describe("analyse", () => {
   it("carries honest provenance, including the ceiling", () => {
     const r = analyse("A clear and simple offer for you", NEUTRAL);
     expect(r.provenance.chance).toBe(0.5);
-    expect(r.provenance.ceiling).toBe(0.788);
+    // Corrected from 0.788; see model/ceiling_robustness.py.
+    expect(r.provenance.ceiling).toBe(0.662);
     // The diagnostic layer must never be presented as the strong model.
     expect(r.provenance.modelAccuracy).toBeLessThan(0.6);
+  });
+
+  it("keeps the ceiling above every accuracy it reports", () => {
+    // Guards the invariant that caught the original error.
+    const r = analyse("A clear and simple offer for you", NEUTRAL);
+    expect(r.provenance.ceiling).toBeGreaterThan(r.provenance.modelAccuracy);
+    expect(r.provenance.ceiling).toBeGreaterThan(r.provenance.chance);
   });
 
   it("reports no segment adjustment for a neutral audience", () => {

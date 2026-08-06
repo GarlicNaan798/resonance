@@ -2,7 +2,7 @@
 Export the embedding ranker to JSON for TypeScript inference.
 
 This is the strong model: 0.5942 on held-out test, against 0.5346 for the
-diagnostic module model and a measured 0.7880 ceiling. It is what /compare must
+diagnostic module model and a measured 0.662 ceiling. It is what /compare must
 use — putting the weaker model there would undercut the whole two-layer design.
 
 Architecture is a plain MLP over frozen MiniLM embeddings:
@@ -70,7 +70,10 @@ def main() -> None:
             "test_accuracy": 0.5942,
             "test_ci95": [0.5839, 0.6044],
             "chance": 0.5,
-            "oracle_ceiling": 0.788,
+            # Corrected from 0.788: the original split-half simulation treated
+            # observed click rates as true rates, inflating the estimate. See
+            # model/ceiling_robustness.py.
+            "oracle_ceiling": 0.662,
             "trained_on": "Upworthy Research Archive, 32,487 randomised tests",
             "note": "Ranking only. Scores are comparable within one request and "
                     "carry no absolute meaning.",

@@ -184,8 +184,22 @@ export function getModule(id: ModuleId): ModuleDefinition {
 
 /**
  * Honest performance figures for the methodology panel. Held-out test set, read
- * once. Chance is 0.500 and the measured oracle ceiling is 0.788 — the labels
- * are noisy, so no model can reach 1.0 on this task.
+ * once. Chance is 0.500; no model can reach 1.0 because the labels themselves
+ * are noisy measurements.
+ *
+ * CEILING CORRECTION. This previously read 0.788, taken from a split-half
+ * simulation that used each arm's OBSERVED click rate as its true rate. Since
+ * Var(observed) = Var(true) + Var(noise), that spread the arms further apart
+ * than reality and inflated the estimate. Deconvolving the noise gives 0.662,
+ * and the variance decomposition behind it is stark: of the target's 0.0794
+ * variance, 0.0697 is sampling noise and only 0.0097 — about 12% — is signal.
+ *
+ * A third, analytic estimate gave 0.544, but that is refuted by our own test
+ * accuracy of 0.5942: a real ceiling cannot sit below measured performance.
+ * See model/ceiling_robustness.py.
+ *
+ * The correction matters: against 0.662 we capture ~58% of achievable signal,
+ * not the ~33% previously claimed.
  */
 export const PERFORMANCE = {
   rankerAccuracy: 0.5942,
@@ -193,7 +207,9 @@ export const PERFORMANCE = {
   moduleModelAccuracy: 0.5346,
   moduleModelCi95: [0.5241, 0.5452] as [number, number],
   chance: 0.5,
-  oracleCeiling: 0.788,
+  oracleCeiling: 0.662,
+  /** Share of the target's variance that is real signal rather than noise. */
+  signalFraction: 0.12,
   nExperiments: 2665,
   nPairs: 20452,
   trainingData: "Upworthy Research Archive — 32,487 randomised A/B tests",
@@ -205,5 +221,5 @@ export const PROHIBITED_CLAIMS = [
   "Measuring or predicting neurotransmitters, hormones, or brain states",
   "Reading, scanning, or simulating an individual person's brain",
   "Replacing A/B testing",
-  "Any accuracy figure above the 0.788 measured ceiling for this task",
+  "Any accuracy figure above the 0.662 measured ceiling for this task",
 ] as const;

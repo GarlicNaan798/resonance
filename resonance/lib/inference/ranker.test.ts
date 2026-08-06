@@ -67,8 +67,19 @@ describe("provenance is honest", () => {
   });
 
   it("carries the ceiling so accuracy is never read against 100%", () => {
-    expect(RANKER_PROVENANCE.oracle_ceiling).toBeCloseTo(0.788, 3);
+    // 0.662, not the earlier 0.788 — that estimate treated observed click
+    // rates as true rates and was inflated. See model/ceiling_robustness.py.
+    expect(RANKER_PROVENANCE.oracle_ceiling).toBeCloseTo(0.662, 3);
     expect(RANKER_PROVENANCE.chance).toBe(0.5);
+  });
+
+  it("keeps the ceiling above measured accuracy", () => {
+    // The check that exposed the error: a ceiling below measured performance
+    // is impossible. An analytic estimate of 0.544 was rejected on exactly
+    // this basis. Any future revision must satisfy it too.
+    expect(RANKER_PROVENANCE.oracle_ceiling).toBeGreaterThan(
+      RANKER_PROVENANCE.test_accuracy,
+    );
   });
 
   it("beats the diagnostic module model", () => {

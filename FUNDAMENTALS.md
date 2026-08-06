@@ -32,14 +32,14 @@ Held-out test set, opened exactly once. Chance = 0.500.
 |---|---|
 | Embedding ranker | **0.5942** (95% CI 0.5839–0.6044) |
 | Module model (diagnostic) | **0.5346** (95% CI 0.5241–0.5452) |
-| **Measured oracle ceiling** | **0.7880** |
-| Signal captured | ~33% of achievable |
+| **Measured oracle ceiling** | **0.6620** |
+| Signal captured | **~58% of achievable** |
 | Evaluated on | 2,665 experiments / 20,452 copy-only pairs |
 
 **The ceiling is the number people miss.** Labels are noisy estimates — the
 median arm had 3,118 impressions and 42 clicks — so a model with *perfect*
 knowledge of every headline's true click rate would still only agree with the
-recorded labels 78.8% of the time. Read every accuracy figure against 0.788, not
+recorded labels 66.2% of the time. Read every accuracy figure against 0.662, not
 against 1.00.
 
 Practically: given two variants where one genuinely performed better, the model
@@ -54,7 +54,7 @@ Enforced in code as `PROHIBITED_CLAIMS` in `resonance/lib/constructs.ts`.
 - Measuring or predicting neurotransmitters, hormones or brain states
 - Reading, scanning or simulating an individual person's brain
 - Replacing A/B testing
-- Any accuracy figure above the 0.788 measured ceiling
+- Any accuracy figure above the 0.662 measured ceiling
 
 **Outcome prediction is not achievable on this data.** R² ≈ 0.01 — including for
 an *unconstrained* 512-unit network. That is a property of the task, not a
@@ -204,7 +204,7 @@ tells, now enforced as hard aborts in `finetune_encoder.py`:
 
 - **Baseline near chance** → the model or the plumbing is broken; any delta is
   noise on noise.
-- **Baseline above the 0.788 oracle ceiling** → arithmetically impossible on
+- **Baseline above the 0.662 oracle ceiling** → arithmetically impossible on
   held-out data, so the evaluation set has leaked into training.
 
 That second check is worth dwelling on. The ceiling was computed to keep
@@ -312,7 +312,7 @@ cannot tell" on the rest, rather than answering everything at 60%.
 **Any figure from this table must be quoted with its coverage.** "80% accurate
 on the 5% of comparisons we answer" is honest; "80% accurate" is not.
 
-Why an accuracy above the 78.8% ceiling is not a contradiction: the ceiling was
+Why an accuracy above the 66.2% ceiling is not a contradiction: the ceiling was
 measured across ALL pairs. Confident pairs correlate with larger true
 differences, which carry a higher ceiling of their own (92.6% at |gap| ≥ 0.5).
 Abstention implicitly selects less-noisy comparisons, not just ones the model
@@ -366,10 +366,53 @@ threshold was simply too permissive.
 ## 12. Honest summary
 
 A defensible decision aid that ranks copy variants ~59% of the time against a
-50% baseline and a 78.8% ceiling, with a fully-cited diagnostic layer and
+50% baseline and a 66.2% ceiling, with a fully-cited diagnostic layer and
 genuine data-protection engineering.
 
 It is **not** an outcome predictor, it does **not** measure brains, and its
 demographic conditioning is currently weaker than the premise implied. Every one
 of those limits is measured, documented, and has a concrete path forward — which
 is a better position than a product whose limits are unknown.
+
+
+## Ceiling correction (2026-08-06)
+
+The oracle ceiling was reported as **0.788** for most of this project's life. It
+was wrong, and the error is instructive.
+
+The original estimate came from a split-half replication simulation that used
+each arm's **observed** click rate as its true rate. Because
+`Var(observed) = Var(true) + Var(noise)`, that spreads arms further apart than
+reality and makes the ordering artificially easy to recover.
+
+| Method | Ceiling |
+|---|---|
+| Observed-as-true simulation (original) | 0.7880 |
+| **Noise-deconvolved simulation (adopted)** | **0.6615** |
+| Analytic from signal-to-noise | 0.5441 |
+
+The analytic estimate was **rejected because it is below our own measured test
+accuracy of 0.5942** — a ceiling cannot sit under measured performance. It
+averages squared standard errors across all arms and so over-weights the
+noisiest ones.
+
+Underlying variance decomposition:
+
+| | |
+|---|---|
+| observed contrast variance | 0.0794 |
+| noise variance | 0.0697 (88%) |
+| **signal variance** | **0.0097 (12%)** |
+
+**Only ~12% of the target's variance is signal.** Consequences:
+
+- At 0.5942 we capture **~58%** of achievable signal, not the ~33% previously
+  claimed. We are far closer to the limit than reported.
+- The six failed signal-extraction experiments were not bad luck — there was
+  little left to extract.
+- It is consistent with published work where a fine-tuned Llama-3-8B performs
+  comparably to our 2,688-parameter head.
+
+The ceiling had been used a dozen times, including as a leak detector, and was
+never stress-tested until challenged. Tests now assert that the ceiling exceeds
+measured accuracy, so a future revision that violates that invariant fails loudly.

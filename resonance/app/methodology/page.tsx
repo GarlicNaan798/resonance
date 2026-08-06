@@ -103,8 +103,22 @@ export default function MethodologyPage() {
             arm had 3,118 impressions and 42 clicks — so a model with perfect
             knowledge of every headline&apos;s true click rate would still only
             agree with the recorded winner {pct(PERFORMANCE.oracleCeiling)} of
-            the time. We currently capture about a third of the achievable
-            signal.
+            the time. Only about{" "}
+            {Math.round(PERFORMANCE.signalFraction * 100)}% of the variance in
+            those labels is signal rather than sampling noise.
+          </p>
+          <p>
+            Against that ceiling the ranking model captures{" "}
+            <strong>
+              {Math.round(
+                ((PERFORMANCE.rankerAccuracy - PERFORMANCE.chance) /
+                  (PERFORMANCE.oracleCeiling - PERFORMANCE.chance)) *
+                  100,
+              )}
+              %
+            </strong>{" "}
+            of the achievable signal — computed from the figures above rather
+            than quoted, so it cannot drift out of date.
           </p>
           <p>
             Evaluated on {PERFORMANCE.nExperiments.toLocaleString()} experiments

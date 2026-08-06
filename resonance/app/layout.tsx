@@ -66,8 +66,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <div className="mx-auto max-w-5xl">
             Resonance ranks and diagnoses copy. It does not predict conversions,
             revenue or ROI, and it does not measure brain activity. Ranking
-            accuracy is 59.4% against a 50% baseline and a measured 78.8%
-            ceiling.{" "}
+            accuracy is 59.4% against a 50% baseline and a measured 66.2%
+            ceiling — the ceiling is low because only ~12% of the variance in
+            the training labels is signal rather than sampling noise.{" "}
             <Link href="/methodology" className="underline">
               How this was measured
             </Link>

@@ -2,7 +2,7 @@
  * The embedding ranker — the strong model.
  *
  * 0.5942 on held-out test versus 0.5346 for the diagnostic module model, against
- * a measured ceiling of 0.7880. This is what /compare uses.
+ * a measured ceiling of 0.662. This is what /compare uses.
  *
  * Two pieces:
  *   1. MiniLM sentence embeddings via transformers.js (ONNX, runs in Node).
@@ -160,7 +160,7 @@ export interface RankingResult {
  * useful to a marketer, and it is what makes an 80%+ figure quotable — always
  * with its coverage attached.
  *
- * (An accuracy above the 78.8% global ceiling is not a contradiction: the
+ * (An accuracy above the 66.2% global ceiling is not a contradiction: the
  * ceiling was measured across ALL pairs, and confident pairs correlate with
  * larger true differences, which carry a higher ceiling of their own.)
  */
