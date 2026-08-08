@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { allocate, shouldStop, type Arm } from "@/lib/allocate";
+import { assessDecidability } from "@/lib/power";
 
 interface Row {
   text: string;
@@ -24,6 +25,17 @@ export default function AllocatePage() {
   const { stop, winner } = weights.length
     ? shouldStop(weights)
     : { stop: false, winner: null };
+
+  // Power check on the two leading arms. Answers "could ANY model settle this
+  // at your sample size", which is a different question from "which is ahead".
+  const ranked = weights
+    .map((w, i) => ({ w, i }))
+    .sort((a, b) => b.w - a.w);
+  const hasData = arms.some((a) => a.impressions > 0);
+  const power =
+    !invalid && ranked.length >= 2 && hasData
+      ? assessDecidability(arms[ranked[0].i], arms[ranked[1].i])
+      : null;
 
   const set = (i: number, k: keyof Row, v: string) =>
     setRows((p) => p.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
@@ -124,6 +136,25 @@ export default function AllocatePage() {
                 variant that looks weak on 500 impressions may not be.
               </p>
             </>
+          )}
+        </section>
+      )}
+
+      {power && (
+        <section className="space-y-2 rounded-lg border border-zinc-200 p-4 text-sm dark:border-zinc-800">
+          <p className="font-medium">Can this test be settled at all?</p>
+          <p className="text-zinc-600 dark:text-zinc-400">{power.message}</p>
+          {!power.decidable && Number.isFinite(power.shortfall) && (
+            <p className="text-xs text-zinc-500">
+              This is a property of your sample size, not of our model. At{" "}
+              {Math.min(
+                arms[ranked[0].i].impressions,
+                arms[ranked[1].i].impressions,
+              ).toLocaleString()}{" "}
+              impressions the best any model could do on a gap this small is{" "}
+              {(power.ceiling * 100).toFixed(1)}%. More traffic raises that
+              limit; a better model cannot.
+            </p>
           )}
         </section>
       )}
