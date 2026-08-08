@@ -26,12 +26,19 @@ interface Layer {
   act: "relu" | "none";
 }
 
+interface Member {
+  /** Output mean/sd over the fit set, for scale-matching before averaging. */
+  mean: number;
+  sd: number;
+  layers: Layer[];
+}
+
 interface RankerFile {
   format_version: number;
   embedding_dim: number;
   embedding_model: string;
   normalize_embeddings: boolean;
-  layers: Layer[];
+  members: Member[];
   provenance: {
     test_accuracy: number;
     test_ci95: [number, number];
@@ -39,6 +46,7 @@ interface RankerFile {
     oracle_ceiling: number;
     trained_on: string;
     note: string;
+    ceiling_note?: string;
   };
 }
 
@@ -48,9 +56,9 @@ export const RANKER_PROVENANCE = RANKER.provenance;
 
 // ---------------------------------------------------------------- MLP
 
-function forward(x: number[]): number {
+function forward(x: number[], layers: Layer[]): number {
   let h = x;
-  for (const layer of RANKER.layers) {
+  for (const layer of layers) {
     const out = new Array<number>(layer.w.length);
     for (let o = 0; o < layer.w.length; o++) {
       const row = layer.w[o];
@@ -63,14 +71,26 @@ function forward(x: number[]): number {
   return h[0];
 }
 
-/** Score a pre-computed embedding. Exposed for parity testing. */
+/**
+ * Score a pre-computed embedding with the ensemble.
+ *
+ * Each member is normalised by its own fit-set mean/sd before averaging.
+ * Normalising within the request instead would flatten every member to the same
+ * spread — with two variants each would emit exactly +/-0.707 — reducing the
+ * ensemble to a majority vote and discarding the margin the abstention tiers
+ * depend on.
+ */
 export function scoreEmbedding(embedding: number[]): number {
   if (embedding.length !== RANKER.embedding_dim) {
     throw new Error(
       `Expected ${RANKER.embedding_dim}-dim embedding, got ${embedding.length}.`,
     );
   }
-  return forward(embedding);
+  let sum = 0;
+  for (const m of RANKER.members) {
+    sum += (forward(embedding, m.layers) - m.mean) / m.sd;
+  }
+  return sum / RANKER.members.length;
 }
 
 // ---------------------------------------------------------------- encoder
