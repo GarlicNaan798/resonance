@@ -36,13 +36,10 @@ RAW = os.path.join(ROOT, "data", "interim", "hn_stories.jsonl")
 
 API = "https://hn.algolia.com/api/v1/search_by_date"
 UA = "resonance-research/0.1 (headline repost feasibility study)"
-HITS = 1000          # Algolia max per page
-PAGE_LIMIT = 5       # pages per window before we slide the window
-SLEEP = 0.4          # be polite; Algolia is generous but not free
-
-# Walk backwards from this many days ago, in windows.
+HITS = 1000          # Algolia's hard cap: nbPages is 1 at this size
+SLEEP = 0.25         # be polite; Algolia is generous but not free
 DAYS_BACK = 3650
-WINDOW_DAYS = 30
+START_WINDOW_DAYS = 16   # bisected down until each window holds < 1000
 
 _utm = re.compile(r"[?&](utm_[a-z]+|ref|source|fbclid|gclid)=[^&]*", re.I)
 
@@ -76,57 +73,95 @@ def fetch(url: str, tries: int = 4) -> dict:
     raise RuntimeError(f"failed: {url}\n{last}")
 
 
+def _window(begin: int, end: int) -> tuple[list[dict], int]:
+    """One query. Returns (hits, nbHits) — nbHits is the TRUE count in range."""
+    q = urllib.parse.urlencode({
+        "tags": "story",
+        "hitsPerPage": HITS,
+        "numericFilters": f"created_at_i>{begin},created_at_i<{end}",
+    })
+    data = fetch(f"{API}?{q}")
+    return data.get("hits", []), int(data.get("nbHits", 0))
+
+
 def harvest() -> list[dict]:
-    """Page backwards through time, collecting stories that have a URL."""
+    """Walk backwards through time, bisecting any window that overflows.
+
+    Algolia caps results at 1,000 per query no matter how you paginate — a
+    single month returns nbHits=28,801 but hands back 1,000. The first version
+    of this script ignored that and took 5 pages per 30-day window, which
+    collected the most recent ~4 days of each month: 2.9% coverage in
+    contiguous slices rather than a sample. Since reposts sit months apart,
+    both halves of a pair almost never landed in range, and the resulting
+    "617 usable groups" measured the sampling design instead of the data.
+
+    Fix: nbHits tells us the true count in a window. If it exceeds the cap,
+    halve the window and recurse. Every leaf is then complete, and coverage is
+    total rather than a biased slice.
+
+    Resumable: rows append as they are found, so a crash costs the current
+    window, not the run.
+    """
     if os.path.exists(RAW):
-        print(f"reusing {RAW}")
+        print(f"reusing {RAW} (delete it to re-harvest)")
         with open(RAW, encoding="utf-8") as fh:
             return [json.loads(l) for l in fh if l.strip()]
 
+    os.makedirs(os.path.dirname(RAW), exist_ok=True)
     now = int(time.time())
+    start = now - DAYS_BACK * 86400
+    seen: set[str] = set()
     stories: list[dict] = []
-    seen_ids: set[int] = set()
-    window = WINDOW_DAYS * 86400
+    requests = 0
+    splits = 0
+
+    def keep(hits: list[dict]) -> None:
+        for h in hits:
+            oid = h.get("objectID")
+            if not oid or oid in seen or not h.get("url"):
+                continue
+            seen.add(oid)
+            stories.append({
+                "id": oid,
+                "title": h.get("title") or "",
+                "url": h.get("url") or "",
+                "points": h.get("points") or 0,
+                "comments": h.get("num_comments") or 0,
+                "author": h.get("author") or "",
+                "created_at_i": h.get("created_at_i") or 0,
+            })
+
+    def collect(begin: int, end: int, depth: int = 0) -> None:
+        nonlocal requests, splits
+        hits, total = _window(begin, end)
+        requests += 1
+        time.sleep(SLEEP)
+        if total <= HITS or end - begin <= 3600 or depth > 14:
+            # Complete, or narrowed to an hour and still overflowing (a spike
+            # we cannot split further — rare, and losing it beats looping).
+            keep(hits)
+            return
+        splits += 1
+        mid = (begin + end) // 2
+        collect(mid, end, depth + 1)
+        collect(begin, mid, depth + 1)
 
     end = now
-    start = now - DAYS_BACK * 86400
-    while end > start:
-        begin = end - window
-        for page in range(PAGE_LIMIT):
-            q = urllib.parse.urlencode({
-                "tags": "story",
-                "hitsPerPage": HITS,
-                "page": page,
-                "numericFilters": f"created_at_i>{begin},created_at_i<{end}",
-            })
-            data = fetch(f"{API}?{q}")
-            hits = data.get("hits", [])
-            for h in hits:
-                oid = h.get("objectID")
-                if not oid or oid in seen_ids or not h.get("url"):
-                    continue
-                seen_ids.add(oid)
-                stories.append({
-                    "id": oid,
-                    "title": h.get("title") or "",
-                    "url": h.get("url") or "",
-                    "points": h.get("points") or 0,
-                    "comments": h.get("num_comments") or 0,
-                    "author": h.get("author") or "",
-                    "created_at_i": h.get("created_at_i") or 0,
-                })
-            if len(hits) < HITS:
-                break
-            time.sleep(SLEEP)
-        print(f"  {time.strftime('%Y-%m', time.gmtime(begin))}  "
-              f"total {len(stories):,}", flush=True)
-        end = begin
-        time.sleep(SLEEP)
-
-    os.makedirs(os.path.dirname(RAW), exist_ok=True)
+    step = START_WINDOW_DAYS * 86400
     with open(RAW, "w", encoding="utf-8") as fh:
-        for s in stories:
-            fh.write(json.dumps(s, ensure_ascii=False) + "\n")
+        while end > start:
+            begin = max(end - step, start)
+            before = len(stories)
+            collect(begin, end)
+            for s in stories[before:]:
+                fh.write(json.dumps(s, ensure_ascii=False) + "\n")
+            fh.flush()
+            print(f"  {time.strftime('%Y-%m-%d', time.gmtime(begin))}  "
+                  f"stories {len(stories):,}  requests {requests:,}  "
+                  f"splits {splits:,}", flush=True)
+            end = begin
+
+    print(f"\nharvest complete: {len(stories):,} stories in {requests:,} requests")
     return stories
 
 
