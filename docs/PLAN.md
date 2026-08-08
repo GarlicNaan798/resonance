@@ -298,6 +298,63 @@ number on a task with a 0.788 ceiling.
 read confirms it. The hyperparameter "gain" of +0.0168 evaporated under 7-seed
 replication; assume the next one will too.
 
+## Phase 6 — Data acquisition without client data or identity (NEW)
+
+Client campaign data remains the strongest unlock, but it needs a client. This
+phase covers everything obtainable without one, and without handing over
+government ID. Meta Ad Library is excluded on that basis.
+
+Ordered by whether the source can actually answer our question: does THIS copy
+beat THAT copy, with content held constant.
+
+### Tier 1 — randomised copy variants with outcomes
+
+| Source | Status |
+|---|---|
+| Upworthy Research Archive | **have** — 32,487 tests, 150,624 arms |
+| Yahoo Webscope R6A/R6B | **unexplored.** ~45M visits, articles served randomly. Needs institutional email + data agreement, not personal ID. Caveat: randomises which ARTICLE is shown, possibly not headline-within-article — check before investing |
+
+### Tier 2 — quasi-experimental: same content, different copy
+
+| Source | Status |
+|---|---|
+| Hacker News reposts | **in progress** — `pipeline/ingest_hn_reposts.py`. Same URL, different titles, different scores. Open API, no account |
+| Reddit reposts | **blocked without an account.** Public JSON API returns 403; Pushshift dead; pullpush.io's `url=` filter does fuzzy text matching and returns unrelated posts. Only route left is bulk dumps via Academic Torrents |
+
+Both are confounded by submission time, weekday, and author reputation — none
+of which Upworthy needed, because it randomised. Any model trained here needs
+those controls, and the evidence is weaker regardless.
+
+### Tier 3 — observational click data (checked, wrong shape)
+
+- **MIND**: schema-confirmed one `Title` per article, so no within-article
+  variants. ~3,300 impressions per article, statistically indistinguishable
+  from Upworthy's 3,118 — so not even a noise advantage. Strictly worse.
+- **PENS**: has multiple headlines per article, but they are human-written for
+  evaluation and were never served. No clicks on the variants.
+- **Criteo / Avazu**: hashed features, text stripped by design.
+- **Outbrain (Kaggle)**: unchecked; some versions reportedly include ad titles.
+
+### Tier 4 — copy without outcomes
+
+Have: AdImageNet (9,003), programmatic corpora (9,097), Google Ads Transparency
+metadata. Not pursued: Ads of the World (403, bot-protected), Internet Archive
+TV commercials (8,362, video, needs transcription).
+
+### Tier 5 — neuro
+
+NeuMa (open, CC BY, 42 subjects, EEG + eye-tracking, product stimuli).
+DEAP/SEED/MAHNOB need academic EULAs.
+
+### Execution order
+
+1. **HN repost yield check** — measure before modelling. Under ~2,000 usable
+   groups, stop; Upworthy has 32,487 and is cleaner.
+2. **Yahoo R6 structure check** — does it vary headlines or only articles?
+   One question, decides whether the data agreement is worth pursuing.
+3. **Outbrain check** — does the Kaggle release include ad text?
+4. Everything else is either held, blocked, or the wrong shape.
+
 ## Phase 2 — Data safety foundation (must precede upload)
 
 Per the earlier decision: GDPR-grade plus a self-host path.
