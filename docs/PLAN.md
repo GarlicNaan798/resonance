@@ -312,7 +312,7 @@ beat THAT copy, with content held constant.
 | Source | Status |
 |---|---|
 | Upworthy Research Archive | **have** — 32,487 tests, 150,624 arms |
-| Yahoo Webscope R6A/R6B | **unexplored.** ~45M visits, articles served randomly. Needs institutional email + data agreement, not personal ID. Caveat: randomises which ARTICLE is shown, possibly not headline-within-article — check before investing |
+| Yahoo Webscope R6A/R6B | **CHECKED — dead.** Genuinely randomised over ~45M visits, but articles are 6-dimensional ANONYMISED FEATURE VECTORS. The content is stripped, so there is no text to score. Randomisation without creative text is useless to us. Not pursuing the data agreement |
 
 ### Tier 2 — quasi-experimental: same content, different copy
 
@@ -333,7 +333,28 @@ those controls, and the evidence is weaker regardless.
 - **PENS**: has multiple headlines per article, but they are human-written for
   evaluation and were never served. No clicks on the variants.
 - **Criteo / Avazu**: hashed features, text stripped by design.
-- **Outbrain (Kaggle)**: unchecked; some versions reportedly include ad titles.
+- **Outbrain (Kaggle)**: **CHECKED — dead.** `promoted_content.csv` holds
+  ad_id, document_id, campaign_id, advertiser_id; `documents_meta.csv` holds
+  source_id, publisher_id, publish_time. IDs throughout, no ad text.
+
+### The structural finding
+
+Phase 6 is now exhausted, and the pattern across every dead end is the same:
+
+**Large public click datasets release BEHAVIOUR but strip CREATIVE.** Yahoo R6,
+Criteo, Avazu and Outbrain all publish clicks against anonymised IDs or feature
+vectors. The text is removed before release, because ad copy is commercially
+sensitive and identifies advertisers. MIND keeps titles but never varies them
+within an article. PENS varies them but never served the variants.
+
+Upworthy is the exception precisely because it was released by a researcher
+FOR studying headlines, rather than by a platform sharing logs. That is why it
+is the only usable source, and why more searching is unlikely to help: the
+absence is structural, not an oversight.
+
+Remaining routes are therefore (a) quasi-experimental scraping — the HN
+harvester, weaker evidence — and (b) a client export, which is a business
+conversation rather than an engineering task.
 
 ### Tier 4 — copy without outcomes
 
