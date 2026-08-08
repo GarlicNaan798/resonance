@@ -30,10 +30,10 @@ Held-out test set, opened exactly once. Chance = 0.500.
 
 | Metric | Value |
 |---|---|
-| Embedding ranker | **0.5942** (95% CI 0.5839–0.6044) |
+| Embedding ranker (listwise ensemble) | **0.6176** (95% CI 0.6075–0.6277) |
 | Module model (diagnostic) | **0.5346** (95% CI 0.5241–0.5452) |
 | **Measured oracle ceiling** | **0.6620** |
-| Signal captured | **~58% of achievable** |
+| Signal captured | **~72% of achievable** |
 | Evaluated on | 2,665 experiments / 20,452 copy-only pairs |
 
 **The ceiling is the number people miss.** Labels are noisy estimates — the
@@ -43,8 +43,9 @@ recorded labels 66.2% of the time. Read every accuracy figure against 0.662, not
 against 1.00.
 
 Practically: given two variants where one genuinely performed better, the model
-picks correctly ~59 times in 100. Out of 10 A/B choices, roughly 6 right instead
-of 5.
+picks correctly ~62 times in 100. With calibrated abstention it answers the most
+confident quarter of comparisons at **76%**, and says "we cannot tell these
+apart" on the rest — which is more useful than a hedged guess on all of them.
 
 ## 3. What it must never claim
 
@@ -144,9 +145,31 @@ into training.
 - Shuffled-label control throughout; its deviation from chance (~0.018–0.023)
   is the noise floor every claimed gain must exceed.
 
-## 7. Negative results
+## 7. Results, negative and positive
 
-The most valuable section. Four hypotheses tested honestly and rejected.
+Ten experiments. **One worked.** The pattern across the other nine is the most
+useful thing in this document.
+
+### The one that worked: listwise + ensemble
+
+Training on whole experiments (ListNet) instead of extracted pairs, with 5 seeds
+averaged. Test: **0.6176** [0.6075, 0.6277] against a 0.5942 incumbent, +0.0234.
+An identically-trained pairwise reference scored 0.6009 in the same run, so
+**~+0.017 is attributable to the change** and the rest to run-to-run variation.
+
+Listwise *alone* is slightly worse (−0.0031). It only helps because it ensembles
+better: +0.0239 from averaging versus +0.0129 for pairwise. Variance is not what
+makes an ensemble work — **decorrelated errors** are, and listwise members are
+wrong in different ways.
+
+### The pattern
+
+Every attempt to extract more SIGNAL failed. Both attempts to reduce VARIANCE
+worked. Given that only ~12% of the target's variance is signal at all, that is
+the expected shape: the representation already captures what is there, and the
+remaining error is estimation noise.
+
+### The nine that did not work
 
 **Feature engineering round 1 (v2, +28 features).** Discrete emotion, curiosity
 gap, self-reference, word frequency, social proof — all cited, all

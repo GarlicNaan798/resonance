@@ -1,7 +1,7 @@
 /**
  * The embedding ranker — the strong model.
  *
- * 0.5942 on held-out test versus 0.5346 for the diagnostic module model, against
+ * 0.6176 on held-out test versus 0.5346 for the diagnostic module model, against
  * a measured ceiling of 0.662. This is what /compare uses.
  *
  * Two pieces:
@@ -163,22 +163,27 @@ export interface RankingResult {
 }
 
 /**
- * Calibrated confidence tiers, measured in model/calibrate_abstention.py.
+ * Calibrated confidence tiers, measured in model/recalibrate_tiers.py.
  *
- * The headline 59-60% is an average that hides real structure: the model is
+ * The headline accuracy is an average that hides real structure: the model is
  * markedly more reliable when the two variants are far apart in score. Sweeping
  * a margin threshold over dev pairs gives:
  *
  *     coverage  accuracy   margin
- *       100%     0.6001     0.000
- *        50%     0.6601     1.203
- *        25%     0.7084     2.160
- *        10%     0.7672     3.212
+ *       100%     0.6289     0.000
+ *        50%     0.6951     0.519
+ *        25%     0.7602     0.948
+ *        10%     0.8020     1.421
  *
- * So instead of answering every comparison at 60%, the product answers the
- * confident quarter at 71% and says "we cannot tell" on the rest. That is more
- * useful to a marketer, and it is what makes an 80%+ figure quotable — always
+ * So instead of answering every comparison at 63%, the product answers the
+ * confident quarter at 76% and says "we cannot tell" on the rest. That is more
+ * useful to a marketer, and it is what makes an 80% figure quotable — always
  * with its coverage attached.
+ *
+ * RECALIBRATED for the ensemble. The previous thresholds (2.160 / 1.203) were
+ * fitted to a single model's RAW score differences; the ensemble emits an
+ * average of per-member z-scores, a different scale entirely. Reusing them
+ * would have mislabelled confidence silently rather than failing visibly.
  *
  * (An accuracy above the 66.2% global ceiling is not a contradiction: the
  * ceiling was measured across ALL pairs, and confident pairs correlate with
@@ -194,8 +199,8 @@ interface TierSpec {
 }
 
 const TIERS: TierSpec[] = [
-  { tier: "high", minMargin: 2.16, accuracy: 0.7084, coverage: 0.25 },
-  { tier: "moderate", minMargin: 1.203, accuracy: 0.6601, coverage: 0.5 },
+  { tier: "high", minMargin: 0.948, accuracy: 0.7602, coverage: 0.25 },
+  { tier: "moderate", minMargin: 0.519, accuracy: 0.6951, coverage: 0.5 },
 ];
 
 function classify(margin: number): TierSpec | null {

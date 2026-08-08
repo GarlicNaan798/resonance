@@ -108,7 +108,7 @@ export async function POST(request: Request) {
 
     // Two layers, computed separately and reported separately.
     //
-    // The RANKING comes from the embedding ranker (0.5942) — the strong model.
+    // The RANKING comes from the embedding ranker (0.6176) — the strong model.
     // The PROFILES come from the module model (0.5346) and are diagnostic only.
     // The profile does not explain the ranking: the ranker never sees these
     // features. Presenting one as the other would be post-hoc rationalisation,

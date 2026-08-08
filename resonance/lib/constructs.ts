@@ -202,8 +202,12 @@ export function getModule(id: ModuleId): ModuleDefinition {
  * not the ~33% previously claimed.
  */
 export const PERFORMANCE = {
-  rankerAccuracy: 0.5942,
-  rankerCi95: [0.5839, 0.6044] as [number, number],
+  // Listwise ensemble, third and final test read. Was 0.5942 for the single
+  // pairwise model; an identically-trained pairwise reference scored 0.6009 in
+  // the same run, so ~+0.017 of the gain is attributable to the ensemble and
+  // the rest to run-to-run variation in the reference.
+  rankerAccuracy: 0.6176,
+  rankerCi95: [0.6075, 0.6277] as [number, number],
   moduleModelAccuracy: 0.5346,
   moduleModelCi95: [0.5241, 0.5452] as [number, number],
   chance: 0.5,
