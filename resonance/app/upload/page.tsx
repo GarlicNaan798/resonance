@@ -73,25 +73,24 @@ export default function UploadPage() {
       </div>
 
       <section className="space-y-3 rounded-lg border border-zinc-200 p-4 text-sm dark:border-zinc-800">
-        <h2 className="font-medium">Expected columns</h2>
-        <ul className="list-disc space-y-1 pl-5 text-zinc-600 dark:text-zinc-400">
-          <li>
-            <code className="font-mono text-xs">copy</code> — the ad text
-            (aliases: headline, text, creative)
-          </li>
-          <li>
-            <code className="font-mono text-xs">impressions</code> — aliases:
-            impr, views, reach
-          </li>
-          <li>
-            <code className="font-mono text-xs">clicks</code> — aliases: link
-            clicks
-          </li>
-          <li>
-            <code className="font-mono text-xs">segment</code> — optional; age
-            bracket or gender, as your platform exports it
-          </li>
-        </ul>
+        <h2 className="font-medium">Drop your export in as-is</h2>
+        <p className="text-zinc-600 dark:text-zinc-400">
+          Meta Ads Manager and Google Ads exports are read directly — no
+          renaming columns, no reformatting. We look for the ad text,
+          impressions and clicks under whatever your platform calls them
+          (Meta uses <code className="font-mono text-xs">Title</code> and{" "}
+          <code className="font-mono text-xs">Body</code>; Google uses{" "}
+          <code className="font-mono text-xs">Headline 1</code> and{" "}
+          <code className="font-mono text-xs">Impr.</code>).
+        </p>
+        <p className="text-zinc-600 dark:text-zinc-400">
+          A hand-made CSV works too: any columns named roughly{" "}
+          <code className="font-mono text-xs">copy</code>,{" "}
+          <code className="font-mono text-xs">impressions</code> and{" "}
+          <code className="font-mono text-xs">clicks</code>, plus an optional{" "}
+          <code className="font-mono text-xs">segment</code> for age bracket or
+          gender.
+        </p>
         <p className="text-zinc-500">
           Rows below 500 impressions are skipped: the click-through estimate on
           fewer is mostly sampling noise.

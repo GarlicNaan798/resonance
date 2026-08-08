@@ -51,31 +51,45 @@ const MIN_IMPRESSIONS = 500;
 
 const REQUIRED = ["copy", "impressions", "clicks"] as const;
 
-/** Header aliases, because exports name these columns inconsistently. */
-const ALIASES: Record<string, string> = {
-  copy: "copy",
-  text: "copy",
-  headline: "copy",
-  ad_copy: "copy",
-  "ad copy": "copy",
-  creative: "copy",
-  body: "copy",
-  impressions: "impressions",
-  impr: "impressions",
-  views: "impressions",
-  reach: "impressions",
-  clicks: "clicks",
-  click: "clicks",
-  link_clicks: "clicks",
-  "link clicks": "clicks",
-  segment: "segment",
-  audience: "segment",
-  age: "segment",
-  gender: "segment",
-  campaign: "campaignId",
-  campaign_id: "campaignId",
-  "campaign name": "campaignId",
-};
+/**
+ * Resolve a raw CSV header to one of our fields.
+ *
+ * Pattern matching rather than an alias table, because platform exports name
+ * these columns inconsistently and an enumerated list is always one export
+ * format behind. Real headers this has to survive:
+ *
+ *   Meta Ads Manager  "Body" (ad text), "Title" (headline), "Link clicks",
+ *                     "Amount spent (GBP)", "Ad name"
+ *   Google Ads        "Headline 1", "Description", "Impr." (with the period),
+ *                     "Clicks", "Campaign"
+ *   Hand-rolled       copy, text, ad_copy, impressions, views
+ *
+ * Headers are normalised to lowercase alphanumerics first, so "Link clicks",
+ * "link_clicks" and "LinkClicks" all collapse to the same key. Order matters:
+ * the first matching rule wins, so more specific patterns come first.
+ */
+const HEADER_RULES: [RegExp, string][] = [
+  // Clicks before impressions — "link clicks" contains neither ambiguously,
+  // but "clicks" must not be swallowed by a looser rule later.
+  [/^(link)?clicks?$/, "clicks"],
+  [/^(all|unique|outbound|website)?(link)?clicks?$/, "clicks"],
+  // "Impr." loses its period during normalisation.
+  [/^(impr|impressions?|views?|reach)$/, "impressions"],
+  // Meta calls the headline "Title" and the body text "Body". Google numbers
+  // its headlines. Any of them is the copy we score.
+  [/^(copy|text|headline\d*|title|body|creative|addcopy|adcopy|description\d*)$/,
+    "copy"],
+  [/^(segment|audience|agerange|age|gender|sex)$/, "segment"],
+  [/^(campaign|campaignid|campaignname|adsetname|adname|adid)$/, "campaignId"],
+];
+
+function resolveHeader(raw: string): string {
+  const key = raw.toLowerCase().replace(/[^a-z0-9]/g, "");
+  for (const [pattern, field] of HEADER_RULES) {
+    if (pattern.test(key)) return field;
+  }
+  return key;
+}
 
 function splitCsvLine(line: string): string[] {
   const out: string[] = [];
@@ -116,9 +130,7 @@ export function parseCampaignCsv(csv: string): ParseResult {
     return { rows: [], issues: [{ row: 0, problem: "File has no data rows." }], campaignCount: 0 };
   }
 
-  const header = splitCsvLine(lines[0]).map((h) =>
-    ALIASES[h.toLowerCase()] ?? h.toLowerCase(),
-  );
+  const header = splitCsvLine(lines[0]).map(resolveHeader);
 
   const missing = REQUIRED.filter((r) => !header.includes(r));
   if (missing.length) {

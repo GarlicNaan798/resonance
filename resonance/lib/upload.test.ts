@@ -26,6 +26,38 @@ describe("parsing", () => {
     expect(parseCampaignCsv(csv).rows).toHaveLength(1);
   });
 
+  it("reads a Meta Ads Manager export verbatim", () => {
+    // Meta names the ad text "Body" and the headline "Title" in the CSV,
+    // which differs from the labels shown in the UI.
+    const csv =
+      'Ad name,Title,Body,Impressions,Link clicks,Amount spent (GBP)\n' +
+      '"Winter promo 1","Cut your heating bill","One simple change",12500,168,420.50\n';
+    const r = parseCampaignCsv(csv);
+    expect(r.issues).toHaveLength(0);
+    expect(r.rows).toHaveLength(1);
+    expect(r.rows[0].impressions).toBe(12500);
+    expect(r.rows[0].clicks).toBe(168);
+  });
+
+  it("reads a Google Ads export verbatim, including 'Impr.'", () => {
+    // The trailing period on "Impr." is the gotcha here.
+    const csv =
+      "Campaign,Headline 1,Description,Impr.,Clicks\n" +
+      '"Winter","Cut your heating bill","Save this winter",9800,121\n';
+    const r = parseCampaignCsv(csv);
+    expect(r.issues).toHaveLength(0);
+    expect(r.rows).toHaveLength(1);
+    expect(r.rows[0].impressions).toBe(9800);
+    expect(r.rows[0].campaignId).toBe("Winter");
+  });
+
+  it("does not mistake a clicks column for impressions", () => {
+    const csv = "copy,Impressions,Unique Clicks\nSave big,5000,60\n";
+    const r = parseCampaignCsv(csv);
+    expect(r.rows[0].impressions).toBe(5000);
+    expect(r.rows[0].clicks).toBe(60);
+  });
+
   it("names the missing columns rather than failing vaguely", () => {
     const r = parseCampaignCsv("copy,impressions\nhello,5000\n");
     expect(r.issues[0].problem).toMatch(/Missing required column\(s\): clicks/);
