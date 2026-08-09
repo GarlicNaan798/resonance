@@ -318,7 +318,7 @@ beat THAT copy, with content held constant.
 
 | Source | Status |
 |---|---|
-| Hacker News reposts | **in progress** — `pipeline/ingest_hn_reposts.py`. Same URL, different titles, different scores. Open API, no account |
+| Hacker News reposts | **CHECKED — not worth it.** Harvested 2.1M stories, 55,324 repost groups, 138,121 title pairs. But HN scoring is a preferential-attachment cascade: 43.9% of arms never leave /new (<=3 points) and 21.4% of pairs are one flop against one front-page hit. Only **6,722 pairs** have both arms above 20 points — 4.5% of Upworthy's 149,090, from a different domain, measuring upvotes rather than clicks. Timing controls do not fix it; the confound is who saw the post in the first ten minutes |
 | Reddit reposts | **blocked without an account.** Public JSON API returns 403; Pushshift dead; pullpush.io's `url=` filter does fuzzy text matching and returns unrelated posts. Only route left is bulk dumps via Academic Torrents |
 
 Both are confounded by submission time, weekday, and author reputation — none
