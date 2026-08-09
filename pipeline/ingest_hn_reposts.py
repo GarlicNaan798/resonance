@@ -102,10 +102,24 @@ def harvest() -> list[dict]:
     Resumable: rows append as they are found, so a crash costs the current
     window, not the run.
     """
+    # A completion sentinel, because the harvest writes incrementally and a
+    # network blip mid-run leaves a perfectly readable PARTIAL file. Without
+    # this, the next run would treat that partial as the full corpus and report
+    # a yield for a date range nobody chose.
+    done = RAW + ".done"
     if os.path.exists(RAW):
-        print(f"reusing {RAW} (delete it to re-harvest)")
         with open(RAW, encoding="utf-8") as fh:
-            return [json.loads(l) for l in fh if l.strip()]
+            rows = [json.loads(l) for l in fh if l.strip()]
+        if os.path.exists(done):
+            print(f"reusing complete harvest: {RAW} ({len(rows):,} stories)")
+        else:
+            span = (min(r["created_at_i"] for r in rows),
+                    max(r["created_at_i"] for r in rows))
+            print(f"WARNING: {RAW} is PARTIAL — {len(rows):,} stories covering "
+                  f"{time.strftime('%Y-%m-%d', time.gmtime(span[0]))} to "
+                  f"{time.strftime('%Y-%m-%d', time.gmtime(span[1]))}.")
+            print("Analysing what is there. Delete the file to harvest again.")
+        return rows
 
     os.makedirs(os.path.dirname(RAW), exist_ok=True)
     now = int(time.time())
@@ -161,6 +175,8 @@ def harvest() -> list[dict]:
                   f"splits {splits:,}", flush=True)
             end = begin
 
+    with open(done, "w", encoding="utf-8") as fh:
+        fh.write(f"{len(stories)} stories, {requests} requests\n")
     print(f"\nharvest complete: {len(stories):,} stories in {requests:,} requests")
     return stories
 
