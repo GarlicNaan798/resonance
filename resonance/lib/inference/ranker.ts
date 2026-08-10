@@ -198,7 +198,7 @@ interface TierSpec {
   coverage: number;
 }
 
-const TIERS: TierSpec[] = [
+export const TIERS: TierSpec[] = [
   { tier: "high", minMargin: 0.948, accuracy: 0.7602, coverage: 0.25 },
   { tier: "moderate", minMargin: 0.519, accuracy: 0.6951, coverage: 0.5 },
 ];

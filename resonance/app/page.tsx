@@ -1,69 +1,202 @@
-import Image from "next/image";
+import Link from "next/link";
+import { PERFORMANCE, PROHIBITED_CLAIMS } from "@/lib/constructs";
+import { TIERS } from "@/lib/inference/ranker";
+
+/**
+ * The pitch.
+ *
+ * Ordering is the whole design here. The honest numbers are the differentiator
+ * against neuromarketing vendors, but leading with "61.8%" reads as "coin flip
+ * plus a bit" to anyone who has not yet been told the ceiling is 66.2%. So:
+ * what it does -> what it is worth -> the numbers, framed against the ceiling
+ * -> what it refuses to claim -> an ask that costs the reader nothing.
+ *
+ * The ask deliberately is NOT "upload your campaign data". That is the
+ * highest-trust action in the product and asking for it before demonstrating
+ * anything is why it gets refused.
+ */
+
+const highTier = TIERS.find((t) => t.tier === "high")!;
+
+const pct = (x: number) => `${(x * 100).toFixed(1)}%`;
+
+const CAPTURED = Math.round(
+  ((PERFORMANCE.rankerAccuracy - PERFORMANCE.chance) /
+    (PERFORMANCE.oracleCeiling - PERFORMANCE.chance)) *
+    100,
+);
+
+const DOES = [
+  {
+    title: "Rank variants before you spend",
+    body:
+      "Give it two or more versions of a headline and it picks the likely " +
+      "winner — and tells you when the two are too close to call rather than " +
+      "guessing.",
+    href: "/compare",
+    cta: "Compare copy",
+  },
+  {
+    title: "Diagnose copy against an audience",
+    body:
+      "Six behavioural constructs scored from published human word ratings, " +
+      "with the demographic ratings applied for the segment you specify.",
+    href: "/analyse",
+    cta: "Analyse copy",
+  },
+  {
+    title: "Split budget across variants",
+    body:
+      "Seed a bandit with the model's prediction instead of splitting evenly. " +
+      "In simulation on held-out experiments this wasted 31.8% fewer " +
+      "impressions than a full even A/B test.",
+    href: "/allocate",
+    cta: "Split budget",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="space-y-16">
+      <section className="space-y-5">
+        <h1 className="max-w-2xl text-3xl font-semibold leading-tight tracking-tight">
+          Which headline wins, and how confident we actually are.
+        </h1>
+        <p className="max-w-2xl text-zinc-600 dark:text-zinc-400">
+          Resonance ranks marketing copy and profiles it against published
+          behavioural science. It was built on the{" "}
+          {PERFORMANCE.trainingData} — real randomised experiments with real
+          click outcomes, not opinion.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href="/compare"
+            className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white dark:bg-zinc-100 dark:text-zinc-900"
+          >
+            Try it on copy you already have
+          </Link>
+          <Link
+            href="/methodology"
+            className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium dark:border-zinc-700"
+          >
+            Read how it was measured
+          </Link>
+        </div>
+        <p className="text-xs text-zinc-500">
+          No account, no upload, nothing stored. Paste two headlines and see
+          what it says.
+        </p>
+      </section>
+
+      <section className="grid gap-4 sm:grid-cols-3">
+        {DOES.map((d) => (
+          <div
+            key={d.href}
+            className="flex flex-col rounded-lg border border-zinc-200 p-4 dark:border-zinc-800"
+          >
+            <h2 className="font-medium">{d.title}</h2>
+            <p className="mt-2 flex-1 text-sm text-zinc-600 dark:text-zinc-400">
+              {d.body}
+            </p>
+            <Link
+              href={d.href}
+              className="mt-3 text-sm font-medium underline underline-offset-4"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+              {d.cta}
+            </Link>
+          </div>
+        ))}
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-lg font-medium">The numbers, in context</h2>
+        <div className="space-y-3 rounded-lg bg-zinc-100 p-5 text-sm dark:bg-zinc-900">
+          <p>
+            The model picks the winning variant{" "}
+            <strong>{pct(PERFORMANCE.rankerAccuracy)}</strong> of the time
+            against a {pct(PERFORMANCE.chance)} coin flip. That sounds modest
+            until you know the ceiling.
+          </p>
+          <p>
+            Click outcomes are noisy measurements. On this corpus only ~
+            {Math.round(PERFORMANCE.signalFraction * 100)}% of the variance in
+            the results is real signal — the rest is sampling noise — so{" "}
+            <strong>
+              a model with perfect knowledge would still only score{" "}
+              {pct(PERFORMANCE.oracleCeiling)}
+            </strong>
+            . We measured that ceiling rather than assuming it. Against it, the
+            model captures <strong>{CAPTURED}%</strong> of the signal that is
+            there to capture.
+          </p>
+          <p>
+            And it knows when it does not know. On the{" "}
+            {Math.round(highTier.coverage * 100)}% of comparisons where it is
+            most confident, accuracy is{" "}
+            <strong>{pct(highTier.accuracy)}</strong>. On the rest it says the
+            comparison is too close to call, which is a more useful answer than
+            a confident guess.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="grid gap-6 sm:grid-cols-2">
+        <div className="space-y-3">
+          <h2 className="text-lg font-medium">What it will not claim</h2>
+          <ul className="list-disc space-y-1 pl-5 text-sm text-zinc-600 dark:text-zinc-400">
+            {PROHIBITED_CLAIMS.map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </ul>
+          <p className="text-sm text-zinc-500">
+            These are enforced in the codebase, not just written down. Four
+            hypotheses that failed are documented on the{" "}
+            <Link href="/methodology" className="underline">
+              methodology page
+            </Link>{" "}
+            alongside the ones that worked.
+          </p>
         </div>
-      </main>
+
+        <div className="space-y-3">
+          <h2 className="text-lg font-medium">Your data does not move</h2>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            Self-hosted mode makes <strong>no outbound network calls at all</strong>.
+            Models run in-process; the encoder weights are baked into the image
+            so nothing is fetched at runtime. You can verify the claim rather
+            than trust it — run the container with networking disabled and it
+            still works.
+          </p>
+          <pre className="overflow-x-auto rounded-md bg-zinc-100 p-3 font-mono text-xs dark:bg-zinc-900">
+            docker compose run --rm --network none app npm run selftest
+          </pre>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            Uploads containing emails, phone numbers, addresses, IPs or card
+            numbers are rejected at ingest — not stored and redacted. The tool
+            needs aggregate copy performance and nothing about individuals.
+          </p>
+        </div>
+      </section>
+
+      <section className="space-y-3 rounded-lg border border-zinc-200 p-5 dark:border-zinc-800">
+        <h2 className="text-lg font-medium">
+          The training data is 2013–15 viral media. You are probably not that.
+        </h2>
+        <p className="max-w-3xl text-sm text-zinc-600 dark:text-zinc-400">
+          Stated up front because it is the honest limitation: the constructs
+          transfer across domains more readily than the calibration does. A
+          model refitted on your own campaign results should be expected to beat
+          the global one. That is the intended path, not a workaround — but the
+          tool is useful before you get there, which is why nothing above
+          requires you to hand over anything.
+        </p>
+        <Link
+          href="/upload"
+          className="inline-block text-sm font-medium underline underline-offset-4"
+        >
+          What a recalibration export would need
+        </Link>
+      </section>
     </div>
   );
 }

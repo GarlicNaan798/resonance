@@ -43,3 +43,4 @@ Thumbs.db
 # memsearch runtime state (PID + index cursor). The memory/ notes are kept.
 .memsearch/.index.pid
 .memsearch/.index-state.json
+.resonance/

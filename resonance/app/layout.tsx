@@ -28,6 +28,7 @@ const NAV = [
   { href: "/analyse", label: "Analyse" },
   { href: "/compare", label: "Compare" },
   { href: "/allocate", label: "Split budget" },
+  { href: "/track", label: "Track record" },
   { href: "/upload", label: "Upload data" },
   { href: "/methodology", label: "Methodology" },
 ] as const;

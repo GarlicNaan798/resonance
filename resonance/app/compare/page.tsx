@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { AnalysisResult } from "@/lib/analyse";
 import type { RankingResult } from "@/lib/inference/ranker";
+import { PERFORMANCE } from "@/lib/constructs";
 
 interface GuardrailEntry {
   index: number;
@@ -25,6 +27,11 @@ export default function ComparePage() {
   const [result, setResult] = useState<CompareResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  /** Chosen before the model runs, or it is worthless as a comparison. */
+  const [userPick, setUserPick] = useState<number | null>(null);
+  const [label, setLabel] = useState("");
+  const [sealed, setSealed] = useState<{ hash: string } | null>(null);
+  const [sealing, setSealing] = useState(false);
 
   const filled = variants.filter((v) => v.trim()).length;
 
@@ -32,9 +39,41 @@ export default function ComparePage() {
     setVariants((prev) => prev.map((v, j) => (j === i ? value : v)));
   }
 
+  async function seal() {
+    if (!result) return;
+    setSealing(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/predictions", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          variants: variants.filter((v) => v.trim()),
+          predictedWinner: result.ranking.ranked[0].index,
+          tier: result.ranking.tier,
+          margin:
+            result.ranking.ranked[0].score - (result.ranking.ranked[1]?.score ?? 0),
+          userPick,
+          label: label.trim() || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Could not seal the prediction.");
+        return;
+      }
+      setSealed({ hash: data.prediction.hash });
+    } catch {
+      setError("Could not seal the prediction.");
+    } finally {
+      setSealing(false);
+    }
+  }
+
   async function run() {
     setBusy(true);
     setError(null);
+    setSealed(null);
     try {
       const res = await fetch("/api/analyse", {
         method: "POST",
@@ -61,9 +100,9 @@ export default function ComparePage() {
         <h1 className="text-2xl font-semibold tracking-tight">Compare variants</h1>
         <p className="mt-2 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
           Ranks your variants using the model trained on 32,487 randomised A/B
-          tests. It is right about 59% of the time against a 50% baseline — an
-          edge worth having before you spend media budget, not a substitute for
-          testing.
+          tests. It is right {(PERFORMANCE.rankerAccuracy * 100).toFixed(1)}% of
+          the time against a 50% baseline — an edge worth having before you
+          spend media budget, not a substitute for testing.
         </p>
       </div>
 
@@ -82,6 +121,34 @@ export default function ComparePage() {
             />
           </div>
         ))}
+
+        {/* Collected BEFORE the model runs and locked afterwards. A pick made
+            after seeing the answer measures nothing, so the UI makes the blind
+            version the only one available. */}
+        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-dashed border-zinc-300 p-3 text-sm dark:border-zinc-700">
+          <span className="text-zinc-600 dark:text-zinc-400">
+            Optional — your own pick first:
+          </span>
+          {variants.map((_, i) => (
+            <button
+              key={i}
+              disabled={!!result}
+              onClick={() => setUserPick(userPick === i ? null : i)}
+              className={`rounded-md border px-2.5 py-1 text-xs disabled:opacity-50 ${
+                userPick === i
+                  ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900"
+                  : "border-zinc-300 dark:border-zinc-700"
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <span className="text-xs text-zinc-500">
+            {result
+              ? "Locked — the model has run."
+              : "Scored against the model on your track record."}
+          </span>
+        </div>
 
         <div className="flex items-center gap-3">
           <button
@@ -214,6 +281,57 @@ export default function ComparePage() {
               Scores are comparable only within this comparison and carry no
               absolute meaning.
             </p>
+          </div>
+
+          {/* The loop-closing step: fix the prediction before the campaign
+              runs, so the track record cannot be assembled from hindsight. */}
+          <div className="space-y-3 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+            <h2 className="text-sm font-medium">Seal this prediction</h2>
+            {sealed ? (
+              <div className="space-y-2 text-sm">
+                <p className="text-emerald-700 dark:text-emerald-400">
+                  Sealed. Record the winner on your{" "}
+                  <Link href="/track" className="underline">
+                    track record
+                  </Link>{" "}
+                  once the campaign resolves.
+                </p>
+                <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                  Send this hash to your client now and it proves afterwards
+                  that the call was made before the result was known:
+                </p>
+                <code className="block overflow-x-auto rounded bg-zinc-100 p-2 font-mono text-xs dark:bg-zinc-900">
+                  {sealed.hash}
+                </code>
+              </div>
+            ) : (
+              <>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  Stores this comparison locally so you can record the real
+                  winner later and find out whether the model is right on your
+                  campaigns — not on 2013–15 viral media.
+                </p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <input
+                    value={label}
+                    onChange={(e) => setLabel(e.target.value)}
+                    placeholder="Campaign name (optional)"
+                    className="flex-1 rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+                  />
+                  <button
+                    onClick={seal}
+                    disabled={sealing}
+                    className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm font-medium disabled:opacity-40 dark:border-zinc-700"
+                  >
+                    {sealing ? "Sealing…" : "Seal prediction"}
+                  </button>
+                </div>
+                <p className="text-xs text-zinc-500">
+                  Written to disk on this machine only. Nothing is sent
+                  anywhere.
+                </p>
+              </>
+            )}
           </div>
 
           <details className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
