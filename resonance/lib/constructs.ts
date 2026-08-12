@@ -202,7 +202,11 @@ export function getModule(id: ModuleId): ModuleDefinition {
  * not the ~33% previously claimed.
  */
 export const PERFORMANCE = {
-  // Listwise ensemble, third and final test read. Was 0.5942 for the single
+  // Listwise ensemble, from the pre-registered read in test_read_listwise.py.
+  // This comment previously called it the "third and final test read". By
+  // execution order it is the second of two evaluations; reads were not logged
+  // at the time, so the ordinal could not be checked. They are logged now —
+  // see pipeline/test_lock.py and FUNDAMENTALS.md §10. Was 0.5942 for the single
   // pairwise model; an identically-trained pairwise reference scored 0.6009 in
   // the same run, so ~+0.017 of the gain is attributable to the ensemble and
   // the rest to run-to-run variation in the reference.

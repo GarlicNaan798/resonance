@@ -45,7 +45,14 @@ def main() -> None:
     rows = load_rows()
     idx = split_indices(rows)
     fit_idx = np.concatenate([idx["train"], idx["val"]])
-    test_idx = idx["test"]
+
+    sys.path.insert(0, os.path.join(ROOT, "pipeline"))
+    from test_lock import unlock_test  # noqa: E402
+    test_idx = unlock_test(
+        rows,
+        "test_read_listwise.py: pre-registered read of the listwise ensemble "
+        f"against incumbent {INCUMBENT} with a {MARGIN} ship margin",
+    )
 
     y = np.array([r["target"] for r in rows], dtype=np.float32)
     t = np.array([r["test_id"] for r in rows])

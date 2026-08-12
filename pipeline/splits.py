@@ -1,4 +1,20 @@
 """
+RETIRED — this splits a corpus the project no longer uses.
+
+Kept for provenance only. It operates on `data/interim/ads_*.jsonl`, the
+HuggingFace ads corpus abandoned early on; `data/splits/test.jsonl` holds 2,806
+LLM instruction prompts that no model was ever trained on or evaluated against.
+Its `unlock_test()` had zero callers, which is how it went unnoticed that the
+project's advertised test-set governance guarded the wrong data entirely.
+
+**For the Upworthy corpus the models actually use, see pipeline/test_lock.py.**
+That module carries the canonical split, the fingerprint, the reason-gated read
+and the read log, and has a self-check in pipeline/test_lock_check.py.
+
+Do not wire anything new to this file.
+
+---
+
 Leakage-safe dataset splitting.
 
 The corpus is 49% exact duplicates and 89% of ads live in near-duplicate

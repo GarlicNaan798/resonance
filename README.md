@@ -162,22 +162,32 @@ specifically to study headlines.
 - Feature standardisation is fitted on training data only.
 - A shuffled-label control runs throughout; its deviation from chance
   (0.018–0.023) is the noise floor any claimed gain must exceed.
-- Splits are produced by a **deterministic seeded partition**
-  (`train_final.split_indices`, seed 20260805), so every script sees the same
-  test set.
+- Splits come from **one** deterministic seeded partition
+  (`pipeline/test_lock.py`, seed 20260805). It was previously defined three
+  times in three files; all three were verified byte-identical before being
+  collapsed into one, so no number changed.
+- The test partition is **fingerprinted** (`081f57f3…`, n=22,648). A change to
+  the corpus or the seed is refused rather than silently revaluing every result
+  ever reported.
+- Reading test requires a **written reason** and appends to
+  `data/processed/test_reads.jsonl`. `pipeline/test_lock_check.py` verifies the
+  gate rejects short reasons, that refused reads are not logged, and that
+  editing a test row trips the fingerprint while editing a train row does not.
 
-> **Known gap.** `pipeline/splits.py` implements a stricter protocol — a
-> SHA-256-fingerprinted lock file and an `unlock_test(reason)` gate that demands
-> a written justification for each read. **Nothing calls it.** All eight model
-> scripts, including the one that produced the headline 61.8%, use
-> `split_indices()` instead, which has no gate and keeps no record.
+> **How this came about**, since the fix is more interesting than the feature.
 >
-> The split itself is sound: grouped, deterministic, and identical across
-> scripts, so train/test separation holds and the reported numbers stand. What
-> does not hold is the *governance* claim. Because no read was ever gated or
-> counted, the project cannot say how many times the test set was opened — which
-> is why three documents in this repo give three different answers. Reconciling
-> that is the top open item.
+> `pipeline/splits.py` advertised exactly this protocol and had **zero callers**
+> — it guarded `data/splits/test.jsonl`, 2,806 LLM instruction prompts from an
+> abandoned corpus no model ever touched. Every real read used an ungated
+> in-process split instead.
+>
+> Nothing leaked: the split was grouped, deterministic and consistent, so
+> train/test separation held and every reported number stands. But because no
+> read was gated or recorded, **the project could not say how many times the
+> test set had been opened** — three documents gave three different answers. A
+> static audit finds two evaluations plus one non-evaluative fixture read; the
+> historical count cannot be certified from code alone, which is precisely the
+> argument for the log. The known reads are backfilled and flagged as such.
 
 ## Layout
 

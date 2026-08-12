@@ -26,7 +26,8 @@ the most likely way this product would lose credibility with a technical buyer.
 
 ## 2. Headline numbers
 
-Held-out test set, opened exactly once. Chance = 0.500.
+Held-out test set. Chance = 0.500. On how many times it was opened, and why
+that question was harder to answer than it should have been, see §10.
 
 | Metric | Value |
 |---|---|
@@ -366,9 +367,35 @@ threshold was simply too permissive.
 
 ## 10. Engineering invariants
 
-- **Test set opened twice total**, both times pre-registered. Validation was
-  evaluated ~10 times and is optimistically biased — both models fell ~3 points
-  from val to test, exactly as predicted.
+- **Test reads are gated and logged** — `pipeline/test_lock.py`. A read needs a
+  written reason and appends to `data/processed/test_reads.jsonl`. The test
+  partition is fingerprinted (`081f57f3…`, n=22,648) so a change to the corpus
+  or the seed is refused rather than silently revaluing every reported number.
+
+  This was not always so, and the correction is worth recording. Until
+  2026-08-12 this document said the test set was opened "exactly once" in §2 and
+  "twice total" here, while `constructs.ts` called its result the "third and
+  final test read". Three statements, three numbers.
+
+  The cause: `pipeline/splits.py` implemented a lock and an `unlock_test(reason)`
+  gate for the **abandoned HuggingFace ads corpus** — `data/splits/test.jsonl`
+  holds 2,806 LLM instruction prompts no model ever touched — and had zero
+  callers. Every real read went through an ungated in-process split.
+
+  A static audit of the code finds **three sites** that index the test
+  partition: `train_final.py` and `test_read_listwise.py` (evaluations), and
+  `export_ensemble.py` (six rows for parity fixtures, no metric). The
+  `constructs.ts` "third" may count a read whose code no longer exists.
+  **Because reads were never recorded, the historical count cannot be certified
+  from the code alone** — which is the whole argument for the log. The three
+  known reads are backfilled into it and marked `backfilled: true`.
+
+  What this does *not* affect: the split is grouped, deterministic and now
+  verified byte-identical across all three former definitions, so train/test
+  separation held throughout and every reported number stands.
+
+- **Validation was evaluated ~10 times** and is optimistically biased — both
+  models fell ~3 points from val to test, exactly as predicted.
 - **TS/PyTorch parity to 1e-4**, 8 fixtures, covering score and all six module
   activations. Two things that would have silently broken it: PyTorch's default
   GELU is the exact erf form, and LayerNorm uses biased variance.

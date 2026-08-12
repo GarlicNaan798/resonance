@@ -128,10 +128,22 @@ export default function MethodologyPage() {
             experiment are not independent.
           </p>
           <p>
-            The test set was opened twice in the project&apos;s life, both times
-            pre-registered. Validation had been evaluated roughly ten times and
-            was optimistically biased: both models fell about three points from
+            Validation had been evaluated roughly ten times and was
+            optimistically biased: both models fell about three points from
             validation to test, which is why only test figures appear here.
+          </p>
+          <p>
+            <strong>On test-set reads.</strong> A static audit of the code finds
+            two evaluations against the held-out set, plus one non-evaluative
+            read that lifted six rows for parity fixtures. Until 2026-08-12
+            those reads were neither gated nor recorded, so the historical count
+            cannot be certified from the code alone — three project documents
+            gave three different answers. Reads now require a written reason and
+            append to a log, and the test partition is fingerprinted so a change
+            to it is refused rather than silently revaluing every number here.
+            The split was always grouped and deterministic, so the separation
+            held and these figures stand; it was the record-keeping that did
+            not.
           </p>
         </div>
       </section>

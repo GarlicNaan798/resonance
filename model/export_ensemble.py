@@ -97,7 +97,18 @@ def main() -> None:
           f"{N_SEEDS} members)")
 
     # Parity fixtures against the ensemble, not a single member.
-    test_E = E[idx["test"]][:6]
+    # Recorded as non-evaluative: six rows are lifted to pin TS/PyTorch
+    # agreement, and no accuracy figure comes out of it. Still logged, because
+    # a read the record omits is exactly the kind of omission this exists to
+    # prevent.
+    sys.path.insert(0, os.path.join(ROOT, "pipeline"))
+    from test_lock import unlock_test  # noqa: E402
+    test_E = E[unlock_test(
+        rows,
+        "export_ensemble.py: six held-out rows for TypeScript/PyTorch parity "
+        "fixtures, no metric reported",
+        evaluation=False,
+    )][:6]
     scores = []
     for mem in members:
         h = test_E

@@ -8,7 +8,17 @@
 # Data: large, redistributable only under each source's own licence
 data/raw/
 data/interim/
-data/processed/
+# Contents, not the directory itself: git cannot re-include a file whose parent
+# directory is excluded, and the two exceptions below have to be committable.
+data/processed/*
+
+# The test lock and the read log are evidence, not derived artefacts. A
+# fingerprint nobody else can see protects nothing, and a read log that starts
+# empty on every clone defeats its own purpose.
+!data/processed/upworthy_test.lock.json
+!data/processed/test_reads.jsonl
+!data/processed/model_card.md
+
 *.parquet
 *.jsonl.part
 

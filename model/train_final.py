@@ -59,6 +59,19 @@ def load_rows():
 
 
 def split_indices(rows):
+    """Delegates to the canonical definition in pipeline/test_lock.py.
+
+    This used to be a third independent copy of the same logic. Three copies of
+    a split function is three chances for one to drift and quietly revalue every
+    number in the project, so there is now one definition and everything imports
+    it. Verified byte-identical to the partition this replaced.
+    """
+    sys.path.insert(0, os.path.join(ROOT, "pipeline"))
+    from test_lock import split_indices as canonical  # noqa: E402
+    return canonical(rows)
+
+
+def _retired_split_indices(rows):
     import random
     members = defaultdict(list)
     for i, r in enumerate(rows):
@@ -163,7 +176,14 @@ def main() -> None:
 
     E = np.load(EMB)["E"]
     E_fit = E[fit_idx]
-    E_te = E[idx["test"]]
+
+    sys.path.insert(0, os.path.join(ROOT, "pipeline"))
+    from test_lock import unlock_test  # noqa: E402
+    E_te = E[unlock_test(
+        rows,
+        "train_final.py: final evaluation of the pairwise ranker and the "
+        "interpretable module model against the held-out set",
+    )]
 
     p_fit = build_pairs(y_fit, t_fit, MIN_GAP, X_fit)
     p_te = build_pairs(y_te, t_te, MIN_GAP, X_te)
