@@ -258,6 +258,16 @@ html[data-reveal-ready] [data-reveal].is-visible {
   transition-delay: calc(var(--index, 0) * 80ms);
 }
 
+@media print {
+  /* Printing does not scroll, so nothing would ever intersect and the page
+     would come out blank below the fold. Belt to the JS deadline's braces. */
+  html[data-reveal-ready] [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .ambient { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   /* Not optional. Motion sensitivity is an accessibility requirement, and the
      content must be fully readable with every animation switched off. */

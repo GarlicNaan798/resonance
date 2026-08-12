@@ -15,13 +15,24 @@ import { useEffect } from "react";
  *   1. The hidden styles are scoped to `html[data-reveal-ready]`, set here on
  *      mount. Without JavaScript the attribute is absent and everything renders
  *      visible, as it should.
- *   2. If the observer has not reported a single intersection shortly after
- *      mount, everything is revealed unconditionally. Observed in practice: in
- *      a tab that is not compositing frames, IntersectionObserver never fires
- *      and the entire page stayed at opacity 0. Throttled background tabs and
- *      occluded windows can do the same. A blank page is a far worse outcome
- *      than an animation that does not play.
+ *   2. A hard deadline. Everything still hidden after DEADLINE_MS is revealed,
+ *      whatever the observer is doing.
+ *
+ * The deadline used to be cancelled as soon as the observer reported its first
+ * intersection, on the theory that a working observer needs no backstop. That
+ * was wrong, and a full-page screenshot showed why: the hero intersected, the
+ * backstop was cancelled as "not needed", and the other twelve blocks sat at
+ * opacity 0 waiting for a scroll that never came. The real failure mode is not
+ * a broken observer — it is a working observer on content nobody scrolls to.
+ * Print, PDF export, reader modes and screenshots all hit it.
+ *
+ * So the deadline is unconditional. Anyone scrolling in the first few seconds
+ * gets the animation; everyone else gets the content, which matters more.
  */
+/** Long enough for the animation to feel intentional, short enough that a
+ *  reader who never scrolls is not staring at blank space. */
+const DEADLINE_MS = 2500;
+
 export function Reveal() {
   useEffect(() => {
     const root = document.documentElement;
@@ -37,12 +48,10 @@ export function Reveal() {
 
     root.setAttribute("data-reveal-ready", "");
 
-    let observerWorks = false;
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            observerWorks = true;
             entry.target.classList.add("is-visible");
             observer.unobserve(entry.target);
           }
@@ -53,16 +62,14 @@ export function Reveal() {
 
     nodes().forEach((n) => observer.observe(n));
 
-    // Cancelled implicitly by `observerWorks` once a real intersection lands.
-    const rescue = window.setTimeout(() => {
-      if (!observerWorks) {
-        observer.disconnect();
-        revealAll();
-      }
-    }, 1500);
+    // Unconditional. Not "if the observer looks broken" — see the note above.
+    const deadline = window.setTimeout(() => {
+      observer.disconnect();
+      revealAll();
+    }, DEADLINE_MS);
 
     return () => {
-      window.clearTimeout(rescue);
+      window.clearTimeout(deadline);
       observer.disconnect();
     };
   }, []);
