@@ -20,10 +20,10 @@ export const metadata = {
 
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-      <div className="text-xs text-zinc-500">{label}</div>
+    <div className="card p-5">
+      <div className="text-xs text-faint">{label}</div>
       <div className="mt-1 font-mono text-xl tabular-nums">{value}</div>
-      {sub && <div className="mt-1 text-xs text-zinc-500">{sub}</div>}
+      {sub && <div className="mt-1 text-xs text-faint">{sub}</div>}
     </div>
   );
 }
@@ -68,8 +68,9 @@ export default function MethodologyPage() {
   return (
     <div className="space-y-12">
       <section className="space-y-3">
-        <h1 className="text-2xl font-semibold tracking-tight">Methodology</h1>
-        <p className="max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="eyebrow">Evidence</p>
+        <h1 className="display text-3xl sm:text-4xl">Methodology</h1>
+        <p className="max-w-2xl text-sm text-muted">
           What this system does, how it was measured, and what it cannot do.
           Written to be checked rather than believed.
         </p>
@@ -96,7 +97,7 @@ export default function MethodologyPage() {
           />
         </div>
 
-        <div className="space-y-3 rounded-lg bg-zinc-100 p-4 text-sm dark:bg-zinc-900">
+        <div className="space-y-3 rounded-lg bg-sunk p-4 text-sm">
           <p>
             <strong>Read accuracy against the ceiling, not against 100%.</strong>{" "}
             The training labels are noisy measurements — the median experiment
@@ -138,24 +139,24 @@ export default function MethodologyPage() {
       <section className="space-y-4">
         <h2 className="text-lg font-medium">Two layers, kept separate</h2>
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="rounded-lg border border-zinc-200 p-4 text-sm dark:border-zinc-800">
+          <div className="card p-5 text-sm">
             <h3 className="font-medium">Ranking ({pct(PERFORMANCE.rankerAccuracy)})</h3>
-            <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+            <p className="mt-2 text-muted">
               A model over sentence embeddings. Accurate, and uninterpretable —
               it cannot tell you why.
             </p>
           </div>
-          <div className="rounded-lg border border-zinc-200 p-4 text-sm dark:border-zinc-800">
+          <div className="card p-5 text-sm">
             <h3 className="font-medium">
               Diagnostic ({pct(PERFORMANCE.moduleModelAccuracy)})
             </h3>
-            <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+            <p className="mt-2 text-muted">
               Six constructs from published human word ratings. Explainable, and
               a weak predictor.
             </p>
           </div>
         </div>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-muted">
           <strong>The diagnostic profile does not explain the ranking.</strong>{" "}
           The ranking model never sees those features. Presenting one as the
           reason for the other would be post-hoc rationalisation, so the two are
@@ -170,24 +171,24 @@ export default function MethodologyPage() {
           {MODULES.map((m) => (
             <div
               key={m.id}
-              className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800"
+              className="card p-5"
             >
               <div className="flex flex-wrap items-baseline gap-x-3">
                 <h3 className="font-medium">{m.label}</h3>
-                <span className="text-xs text-zinc-500">{m.functionalReferent}</span>
+                <span className="text-xs text-faint">{m.functionalReferent}</span>
                 {m.response === "inverted-u" && (
-                  <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs dark:bg-zinc-800">
+                  <span className="rounded bg-sunk px-1.5 py-0.5 text-xs">
                     inverted-U
                   </span>
                 )}
               </div>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+              <p className="mt-2 text-sm text-muted">
                 {m.detail}
               </p>
-              <p className="mt-2 text-sm text-zinc-500">
+              <p className="mt-2 text-sm text-faint">
                 <strong>Limitation:</strong> {m.caveat}
               </p>
-              <ul className="mt-2 list-disc space-y-0.5 pl-5 text-xs text-zinc-500">
+              <ul className="mt-2 list-disc space-y-0.5 pl-5 text-xs text-faint">
                 {m.sources.map((s) => (
                   <li key={s}>{s}</li>
                 ))}
@@ -195,7 +196,7 @@ export default function MethodologyPage() {
             </div>
           ))}
         </div>
-        <p className="rounded-lg bg-zinc-100 p-4 text-sm dark:bg-zinc-900">
+        <p className="rounded-lg bg-sunk p-4 text-sm">
           Modules are <em>named</em> for the functional systems the literature
           associates with each construct. That is an association for naming, not
           a measurement of neural activity. MacLean&apos;s triune brain and
@@ -207,19 +208,19 @@ export default function MethodologyPage() {
 
       <section className="space-y-4">
         <h2 className="text-lg font-medium">Training data</h2>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-muted">
           {PERFORMANCE.trainingData}, 150,624 arms. Randomised experiments were
           chosen over ad-library data deliberately: arms within one test share
           article, image and publication moment, so the within-test contrast
           isolates the effect of the words. Observational advertising data cannot
           support that inference.
         </p>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-muted">
           Word ratings come from Warriner et al. (2013), 13,905 words rated for
           valence, arousal and dominance, and Brysbaert et al. (2014), 39,954
           words rated for concreteness.
         </p>
-        <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+        <div className="rounded-lg border border-rule bg-pale-yellow p-4 text-sm text-pale-yellow-ink">
           <strong>Domain shift is the main limitation.</strong> The training data
           is 2013–15 viral media. A B2B software or luxury retail advertiser is a
           different world, and the constructs transfer more readily than the
@@ -231,14 +232,14 @@ export default function MethodologyPage() {
 
       <section className="space-y-4">
         <h2 className="text-lg font-medium">What did not work</h2>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-muted">
           Four hypotheses tested and rejected. Included because a tool that
           reports only its successes has not earned anyone&apos;s trust.
         </p>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[40rem] border-collapse text-sm">
             <thead>
-              <tr className="border-b border-zinc-200 text-left dark:border-zinc-800">
+              <tr className="border-b border-rule text-left">
                 <th className="py-2 pr-4 font-medium">Hypothesis</th>
                 <th className="py-2 pr-4 font-medium">Result</th>
                 <th className="py-2 font-medium">Decision</th>
@@ -248,16 +249,16 @@ export default function MethodologyPage() {
               {NEGATIVE_RESULTS.map((n) => (
                 <tr
                   key={n.what}
-                  className="border-b border-zinc-100 align-top dark:border-zinc-900"
+                  className="border-b border-rule align-top"
                 >
                   <td className="py-3 pr-4">
                     <div className="font-medium">{n.what}</div>
-                    <div className="mt-1 text-xs text-zinc-500">{n.detail}</div>
+                    <div className="mt-1 text-xs text-faint">{n.detail}</div>
                   </td>
                   <td className="py-3 pr-4 font-mono text-xs tabular-nums">
                     {n.result}
                   </td>
-                  <td className="py-3 text-xs text-zinc-600 dark:text-zinc-400">
+                  <td className="py-3 text-xs text-muted">
                     {n.verdict}
                   </td>
                 </tr>
@@ -265,7 +266,7 @@ export default function MethodologyPage() {
             </tbody>
           </table>
         </div>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-muted">
           Taken together: interpretable psycholinguistic features plateau around
           56%, semantic embeddings reach 62% on validation. No interpretable
           feature separated the two models&apos; disagreements by more than 0.11
@@ -276,7 +277,7 @@ export default function MethodologyPage() {
 
       <section className="space-y-4">
         <h2 className="text-lg font-medium">Leakage controls</h2>
-        <ul className="list-disc space-y-2 pl-5 text-sm text-zinc-600 dark:text-zinc-400">
+        <ul className="list-disc space-y-2 pl-5 text-sm text-muted">
           <li>
             The corpus was 49% exact duplicates, with 89% of items in
             near-duplicate clusters. Splitting is therefore done on the
@@ -306,13 +307,13 @@ export default function MethodologyPage() {
 
       <section className="space-y-4">
         <h2 className="text-lg font-medium">Audience and demographics</h2>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-muted">
           {SEGMENT_LIMITATION}
         </p>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-muted">
           {AUDIENCE_LIMITATION}
         </p>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-muted">
           Measured honestly: the demographic axes individually move rankings less
           than the noise floor (0.5–1.3% of pairs). The adjustment that clearly
           does move the model is <strong>involvement</strong>, which is not a
@@ -322,12 +323,12 @@ export default function MethodologyPage() {
 
       <section className="space-y-4">
         <h2 className="text-lg font-medium">Claims this tool will not make</h2>
-        <ul className="list-disc space-y-1 pl-5 text-sm text-zinc-600 dark:text-zinc-400">
+        <ul className="list-disc space-y-1 pl-5 text-sm text-muted">
           {PROHIBITED_CLAIMS.map((c) => (
             <li key={c}>{c}</li>
           ))}
         </ul>
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-faint">
           These are enumerated in the codebase, not just in this document.
         </p>
       </section>

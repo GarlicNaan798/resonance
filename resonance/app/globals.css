@@ -1,26 +1,272 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ---------------------------------------------------------------------------
+   Resonance — premium utilitarian minimalism.
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+   Warm monochrome canvas, editorial serif for display, colour used only where
+   it carries meaning. Everything is a semantic token so components name what a
+   colour MEANS rather than what it looks like, and the whole palette inverts at
+   one place for dark mode instead of every element carrying a `dark:` twin.
+
+   NO WEBFONTS. Not a stylistic choice — `next/font/google` was removed from
+   this project because it fetches from fonts.gstatic.com, which breaks the
+   no-egress guarantee in docs/SELF_HOSTING.md. Every stack below names the
+   premium faces first and degrades to a system face, so a machine that has
+   them renders them and a machine that does not still renders well. An
+   air-gapped build must never reach for a font server.
+--------------------------------------------------------------------------- */
+
+:root {
+  --font-sans: "SF Pro Display", "Geist Sans", "Switzer", "Helvetica Neue",
+    system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Lyon Text", "Newsreader", "Instrument Serif",
+    "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-mono: "Geist Mono", "SF Mono", "JetBrains Mono", ui-monospace,
+    "Cascadia Code", Consolas, monospace;
+
+  /* Warm monochrome. Never pure black — #111 reads as ink, #000 reads as a
+     rendering error. */
+  --canvas: #fbfbfa;
+  --surface: #ffffff;
+  --surface-sunk: #f7f6f3;
+  --rule: #eaeaea;
+  --rule-strong: #dcdcda;
+  --ink: #111111;
+  --ink-muted: #787774;
+  --ink-faint: #9b9a97;
+  --inverse: #ffffff;
+
+  /* Spot pastels. Semantic only — a tag, an inline code background, a status.
+     Never a section background. */
+  --pale-red: #fdebec;
+  --pale-red-ink: #9f2f2d;
+  --pale-blue: #e1f3fe;
+  --pale-blue-ink: #1f6c9f;
+  --pale-green: #edf3ec;
+  --pale-green-ink: #346538;
+  --pale-yellow: #fbf3db;
+  --pale-yellow-ink: #956400;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --canvas: #111110;
+    --surface: #1a1a19;
+    --surface-sunk: #201f1e;
+    --rule: #2b2b29;
+    --rule-strong: #3a3a37;
+    --ink: #ededeb;
+    --ink-muted: #a1a09b;
+    --ink-faint: #7c7b76;
+    --inverse: #111110;
+
+    --pale-red: #2e1b1b;
+    --pale-red-ink: #e8908d;
+    --pale-blue: #14262f;
+    --pale-blue-ink: #8fc9ea;
+    --pale-green: #1a2419;
+    --pale-green-ink: #9ac49d;
+    --pale-yellow: #2a2314;
+    --pale-yellow-ink: #d9b262;
   }
 }
 
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-sunk: var(--surface-sunk);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--ink-muted);
+  --color-faint: var(--ink-faint);
+  --color-inverse: var(--inverse);
+
+  --color-pale-red: var(--pale-red);
+  --color-pale-red-ink: var(--pale-red-ink);
+  --color-pale-blue: var(--pale-blue);
+  --color-pale-blue-ink: var(--pale-blue-ink);
+  --color-pale-green: var(--pale-green);
+  --color-pale-green-ink: var(--pale-green-ink);
+  --color-pale-yellow: var(--pale-yellow);
+  --color-pale-yellow-ink: var(--pale-yellow-ink);
+
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-mono: var(--font-mono);
+}
+
+/* -------------------------------------------------------------- base type */
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Display type is serif and tightly set. The tracking is what separates an
+   editorial heading from a default browser one. */
+.display {
+  font-family: var(--font-serif);
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  font-weight: 400;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* Tabular figures everywhere a number is compared against another number. */
+.numeric {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* ------------------------------------------------------------- components */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--surface-sunk);
+  color: var(--ink-muted);
+}
+.tag-red { background: var(--pale-red); color: var(--pale-red-ink); }
+.tag-blue { background: var(--pale-blue); color: var(--pale-blue-ink); }
+.tag-green { background: var(--pale-green); color: var(--pale-green-ink); }
+.tag-yellow { background: var(--pale-yellow); color: var(--pale-yellow-ink); }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  transition: box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-hover:hover {
+  /* Ultra-diffuse and barely there. A card that lifts off the page is a
+     different design language entirely. */
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.04);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 6px;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 160ms ease, transform 120ms ease;
+}
+.btn:active { transform: scale(0.98); }
+.btn-primary { background: var(--ink); color: var(--inverse); }
+.btn-primary:hover { background: #333333; }
+@media (prefers-color-scheme: dark) {
+  .btn-primary:hover { background: #d4d4d1; }
+}
+.btn-secondary { border: 1px solid var(--rule-strong); color: var(--ink); }
+.btn-secondary:hover { background: var(--surface-sunk); }
+.btn:disabled { opacity: 0.4; pointer-events: none; }
+
+kbd {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  border: 1px solid var(--rule);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--surface-sunk);
+  padding: 0.0625rem 0.375rem;
+  color: var(--ink-muted);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8125em;
+}
+
+/* Accordion: no container box, only a rule between items. */
+.accordion-item { border-bottom: 1px solid var(--rule); }
+.accordion-item > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 1.25rem 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.accordion-item > summary::-webkit-details-marker { display: none; }
+.accordion-item > summary::after {
+  content: "+";
+  font-family: var(--font-mono);
+  color: var(--ink-faint);
+  font-size: 1.125rem;
+  line-height: 1;
+}
+.accordion-item[open] > summary::after { content: "\2212"; }
+
+/* ------------------------------------------------------------ ambient depth */
+
+/* A single, very slow warm blob so hero sections are not flat white. Fixed and
+   non-interactive so it never affects layout or hit-testing. */
+.ambient {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(60rem 40rem at 15% -10%, rgb(160 120 60 / 0.05), transparent 60%),
+    radial-gradient(50rem 35rem at 90% 10%, rgb(80 120 160 / 0.04), transparent 60%);
+  animation: drift 28s ease-in-out infinite alternate;
+}
+@keyframes drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(-2%, 1.5%, 0) scale(1.06); }
+}
+
+/* --------------------------------------------------------------- motion */
+
+/* Gated on the attribute app/reveal.tsx sets at mount. Without JavaScript the
+   attribute never appears and the content is simply visible — the animation is
+   an enhancement and is never allowed to be load-bearing. */
+html[data-reveal-ready] [data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+}
+/* Must repeat the `html[data-reveal-ready]` prefix. Without it this rule scores
+   lower than the hidden one above and loses, leaving revealed elements
+   invisible — which is precisely what happened the first time. */
+html[data-reveal-ready] [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--index, 0) * 80ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Not optional. Motion sensitivity is an accessibility requirement, and the
+     content must be fully readable with every animation switched off. */
+  html[data-reveal-ready] [data-reveal],
+  html[data-reveal-ready] [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .ambient { animation: none; }
+  * { scroll-behavior: auto !important; }
 }

@@ -30,9 +30,9 @@ function ModuleBar({ value, range }: { value: number; range: [number, number] })
   const [lo, hi] = range;
   const pct = ((value - lo) / (hi - lo)) * 100;
   return (
-    <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
+    <div className="h-2 w-full overflow-hidden rounded-full bg-sunk">
       <div
-        className="h-full rounded-full bg-zinc-900 dark:bg-zinc-100"
+        className="h-full rounded-full bg-ink"
         style={{ width: `${Math.max(0, Math.min(100, pct))}%` }}
       />
     </div>
@@ -79,8 +79,9 @@ export default function AnalysePage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Analyse copy</h1>
-        <p className="mt-2 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="eyebrow">Diagnose</p>
+        <h1 className="display text-3xl sm:text-4xl">Analyse copy</h1>
+        <p className="mt-2 max-w-2xl text-sm text-muted">
           Scores your copy on six constructs drawn from published behavioural
           research. Every score traces back to human word ratings, and every
           module carries its own limitation.
@@ -93,12 +94,12 @@ export default function AnalysePage() {
           onChange={(e) => setText(e.target.value)}
           rows={5}
           placeholder="Paste your headline or ad copy…"
-          className="w-full rounded-lg border border-zinc-300 bg-white p-3 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+          className="w-full rounded-lg border border-rule-strong bg-surface p-3 text-sm-strong"
         />
 
         <div className="grid gap-4 sm:grid-cols-4">
           <label className="text-sm">
-            <span className="mb-1 block text-zinc-600 dark:text-zinc-400">
+            <span className="mb-1 block text-muted">
               Involvement
             </span>
             <select
@@ -106,7 +107,7 @@ export default function AnalysePage() {
               onChange={(e) =>
                 setInvolvement(e.target.value as (typeof INVOLVEMENTS)[number])
               }
-              className="w-full rounded-md border border-zinc-300 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-900"
+              className="w-full rounded-md border border-rule-strong bg-surface p-2-strong"
             >
               {INVOLVEMENTS.map((v) => (
                 <option key={v} value={v}>
@@ -124,13 +125,13 @@ export default function AnalysePage() {
             ] as const
           ).map(([label, value, setter, options]) => (
             <label key={label} className="text-sm">
-              <span className="mb-1 block text-zinc-600 dark:text-zinc-400">
+              <span className="mb-1 block text-muted">
                 {label}
               </span>
               <select
                 value={value}
                 onChange={(e) => (setter as (v: string) => void)(e.target.value)}
-                className="w-full rounded-md border border-zinc-300 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-900"
+                className="w-full rounded-md border border-rule-strong bg-surface p-2-strong"
               >
                 {options.map((v) => (
                   <option key={v} value={v}>
@@ -142,7 +143,7 @@ export default function AnalysePage() {
           ))}
         </div>
 
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="text-xs text-faint">
           {INVOLVEMENT_HELP[involvement]} Involvement is the best-supported
           adjustment here; the demographic axes move scores less than the noise
           floor and are shown for context rather than prediction.
@@ -151,13 +152,13 @@ export default function AnalysePage() {
         <button
           onClick={run}
           disabled={busy || !text.trim()}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900"
+          className="btn btn-primary disabled:opacity-40"
         >
           {busy ? "Analysing…" : "Analyse"}
         </button>
 
         {error && (
-          <p className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+          <p className="rounded-md bg-pale-red p-3 text-sm text-pale-red-ink">
             {error}
           </p>
         )}
@@ -166,7 +167,7 @@ export default function AnalysePage() {
       {result && (
         <section className="space-y-6">
           {result.warnings.length > 0 && (
-            <ul className="space-y-2 rounded-lg bg-amber-50 p-4 text-sm text-amber-900 dark:bg-amber-950 dark:text-amber-200">
+            <ul className="space-y-2 rounded-lg bg-pale-yellow p-4 text-sm text-pale-yellow-ink">
               {result.warnings.map((w) => (
                 <li key={w}>{w}</li>
               ))}
@@ -181,21 +182,21 @@ export default function AnalysePage() {
                   <span className="font-mono text-sm tabular-nums">
                     {m.score.toFixed(3)}
                     {m.verdict !== "n/a" && (
-                      <span className="ml-2 text-xs text-zinc-500">
+                      <span className="ml-2 text-xs text-faint">
                         {m.verdict}
                       </span>
                     )}
                   </span>
                 </div>
                 <ModuleBar value={m.score} range={m.displayRange} />
-                <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                <p className="text-xs text-muted">
                   {m.definition.short}
                 </p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                <p className="text-xs text-faint">
                   <span className="font-medium">Limitation:</span>{" "}
                   {m.definition.caveat}
                 </p>
-                <details className="text-xs text-zinc-500">
+                <details className="text-xs text-faint">
                   <summary className="cursor-pointer">Sources</summary>
                   <ul className="mt-1 list-disc space-y-0.5 pl-4">
                     {m.definition.sources.map((s) => (
@@ -207,7 +208,7 @@ export default function AnalysePage() {
             ))}
           </div>
 
-          <div className="space-y-2 rounded-lg border border-zinc-200 p-4 text-xs text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
+          <div className="space-y-2 card p-5 text-xs text-muted">
             <p>{result.segment.disclosure}</p>
             <p>
               Dictionary coverage {Math.round(result.coverage * 100)}% ·{" "}

@@ -97,8 +97,9 @@ export default function ComparePage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Compare variants</h1>
-        <p className="mt-2 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="eyebrow">Rank</p>
+        <h1 className="display text-3xl sm:text-4xl">Compare variants</h1>
+        <p className="mt-2 max-w-2xl text-sm text-muted">
           Ranks your variants using the model trained on 32,487 randomised A/B
           tests. It is right {(PERFORMANCE.rankerAccuracy * 100).toFixed(1)}% of
           the time against a 50% baseline — an edge worth having before you
@@ -109,7 +110,7 @@ export default function ComparePage() {
       <section className="space-y-3">
         {variants.map((v, i) => (
           <div key={i} className="flex gap-2">
-            <span className="mt-2.5 w-6 shrink-0 text-sm text-zinc-500">
+            <span className="mt-2.5 w-6 shrink-0 text-sm text-faint">
               {i + 1}
             </span>
             <textarea
@@ -117,7 +118,7 @@ export default function ComparePage() {
               onChange={(e) => setAt(i, e.target.value)}
               rows={2}
               placeholder={`Variant ${i + 1}`}
-              className="w-full rounded-lg border border-zinc-300 bg-white p-3 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+              className="w-full rounded-lg border border-rule-strong bg-surface p-3 text-sm-strong"
             />
           </div>
         ))}
@@ -125,8 +126,8 @@ export default function ComparePage() {
         {/* Collected BEFORE the model runs and locked afterwards. A pick made
             after seeing the answer measures nothing, so the UI makes the blind
             version the only one available. */}
-        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-dashed border-zinc-300 p-3 text-sm dark:border-zinc-700">
-          <span className="text-zinc-600 dark:text-zinc-400">
+        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-dashed border-rule-strong p-3 text-sm-strong">
+          <span className="text-muted">
             Optional — your own pick first:
           </span>
           {variants.map((_, i) => (
@@ -136,14 +137,14 @@ export default function ComparePage() {
               onClick={() => setUserPick(userPick === i ? null : i)}
               className={`rounded-md border px-2.5 py-1 text-xs disabled:opacity-50 ${
                 userPick === i
-                  ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900"
-                  : "border-zinc-300 dark:border-zinc-700"
+                  ? "border-ink bg-ink text-inverse"
+                  : "border-rule-strong"
               }`}
             >
               {i + 1}
             </button>
           ))}
-          <span className="text-xs text-zinc-500">
+          <span className="text-xs text-faint">
             {result
               ? "Locked — the model has run."
               : "Scored against the model on your track record."}
@@ -154,26 +155,26 @@ export default function ComparePage() {
           <button
             onClick={() => setVariants((p) => [...p, ""])}
             disabled={variants.length >= 8}
-            className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-zinc-700"
+            className="rounded-md border border-rule-strong px-3 py-1.5 text-sm disabled:opacity-40-strong"
           >
             Add variant
           </button>
           <button
             onClick={run}
             disabled={busy || filled < 2}
-            className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900"
+            className="btn btn-primary disabled:opacity-40"
           >
             {busy ? "Ranking…" : "Rank variants"}
           </button>
           {filled < 2 && (
-            <span className="text-xs text-zinc-500">
+            <span className="text-xs text-faint">
               Enter at least two variants.
             </span>
           )}
         </div>
 
         {error && (
-          <p className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+          <p className="rounded-md bg-pale-red p-3 text-sm text-pale-red-ink">
             {error}
           </p>
         )}
@@ -184,8 +185,8 @@ export default function ComparePage() {
           <div
             className={`rounded-lg p-4 text-sm ${
               result.ranking.confident
-                ? "bg-emerald-50 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200"
-                : "bg-amber-50 text-amber-900 dark:bg-amber-950 dark:text-amber-200"
+                ? "bg-pale-green text-pale-green-ink"
+                : "bg-pale-yellow text-pale-yellow-ink"
             }`}
           >
             {result.ranking.guidance}
@@ -194,7 +195,7 @@ export default function ComparePage() {
           {/* Surfaced ABOVE the ranking: if the top pick is the riskiest, the
               user should see that before reading the recommendation. */}
           {result.caution && (
-            <div className="rounded-lg border border-orange-300 bg-orange-50 p-4 text-sm text-orange-900 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-200">
+            <div className="rounded-lg border border-rule bg-pale-yellow p-4 text-sm text-pale-yellow-ink">
               <p className="font-medium">Check this before acting</p>
               <p className="mt-1">{result.caution}</p>
             </div>
@@ -206,7 +207,7 @@ export default function ComparePage() {
               return (
                 <li
                   key={r.index}
-                  className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800"
+                  className="card p-5"
                 >
                   <div className="flex items-baseline justify-between gap-4">
                     <span className="text-sm font-medium">
@@ -215,25 +216,25 @@ export default function ComparePage() {
                         : `Rank ${position + 1}`}{" "}
                       · Variant {r.index + 1}
                     </span>
-                    <span className="font-mono text-xs tabular-nums text-zinc-500">
+                    <span className="font-mono text-xs tabular-nums text-faint">
                       {r.score.toFixed(3)}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">
+                  <p className="mt-2 text-sm text-muted">
                     {r.text}
                   </p>
 
                   {guard && guard.risks.length > 0 && (
-                    <ul className="mt-3 space-y-2 border-t border-zinc-200 pt-3 text-xs dark:border-zinc-800">
+                    <ul className="mt-3 space-y-2 border-t border-rule pt-3 text-xs">
                       {guard.risks.map((risk) => (
                         <li key={risk.kind}>
-                          <span className="font-medium text-orange-700 dark:text-orange-300">
+                          <span className="font-medium text-pale-red-ink">
                             {risk.kind}
                           </span>{" "}
-                          <span className="text-zinc-600 dark:text-zinc-400">
+                          <span className="text-muted">
                             {risk.message}
                           </span>
-                          <span className="mt-0.5 block text-zinc-500">
+                          <span className="mt-0.5 block text-faint">
                             {risk.evidence}
                           </span>
                         </li>
@@ -246,8 +247,8 @@ export default function ComparePage() {
           </ol>
 
           {/* The separation between the two layers is stated, not implied. */}
-          <div className="space-y-2 rounded-lg border border-zinc-200 p-4 text-xs text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
-            <p className="font-medium text-zinc-800 dark:text-zinc-200">
+          <div className="space-y-2 card p-5 text-xs text-muted">
+            <p className="font-medium text-ink">
               How to read this
             </p>
             <p>{result.separation}</p>
@@ -285,28 +286,28 @@ export default function ComparePage() {
 
           {/* The loop-closing step: fix the prediction before the campaign
               runs, so the track record cannot be assembled from hindsight. */}
-          <div className="space-y-3 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+          <div className="space-y-3 card p-5">
             <h2 className="text-sm font-medium">Seal this prediction</h2>
             {sealed ? (
               <div className="space-y-2 text-sm">
-                <p className="text-emerald-700 dark:text-emerald-400">
+                <p className="text-pale-green-ink">
                   Sealed. Record the winner on your{" "}
                   <Link href="/track" className="underline">
                     track record
                   </Link>{" "}
                   once the campaign resolves.
                 </p>
-                <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                <p className="text-xs text-muted">
                   Send this hash to your client now and it proves afterwards
                   that the call was made before the result was known:
                 </p>
-                <code className="block overflow-x-auto rounded bg-zinc-100 p-2 font-mono text-xs dark:bg-zinc-900">
+                <code className="block overflow-x-auto rounded bg-sunk p-2 font-mono text-xs">
                   {sealed.hash}
                 </code>
               </div>
             ) : (
               <>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                <p className="text-sm text-muted">
                   Stores this comparison locally so you can record the real
                   winner later and find out whether the model is right on your
                   campaigns — not on 2013–15 viral media.
@@ -316,17 +317,17 @@ export default function ComparePage() {
                     value={label}
                     onChange={(e) => setLabel(e.target.value)}
                     placeholder="Campaign name (optional)"
-                    className="flex-1 rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+                    className="flex-1 rounded-md border border-rule-strong bg-surface px-3 py-1.5 text-sm-strong"
                   />
                   <button
                     onClick={seal}
                     disabled={sealing}
-                    className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm font-medium disabled:opacity-40 dark:border-zinc-700"
+                    className="rounded-md border border-rule-strong px-3 py-1.5 text-sm font-medium disabled:opacity-40-strong"
                   >
                     {sealing ? "Sealing…" : "Seal prediction"}
                   </button>
                 </div>
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-faint">
                   Written to disk on this machine only. Nothing is sent
                   anywhere.
                 </p>
@@ -334,7 +335,7 @@ export default function ComparePage() {
             )}
           </div>
 
-          <details className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+          <details className="card p-5">
             <summary className="cursor-pointer text-sm font-medium">
               Behavioural profiles (separate diagnostic layer)
             </summary>
@@ -345,7 +346,7 @@ export default function ComparePage() {
                   <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs sm:grid-cols-3">
                     {p.modules.map((m) => (
                       <div key={m.id} className="flex justify-between gap-2">
-                        <span className="text-zinc-600 dark:text-zinc-400">
+                        <span className="text-muted">
                           {m.label}
                         </span>
                         <span className="font-mono tabular-nums">
@@ -356,7 +357,7 @@ export default function ComparePage() {
                   </div>
                 </div>
               ))}
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-faint">
                 These come from a different, weaker model (53.5% accuracy) and do
                 not explain the ranking above.
               </p>

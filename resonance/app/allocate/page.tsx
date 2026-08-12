@@ -43,10 +43,11 @@ export default function AllocatePage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <p className="eyebrow">Allocate</p>
+        <h1 className="display text-3xl sm:text-4xl">
           Split your test budget
         </h1>
-        <p className="mt-2 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="mt-2 max-w-2xl text-sm text-muted">
           Enter each variant&apos;s results so far and get the split for the next
           batch of impressions. Measured on 1,894 held-out experiments:{" "}
           <strong>31.8% less budget spent on losing variants</strong> than an
@@ -57,26 +58,26 @@ export default function AllocatePage() {
       <section className="space-y-3">
         {rows.map((r, i) => (
           <div key={i} className="flex flex-wrap items-center gap-2">
-            <span className="w-6 shrink-0 text-sm text-zinc-500">{i + 1}</span>
+            <span className="w-6 shrink-0 text-sm text-faint">{i + 1}</span>
             <input
               value={r.text}
               onChange={(e) => set(i, "text", e.target.value)}
               placeholder={`Variant ${i + 1} (optional label)`}
-              className="min-w-[16rem] flex-1 rounded-lg border border-zinc-300 bg-white p-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+              className="min-w-[16rem] flex-1 rounded-lg border border-rule-strong bg-surface p-2 text-sm-strong"
             />
             <input
               value={r.impressions}
               onChange={(e) => set(i, "impressions", e.target.value)}
               inputMode="numeric"
               placeholder="impressions"
-              className="w-28 rounded-lg border border-zinc-300 bg-white p-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+              className="w-28 rounded-lg border border-rule-strong bg-surface p-2 text-sm-strong"
             />
             <input
               value={r.clicks}
               onChange={(e) => set(i, "clicks", e.target.value)}
               inputMode="numeric"
               placeholder="clicks"
-              className="w-24 rounded-lg border border-zinc-300 bg-white p-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+              className="w-24 rounded-lg border border-rule-strong bg-surface p-2 text-sm-strong"
             />
             <span className="w-16 text-right font-mono text-sm tabular-nums">
               {weights[i] === undefined ? "—" : `${(weights[i] * 100).toFixed(0)}%`}
@@ -88,14 +89,14 @@ export default function AllocatePage() {
           <button
             onClick={() => setRows((p) => [...p, { ...BLANK }])}
             disabled={rows.length >= 8}
-            className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-zinc-700"
+            className="rounded-md border border-rule-strong px-3 py-1.5 text-sm disabled:opacity-40-strong"
           >
             Add variant
           </button>
           {rows.length > 2 && (
             <button
               onClick={() => setRows((p) => p.slice(0, -1))}
-              className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm dark:border-zinc-700"
+              className="rounded-md border border-rule-strong px-3 py-1.5 text-sm-strong"
             >
               Remove
             </button>
@@ -103,7 +104,7 @@ export default function AllocatePage() {
         </div>
 
         {invalid && (
-          <p className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+          <p className="rounded-md bg-pale-red p-3 text-sm text-pale-red-ink">
             Clicks cannot exceed impressions.
           </p>
         )}
@@ -113,8 +114,8 @@ export default function AllocatePage() {
         <section
           className={`rounded-lg p-4 text-sm ${
             stop
-              ? "bg-emerald-50 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200"
-              : "bg-zinc-100 text-zinc-800 dark:bg-zinc-900 dark:text-zinc-200"
+              ? "bg-pale-green text-pale-green-ink"
+              : "bg-sunk text-ink"
           }`}
         >
           {stop ? (
@@ -141,11 +142,11 @@ export default function AllocatePage() {
       )}
 
       {power && (
-        <section className="space-y-2 rounded-lg border border-zinc-200 p-4 text-sm dark:border-zinc-800">
+        <section className="space-y-2 card p-5 text-sm">
           <p className="font-medium">Can this test be settled at all?</p>
-          <p className="text-zinc-600 dark:text-zinc-400">{power.message}</p>
+          <p className="text-muted">{power.message}</p>
           {!power.decidable && Number.isFinite(power.shortfall) && (
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-faint">
               This is a property of your sample size, not of our model. At{" "}
               {Math.min(
                 arms[ranked[0].i].impressions,
@@ -159,7 +160,7 @@ export default function AllocatePage() {
         </section>
       )}
 
-      <p className="text-xs text-zinc-500">
+      <p className="text-xs text-faint">
         With no results entered, the split is even. That is correct: with no
         data there is no reason to favour any variant. Percentages are each
         variant&apos;s probability of being best given the results so far.

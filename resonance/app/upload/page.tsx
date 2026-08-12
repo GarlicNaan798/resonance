@@ -62,19 +62,20 @@ export default function UploadPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <p className="eyebrow">Recalibrate</p>
+        <h1 className="display text-3xl sm:text-4xl">
           Upload campaign results
         </h1>
-        <p className="mt-2 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="mt-2 max-w-2xl text-sm text-muted">
           The model is trained on 2013–15 viral media, which is probably not your
           audience. Your own campaign results replace those assumptions with
           measurements. Meta and Google both export the columns needed.
         </p>
       </div>
 
-      <section className="space-y-3 rounded-lg border border-zinc-200 p-4 text-sm dark:border-zinc-800">
+      <section className="space-y-3 card p-5 text-sm">
         <h2 className="font-medium">Drop your export in as-is</h2>
-        <p className="text-zinc-600 dark:text-zinc-400">
+        <p className="text-muted">
           Meta Ads Manager and Google Ads exports are read directly — no
           renaming columns, no reformatting. We look for the ad text,
           impressions and clicks under whatever your platform calls them
@@ -83,7 +84,7 @@ export default function UploadPage() {
           <code className="font-mono text-xs">Headline 1</code> and{" "}
           <code className="font-mono text-xs">Impr.</code>).
         </p>
-        <p className="text-zinc-600 dark:text-zinc-400">
+        <p className="text-muted">
           A hand-made CSV works too: any columns named roughly{" "}
           <code className="font-mono text-xs">copy</code>,{" "}
           <code className="font-mono text-xs">impressions</code> and{" "}
@@ -91,11 +92,11 @@ export default function UploadPage() {
           <code className="font-mono text-xs">segment</code> for age bracket or
           gender.
         </p>
-        <p className="text-zinc-500">
+        <p className="text-faint">
           Rows below 500 impressions are skipped: the click-through estimate on
           fewer is mostly sampling noise.
         </p>
-        <p className="rounded bg-zinc-100 p-3 text-xs text-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
+        <p className="rounded bg-sunk p-3 text-xs text-muted">
           <strong>No personal data.</strong> Files containing emails, phone
           numbers, addresses, IPs or card numbers are rejected outright — not
           stored and stripped. This tool needs aggregate copy performance and
@@ -116,7 +117,7 @@ export default function UploadPage() {
           />
           <button
             onClick={() => setCsv(SAMPLE)}
-            className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm dark:border-zinc-700"
+            className="rounded-md border border-rule-strong px-3 py-1.5 text-sm-strong"
           >
             Use sample
           </button>
@@ -127,19 +128,19 @@ export default function UploadPage() {
           onChange={(e) => setCsv(e.target.value)}
           rows={8}
           placeholder="…or paste CSV here"
-          className="w-full rounded-lg border border-zinc-300 bg-white p-3 font-mono text-xs dark:border-zinc-700 dark:bg-zinc-900"
+          className="w-full rounded-lg border border-rule-strong bg-surface p-3 font-mono text-xs"
         />
 
         <button
           onClick={check}
           disabled={busy || !csv.trim()}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900"
+          className="btn btn-primary disabled:opacity-40"
         >
           {busy ? "Checking…" : "Check file"}
         </button>
 
         {error && (
-          <p className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+          <p className="rounded-md bg-pale-red p-3 text-sm text-pale-red-ink">
             {error}
           </p>
         )}
@@ -148,7 +149,7 @@ export default function UploadPage() {
       {result && (
         <section className="space-y-5">
           {result.piiCount > 0 && (
-            <div className="rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-900 dark:border-red-800 dark:bg-red-950 dark:text-red-200">
+            <div className="rounded-lg border border-rule bg-pale-red p-4 text-sm text-pale-red-ink">
               <p className="font-medium">
                 Personal data found in {result.piiCount} location
                 {result.piiCount === 1 ? "" : "s"} — this file would be rejected
@@ -170,8 +171,8 @@ export default function UploadPage() {
           <div
             className={`rounded-lg p-4 text-sm ${
               result.readiness.eligible
-                ? "bg-emerald-50 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200"
-                : "bg-amber-50 text-amber-900 dark:bg-amber-950 dark:text-amber-200"
+                ? "bg-pale-green text-pale-green-ink"
+                : "bg-pale-yellow text-pale-yellow-ink"
             }`}
           >
             <p className="font-medium">
@@ -182,7 +183,7 @@ export default function UploadPage() {
             <p className="mt-1">{result.readiness.message}</p>
             {!result.readiness.eligible && (
               <div className="mt-3">
-                <div className="h-2 w-full overflow-hidden rounded-full bg-black/10 dark:bg-white/10">
+                <div className="h-2 w-full overflow-hidden rounded-full bg-black/10/10">
                   <div
                     className="h-full rounded-full bg-current opacity-70"
                     style={{
@@ -205,12 +206,12 @@ export default function UploadPage() {
           </div>
 
           {result.issueCount > 0 && (
-            <details className="rounded-lg border border-zinc-200 p-4 text-sm dark:border-zinc-800">
+            <details className="card p-5 text-sm">
               <summary className="cursor-pointer font-medium">
                 {result.issueCount} row{result.issueCount === 1 ? "" : "s"}{" "}
                 skipped
               </summary>
-              <ul className="mt-3 space-y-1 text-xs text-zinc-600 dark:text-zinc-400">
+              <ul className="mt-3 space-y-1 text-xs text-muted">
                 {result.issues.map((i) => (
                   <li key={i.row}>
                     Row {i.row}: {i.problem}
@@ -220,7 +221,7 @@ export default function UploadPage() {
             </details>
           )}
 
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-faint">
             Validation only — nothing has been stored. Persistence and
             recalibration arrive with per-tenant model fitting.
           </p>

@@ -22,7 +22,7 @@ function Bar({ board, label }: { board: Scoreboard; label: string }) {
         <span className="font-medium">{label}</span>
         <span className="font-mono tabular-nums">
           {pct(board.rate)}{" "}
-          <span className="text-xs text-zinc-500">
+          <span className="text-xs text-faint">
             ({board.correct}/{board.n})
           </span>
         </span>
@@ -30,22 +30,22 @@ function Bar({ board, label }: { board: Scoreboard; label: string }) {
       {/* The interval is the point, so it is drawn rather than the point
           estimate. A wide bar crossing the 50% line is the honest picture at
           small n, and it should look wide. */}
-      <div className="relative h-6 w-full rounded bg-zinc-100 dark:bg-zinc-900">
+      <div className="relative h-6 w-full rounded bg-sunk">
         <div
           className={`absolute inset-y-0 rounded ${
             board.beatsChance
-              ? "bg-emerald-400/50"
-              : "bg-zinc-400/40 dark:bg-zinc-600/40"
+              ? "bg-pale-green-ink/40"
+              : "bg-rule-strong"
           }`}
           style={{ left: `${lo * 100}%`, width: `${Math.max(hi - lo, 0.01) * 100}%` }}
         />
         <div
-          className="absolute inset-y-0 w-px bg-zinc-900 dark:bg-zinc-100"
+          className="absolute inset-y-0 w-px bg-ink"
           style={{ left: `${board.rate * 100}%` }}
         />
-        <div className="absolute inset-y-0 left-1/2 w-px border-l border-dashed border-zinc-500" />
+        <div className="absolute inset-y-0 left-1/2 w-px border-l border-dashed border-faint" />
       </div>
-      <div className="flex justify-between font-mono text-xs text-zinc-500">
+      <div className="flex justify-between font-mono text-xs text-faint">
         <span>0%</span>
         <span>
           95% CI {pct(lo)}–{pct(hi)} · dashed line is chance
@@ -103,8 +103,9 @@ export default function TrackPage() {
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Track record</h1>
-        <p className="mt-2 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="eyebrow">Measure</p>
+        <h1 className="display text-3xl sm:text-4xl">Track record</h1>
+        <p className="mt-2 max-w-2xl text-sm text-muted">
           The global 61.8% was measured on 2013–15 viral media. This page
           measures the model on <em>your</em> campaigns instead. Seal a
           prediction before launch, record the winner when you know it, and the
@@ -113,14 +114,14 @@ export default function TrackPage() {
       </div>
 
       {error && (
-        <p className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+        <p className="rounded-md bg-pale-red p-3 text-sm text-pale-red-ink">
           {error}
         </p>
       )}
 
       {data && (
         <>
-          <section className="space-y-5 rounded-lg border border-zinc-200 p-5 dark:border-zinc-800">
+          <section className="space-y-5 rounded-lg border border-rule p-5">
             <p className="text-sm">{data.track.verdict}</p>
 
             {data.track.model.n > 0 && (
@@ -129,7 +130,7 @@ export default function TrackPage() {
                 {data.track.user ? (
                   <Bar board={data.track.user} label="Your blind picks" />
                 ) : (
-                  <p className="text-xs text-zinc-500">
+                  <p className="text-xs text-faint">
                     No blind picks recorded yet. On the Compare page you can
                     choose your own favourite before running the model — that is
                     the only way to find out how your own judgement scores, and
@@ -140,17 +141,17 @@ export default function TrackPage() {
               </div>
             )}
 
-            <dl className="grid grid-cols-3 gap-4 border-t border-zinc-200 pt-4 text-sm dark:border-zinc-800">
+            <dl className="grid grid-cols-3 gap-4 border-t border-rule pt-4 text-sm">
               <div>
-                <dt className="text-xs text-zinc-500">Sealed</dt>
+                <dt className="text-xs text-faint">Sealed</dt>
                 <dd className="font-mono tabular-nums">{data.track.total}</dd>
               </div>
               <div>
-                <dt className="text-xs text-zinc-500">Awaiting outcome</dt>
+                <dt className="text-xs text-faint">Awaiting outcome</dt>
                 <dd className="font-mono tabular-nums">{data.track.pending}</dd>
               </div>
               <div>
-                <dt className="text-xs text-zinc-500">Resolved</dt>
+                <dt className="text-xs text-faint">Resolved</dt>
                 <dd className="font-mono tabular-nums">{data.track.model.n}</dd>
               </div>
             </dl>
@@ -159,7 +160,7 @@ export default function TrackPage() {
           <section className="space-y-3">
             <h2 className="text-lg font-medium">Awaiting an outcome</h2>
             {pending.length === 0 ? (
-              <p className="text-sm text-zinc-500">
+              <p className="text-sm text-faint">
                 Nothing open. Seal a prediction from the Compare page.
               </p>
             ) : (
@@ -167,9 +168,9 @@ export default function TrackPage() {
                 {pending.map((p) => (
                   <li
                     key={p.id}
-                    className="space-y-3 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800"
+                    className="space-y-3 card p-5"
                   >
-                    <div className="flex flex-wrap items-baseline justify-between gap-2 text-xs text-zinc-500">
+                    <div className="flex flex-wrap items-baseline justify-between gap-2 text-xs text-faint">
                       <span>
                         {p.label ? `${p.label} · ` : ""}
                         sealed {new Date(p.createdAt).toLocaleDateString()} ·
@@ -186,24 +187,24 @@ export default function TrackPage() {
                           key={i}
                           disabled={busy === p.id}
                           onClick={() => resolve(p.id, i)}
-                          className="flex w-full items-start gap-3 rounded-md border border-zinc-300 p-3 text-left text-sm hover:bg-zinc-50 disabled:opacity-40 dark:border-zinc-700 dark:hover:bg-zinc-900"
+                          className="flex w-full items-start gap-3 rounded-md border border-rule-strong p-3 text-left text-sm hover:bg-sunk disabled:opacity-40"
                         >
-                          <span className="text-zinc-500">{i + 1}</span>
+                          <span className="text-faint">{i + 1}</span>
                           <span className="flex-1">{v}</span>
                           {p.predictedWinner === i && (
-                            <span className="shrink-0 rounded bg-zinc-200 px-1.5 py-0.5 text-xs dark:bg-zinc-800">
+                            <span className="shrink-0 rounded bg-sunk px-1.5 py-0.5 text-xs">
                               model&apos;s pick
                             </span>
                           )}
                           {p.userPick === i && (
-                            <span className="shrink-0 rounded bg-zinc-200 px-1.5 py-0.5 text-xs dark:bg-zinc-800">
+                            <span className="shrink-0 rounded bg-sunk px-1.5 py-0.5 text-xs">
                               yours
                             </span>
                           )}
                         </button>
                       ))}
                     </div>
-                    <p className="text-xs text-zinc-500">
+                    <p className="text-xs text-faint">
                       Recording is one-way — an outcome cannot be changed once
                       saved, which is what stops the record being tuned after
                       the fact.
@@ -220,7 +221,7 @@ export default function TrackPage() {
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[36rem] border-collapse text-sm">
                   <thead>
-                    <tr className="border-b border-zinc-200 text-left text-xs text-zinc-500 dark:border-zinc-800">
+                    <tr className="border-b border-rule text-left text-xs text-faint">
                       <th className="py-2 pr-4 font-medium">Sealed</th>
                       <th className="py-2 pr-4 font-medium">Winner</th>
                       <th className="py-2 pr-4 font-medium">Model</th>
@@ -236,9 +237,9 @@ export default function TrackPage() {
                       return (
                         <tr
                           key={p.id}
-                          className="border-b border-zinc-100 align-top dark:border-zinc-900"
+                          className="border-b border-rule align-top"
                         >
-                          <td className="py-3 pr-4 text-xs text-zinc-500">
+                          <td className="py-3 pr-4 text-xs text-faint">
                             {new Date(p.createdAt).toLocaleDateString()}
                           </td>
                           <td className="max-w-xs py-3 pr-4">
@@ -250,9 +251,9 @@ export default function TrackPage() {
                           </td>
                           <td className="py-3 text-xs">
                             {p.sealValid ? (
-                              <span className="text-zinc-500">intact</span>
+                              <span className="text-faint">intact</span>
                             ) : (
-                              <span className="font-medium text-red-600 dark:text-red-400">
+                              <span className="font-medium text-pale-red-ink">
                                 ALTERED
                               </span>
                             )}
