@@ -22,11 +22,18 @@ data/processed/*
 *.parquet
 *.jsonl.part
 
-# Derived splits: regenerable from pipeline/splits.py, and 5 MB of corpus text
-# we have no licence to redistribute. The test-set LOCK file IS tracked, because
-# it is the fingerprint that proves the test set never changed.
-data/splits/*.jsonl
-!data/splits/test.lock.json
+# Splits of the RETIRED HuggingFace ads corpus, from pipeline/splits.py. 5 MB
+# of text we have no licence to redistribute, for data no model uses.
+#
+# test.lock.json here was tracked with a comment claiming it "proves the test
+# set never changed". It fingerprints 2,806 LLM instruction prompts that were
+# never trained on or evaluated against, so it proved nothing — and having it in
+# the repo beside the real lock invited exactly the mix-up that took a full
+# audit to unpick. Untracked.
+#
+# The live lock is data/processed/upworthy_test.lock.json. See
+# pipeline/test_lock.py.
+data/splits/
 
 # Python
 __pycache__/
