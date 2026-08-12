@@ -44,3 +44,8 @@ Thumbs.db
 .memsearch/.index.pid
 .memsearch/.index-state.json
 .resonance/
+
+# Obsidian editor state. workspace.json records open panes and rewrites
+# constantly, so committing it produces diff noise and merge conflicts that
+# say nothing about the project.
+.obsidian/
