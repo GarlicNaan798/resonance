@@ -69,3 +69,9 @@ Thumbs.db
 
 # Unrelated download that was sitting in the repo root.
 andrej-karpathy-skills-main.zip
+
+# Human-baseline artefacts. The QUIZ is distributable; the KEY must never be,
+# and neither belongs in git — regenerate with model/human_baseline.py build.
+data/processed/human_quiz.html
+data/processed/human_quiz.json
+data/processed/human_key.json

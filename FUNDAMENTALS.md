@@ -63,10 +63,35 @@ an *unconstrained* 512-unit network. That is a property of the task, not a
 limitation of the architecture.
 
 **We have never measured against human baseline.** The natural pitch line
-("beats copywriter intuition") is not evidenced. Earning it is cheap: show ~200
-held-out pairs to experienced marketers and score them identically. Until then,
-the honest answer to "better than my creative director?" is *"we haven't tested
-that."*
+("beats copywriter intuition") is not evidenced, so it is not made. The honest
+answer to "better than my creative director?" remains *"we haven't tested
+that"* — and it stays that way until the study below returns data.
+
+The instrument now exists (`model/human_baseline.py`), pre-registered before
+any participant has seen it:
+
+- **Design.** 60 held-out pairs per participant, drawn from the same 20,452
+  copy-only test pairs the model was evaluated on. Blind: two headlines, no
+  scores, no context. Winner position balanced exactly 30/30, so a participant
+  who always picks the first option scores 50% by construction rather than
+  inheriting an edge from our sampling.
+- **Comparison.** The model is scored on precisely the items each participant
+  answered, never on its global 61.8%. On the current sample it gets 58.3%
+  (95% CI 45.7–69.9), and that is the number humans are measured against.
+- **Test.** McNemar exact on discordant items, because both judges answer the
+  same questions. Two independent intervals eyeballed for overlap would be the
+  wrong test.
+- **Power, fixed in advance.** Detecting humans at 50% against the model at 58%
+  needs ≈560 answered items at 80% power — **10 participants × 60**. Below that
+  a null result means the study was underpowered, not that the two are equal.
+  The independence assumption in that calculation is optimistic, so treat 560
+  as a floor.
+- **Key withheld.** The quiz file contains no answers; scoring happens locally
+  against a key participants never receive.
+
+`model/human_baseline_check.py` drives the scorer with simulated responders of
+known accuracy — perfect, inverted, always-first, coin — and asserts each lands
+where it must. An inverted key reports as suspicious rather than as a finding.
 
 ## 4. The six modules
 

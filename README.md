@@ -55,8 +55,16 @@ just in prose:
 - **Replace A/B testing.**
 
 **It has never been measured against a human baseline.** The obvious pitch line
-— "beats copywriter intuition" — is not evidenced, so it is not made. The
-product collects the evidence instead: see *Sealed predictions* below.
+— "beats copywriter intuition" — is not evidenced, so it is not made.
+
+The study to settle it is built and pre-registered but has **no participants
+yet**: `model/human_baseline.py` draws 60 blind pairs from the held-out set,
+balances winner position exactly 30/30, scores the model on the identical items
+a participant answered, and compares them with McNemar's exact test. The power
+calculation was fixed before collection — ≈560 answered items, 10 participants
+— so a null result cannot later be passed off as evidence of equivalence.
+
+Whatever it returns gets published here, including the outcome where humans win.
 
 ## Two layers, deliberately separate
 
