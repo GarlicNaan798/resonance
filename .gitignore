@@ -49,3 +49,6 @@ Thumbs.db
 # constantly, so committing it produces diff noise and merge conflicts that
 # say nothing about the project.
 .obsidian/
+
+# Unrelated download that was sitting in the repo root.
+andrej-karpathy-skills-main.zip
