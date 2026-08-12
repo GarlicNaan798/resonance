@@ -161,15 +161,20 @@ export default function Home() {
         <div className="space-y-3">
           <h2 className="text-lg font-medium">Your data does not move</h2>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Self-hosted mode makes <strong>no outbound network calls at all</strong>.
-            Models run in-process; the encoder weights are baked into the image
-            so nothing is fetched at runtime. You can verify the claim rather
-            than trust it — run the container with networking disabled and it
-            still works.
+            Resonance makes <strong>no outbound network calls at runtime</strong>.
+            Models run in-process, and the encoder is fetched once at build time
+            and then locked to local files — there is no setting that re-enables
+            a remote fetch. You can verify the claim rather than trust it: run it
+            with networking disabled and it still works.
           </p>
           <pre className="overflow-x-auto rounded-md bg-zinc-100 p-3 font-mono text-xs dark:bg-zinc-900">
             docker compose run --rm --network none app npm run selftest
           </pre>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            Or skip the server entirely — <code className="font-mono text-xs">npm run desktop</code>{" "}
+            builds a local app whose campaign data never leaves the machine it
+            runs on.
+          </p>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
             Uploads containing emails, phone numbers, addresses, IPs or card
             numbers are rejected at ingest — not stored and redacted. The tool

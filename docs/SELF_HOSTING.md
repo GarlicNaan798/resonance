@@ -13,9 +13,47 @@ supported as a first-class mode rather than an afterthought.
 |---|---|---|
 | Next.js app | your infrastructure | UI + API routes |
 | Module model (diagnostic) | in-process | 60 KB of JSON weights, pure TypeScript |
-| Embedding encoder | in-process | ONNX, ~90 MB, bundled — never downloaded at runtime |
+| Embedding encoder | in-process | ONNX, ~87 MB, fetched once at build time |
 | Postgres | your infrastructure | campaign uploads, audit log |
-| Outbound calls | **none** | verify with the egress test below |
+| Outbound calls | **none at runtime** | verify with the egress test below |
+
+### The encoder, precisely
+
+The weights are **not** in the git history — 87 MB has no business there. They are
+downloaded once, explicitly, by a build step:
+
+```bash
+npm run fetch-encoder
+```
+
+That is the only moment anything is fetched. At runtime `allowRemoteModels` is
+hard-set to `false` with no mode that re-enables it, so a missing encoder makes
+the app fail loudly rather than quietly reaching for the HuggingFace hub.
+
+This was not always true. Until 2026-08-12 the offline lock was gated on
+`RESONANCE_MODE=self-hosted`, which meant the default configuration downloaded
+the encoder on first inference and cached it inside `node_modules`. The claim on
+this page was therefore true only of a deployment that had already been run once
+with network access. A guarantee you have to remember to switch on is not a
+guarantee, so the gate is gone.
+
+## Desktop build
+
+For teams who would rather run it on a laptop than deploy anything. Same code,
+same guarantees, no server to stand up:
+
+```bash
+npm run desktop
+```
+
+That fetches the encoder if needed, builds the standalone server, stages the
+static assets into it, and opens the Electron shell. The shell adds two things
+to the guarantees above: campaign data is written to the OS user-data directory
+(**File → Show data folder** opens it), and the window refuses to navigate off
+its own loopback origin, so a stray link cannot turn it into a browser.
+
+Not yet code-signed, so Windows SmartScreen and macOS Gatekeeper will warn on a
+distributed build. Running from source, as above, does not.
 
 ## Requirements
 

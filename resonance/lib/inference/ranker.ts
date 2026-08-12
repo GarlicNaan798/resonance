@@ -18,6 +18,8 @@
  * verify with `--network none`.
  */
 
+import { join } from "node:path";
+
 import rankerWeights from "./ranker.json";
 
 interface Layer {
@@ -100,6 +102,15 @@ type FeatureExtractor = (
   opts: { pooling: "mean"; normalize: boolean },
 ) => Promise<{ tolist(): number[][] }>;
 
+/**
+ * Where the encoder weights live.
+ *
+ * Overridable because the desktop build ships them inside the app bundle,
+ * which is read-only and not under the working directory.
+ */
+const ENCODER_DIR =
+  process.env.RESONANCE_ENCODER_DIR ?? join(process.cwd(), "models");
+
 let encoderPromise: Promise<FeatureExtractor> | null = null;
 
 async function getEncoder(): Promise<FeatureExtractor> {
@@ -108,18 +119,45 @@ async function getEncoder(): Promise<FeatureExtractor> {
       const mod = await import("@huggingface/transformers");
       const { pipeline, env } = mod as unknown as {
         pipeline: (task: string, model: string, opts?: object) => Promise<FeatureExtractor>;
-        env: { allowRemoteModels: boolean; allowLocalModels: boolean };
+        env: {
+          allowRemoteModels: boolean;
+          allowLocalModels: boolean;
+          cacheDir: string;
+          localModelPath: string;
+        };
       };
 
-      if (process.env.RESONANCE_MODE === "self-hosted") {
-        // Fail loudly rather than quietly making an outbound call.
-        env.allowRemoteModels = false;
-        env.allowLocalModels = true;
-      }
+      // Offline ALWAYS, not just in self-hosted mode.
+      //
+      // This was previously gated on RESONANCE_MODE, which meant the default
+      // configuration downloaded the encoder from the HuggingFace hub on first
+      // inference and cached it inside node_modules. docs/SELF_HOSTING.md
+      // claimed the weights were bundled and never fetched at runtime; that was
+      // true only for a deployment that had already been run once with network
+      // access, which is not a guarantee at all.
+      //
+      // A gate you have to remember to switch on is not a guarantee either, so
+      // there is no longer a mode in which an outbound call is permitted. Run
+      // scripts/fetch-encoder.mjs to populate the directory.
+      env.allowRemoteModels = false;
+      env.allowLocalModels = true;
+      env.cacheDir = ENCODER_DIR;
+      env.localModelPath = ENCODER_DIR;
 
-      return pipeline("feature-extraction", RANKER.embedding_model, {
-        dtype: "fp32",
-      });
+      try {
+        return await pipeline("feature-extraction", RANKER.embedding_model, {
+          dtype: "fp32",
+        });
+      } catch (err) {
+        // The library's own message names the missing file but not the fix,
+        // and this is the first thing a new checkout hits.
+        throw new Error(
+          `Encoder weights not found under ${ENCODER_DIR}. ` +
+            "Run `node scripts/fetch-encoder.mjs` once to download them; " +
+            "the app never fetches them at runtime. " +
+            `(${(err as Error).message})`,
+        );
+      }
     })();
   }
   return encoderPromise;

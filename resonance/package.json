@@ -2,12 +2,16 @@
   "name": "resonance",
   "version": "0.1.0",
   "private": true,
+  "main": "electron/main.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "fetch-encoder": "node scripts/fetch-encoder.mjs",
+    "desktop:build": "npm run fetch-encoder && next build && node scripts/stage-desktop.mjs",
+    "desktop": "npm run desktop:build && electron ."
   },
   "dependencies": {
     "@huggingface/transformers": "^4.2.0",
@@ -20,6 +24,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "electron": "^43.4.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.10"
