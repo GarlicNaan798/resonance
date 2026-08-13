@@ -289,7 +289,7 @@ export default function Home() {
             Measure it on your own campaigns
           </Link>
           <Link href="/upload" className="btn btn-secondary">
-            What a recalibration export needs
+            Check whether your exports are usable
           </Link>
         </div>
       </section>

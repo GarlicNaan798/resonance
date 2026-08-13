@@ -33,6 +33,7 @@ const PAGES = [
   ["track", "/track"],
   ["analyse", "/analyse"],
   ["allocate", "/allocate"],
+  ["upload", "/upload"],
   ["methodology", "/methodology"],
 ];
 

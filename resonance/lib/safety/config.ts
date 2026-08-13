@@ -136,16 +136,20 @@ export function isExpired(
   return ageDays > cfg.retentionDays;
 }
 
-/** Summary for the UI's data-protection panel. Safe to show a customer. */
-export function describeSafety(cfg: SafetyConfig): string[] {
-  return [
-    `Deployment: ${cfg.mode}`,
-    `Data residency: ${cfg.region}`,
-    `Encryption at rest: ${cfg.encryptionAtRest ? "enabled" : "n/a (self-hosted)"}`,
-    "Encryption in transit: enforced",
-    `Retention: ${cfg.retentionDays} days, then purged`,
-    `Cross-region replication: ${cfg.allowCrossRegionReplication ? "enabled" : "disabled"}`,
-    "Personal data: rejected at ingest, never stored",
-    "Model isolation: per-tenant; your data never trains another tenant's model",
-  ];
-}
+/**
+ * REMOVED: describeSafety().
+ *
+ * It returned a customer-facing list of guarantees — "Retention: 365 days, then
+ * purged", "Model isolation: per-tenant; your data never trains another
+ * tenant's model" — carrying the comment "Safe to show a customer". Neither
+ * claim was true. There is no store to purge from and no per-tenant model; the
+ * only thing this app persists is the local prediction log.
+ *
+ * It was rendered nowhere, so it misled no one. That is the reason to delete it
+ * rather than leave it: the next person to wire a data-protection panel would
+ * have shipped false assurances from a function that told them it was safe to.
+ *
+ * The config it read is real and still enforced — see assertSafe() above. Only
+ * the unearned summary is gone. Reinstate it alongside the features it
+ * describes, not before.
+ */

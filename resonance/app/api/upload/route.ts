@@ -63,8 +63,9 @@ export async function POST(request: Request) {
       issueCount: r.issues.length,
       readiness: r.readiness,
       note:
-        "Validated only. Nothing has been stored — persistence and " +
-        "recalibration arrive with per-tenant model fitting.",
+        "Compatibility check only. The file was parsed in memory and " +
+        "discarded; nothing was stored. This endpoint does not fit a model — " +
+        "per-tenant recalibration is not built.",
     });
   } catch (e) {
     if (e instanceof PiiRejectedError) {

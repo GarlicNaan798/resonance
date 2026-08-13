@@ -3,7 +3,7 @@ import {
   SafetyConfig,
   SafetyConfigError,
   assertSafe,
-  describeSafety,
+
   isExpired,
   loadSafetyConfig,
 } from "./config";
@@ -88,11 +88,8 @@ describe("retention", () => {
   });
 });
 
-describe("customer-facing summary", () => {
-  it("states the guarantees that matter", () => {
-    const lines = describeSafety(base).join("\n");
-    expect(lines).toContain("eu-west-1");
-    expect(lines).toContain("rejected at ingest");
-    expect(lines).toContain("never trains another tenant");
-  });
-});
+// The "customer-facing summary" suite is gone with describeSafety(). It
+// asserted that the output contained "never trains another tenant" — a
+// guarantee about a per-tenant model that was never built. The test passed and
+// the claim was false, which is the failure mode where a test certifies
+// wording rather than behaviour.

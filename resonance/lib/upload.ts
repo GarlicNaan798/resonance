@@ -212,12 +212,19 @@ export interface RecalibrationReadiness {
 }
 
 /**
- * Whether a tenant's data can support its own fitted model.
+ * Whether a tenant's data WOULD support its own fitted model.
  *
- * Below the floor we do not refuse the upload — we shrink toward the global
- * model in proportion to how much data exists, and report the shrinkage. A
- * client with 50 campaigns gets a mostly-global model and is told so, which is
- * more honest than either refusing them or pretending 50 campaigns is enough.
+ * Conditional throughout, and deliberately so: per-tenant recalibration is not
+ * built. This is an eligibility check that tells someone in advance whether
+ * their exports would be usable, which is genuinely useful and is not the same
+ * as fitting anything. The messages were previously written in the present
+ * tense ("your results replace the global priors") and described a feature that
+ * does not exist.
+ *
+ * Below the floor the design is to shrink toward the global model in proportion
+ * to how much data exists and report the shrinkage — more honest than refusing
+ * the client or pretending 50 campaigns is enough. That remains the plan, not a
+ * description of current behaviour.
  */
 export function assessReadiness(campaignCount: number): RecalibrationReadiness {
   const required = MIN_CAMPAIGNS_FOR_RECALIBRATION;
@@ -231,12 +238,14 @@ export function assessReadiness(campaignCount: number): RecalibrationReadiness {
     required,
     shrinkage,
     message: eligible
-      ? `${campaignCount} campaigns is enough to fit a model on your own ` +
-        "audience. Your results replace the global priors."
-      : `${campaignCount} of ${required} campaigns. Predictions will be blended ` +
-        `${Math.round(shrinkage * 100)}% toward the global model, which is ` +
-        "trained on 2013-15 viral media and may not resemble your audience. " +
-        "More campaigns move this toward your own data.",
+      ? `${campaignCount} campaigns would be enough to fit a model on your own ` +
+        "audience, once per-tenant recalibration exists. It does not yet, so " +
+        "this file changes nothing today."
+      : `${campaignCount} of the ${required} campaigns that a model fitted to ` +
+        "your own audience would need. Recalibration is not built yet; when it " +
+        `is, this much data would be blended ${Math.round(shrinkage * 100)}% ` +
+        "toward the global model, which is trained on 2013-15 viral media and " +
+        "may not resemble your audience.",
   };
 }
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 interface Readiness {
@@ -62,15 +63,27 @@ export default function UploadPage() {
   return (
     <div className="space-y-8">
       <div>
-        <p className="eyebrow">Recalibrate</p>
+        <p className="eyebrow">Check</p>
         <h1 className="display text-3xl sm:text-4xl">
-          Upload campaign results
+          Check your campaign export
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-muted">
-          The model is trained on 2013–15 viral media, which is probably not your
-          audience. Your own campaign results replace those assumptions with
-          measurements. Meta and Google both export the columns needed.
+          Tells you whether a Meta or Google export is readable, how many
+          campaigns in it clear the noise floor, and whether it contains
+          personal data that would have to be refused. Nothing is uploaded,
+          stored or sent anywhere — the file is parsed in place and discarded.
         </p>
+        <div className="mt-4 max-w-2xl rounded-lg border border-rule bg-pale-yellow p-4 text-sm text-pale-yellow-ink">
+          <strong>This does not fit a model to your data.</strong> Per-tenant
+          recalibration is not built, and this page will not pretend otherwise.
+          It is a compatibility check, so you can find out now whether your
+          exports would be usable later. To measure the model against your own
+          campaigns today, use{" "}
+          <Link href="/track" className="underline underline-offset-4">
+            Track record
+          </Link>{" "}
+          — that works, and needs no export at all.
+        </div>
       </div>
 
       <section className="space-y-3 card p-5 text-sm">
@@ -98,9 +111,9 @@ export default function UploadPage() {
         </p>
         <p className="rounded bg-sunk p-3 text-xs text-muted">
           <strong>No personal data.</strong> Files containing emails, phone
-          numbers, addresses, IPs or card numbers are rejected outright — not
-          stored and stripped. This tool needs aggregate copy performance and
-          nothing about individuals.
+          numbers, addresses, IPs or card numbers are rejected outright, rather
+          than stored and then stripped. This tool needs aggregate copy
+          performance and nothing about individuals.
         </p>
       </section>
 
@@ -222,8 +235,8 @@ export default function UploadPage() {
           )}
 
           <p className="text-xs text-faint">
-            Validation only — nothing has been stored. Persistence and
-            recalibration arrive with per-tenant model fitting.
+            Compatibility check only. The file was parsed in memory and
+            discarded — nothing was uploaded, stored or sent anywhere.
           </p>
         </section>
       )}
