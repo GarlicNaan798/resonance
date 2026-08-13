@@ -95,11 +95,11 @@ export default function ComparePage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-3xl space-y-8">
       <div>
         <p className="eyebrow">Rank</p>
         <h1 className="display text-3xl sm:text-4xl">Compare variants</h1>
-        <p className="mt-2 max-w-2xl text-sm text-muted">
+        <p className="mt-2 text-sm text-muted">
           Ranks your variants using the model trained on 32,487 randomised A/B
           tests. It is right {(PERFORMANCE.rankerAccuracy * 100).toFixed(1)}% of
           the time against a 50% baseline — an edge worth having before you
@@ -118,7 +118,7 @@ export default function ComparePage() {
               onChange={(e) => setAt(i, e.target.value)}
               rows={2}
               placeholder={`Variant ${i + 1}`}
-              className="w-full rounded-lg border border-rule-strong bg-surface p-3 text-sm-strong"
+              className="w-full rounded-lg border border-rule-strong bg-surface p-3 text-sm"
             />
           </div>
         ))}
@@ -126,7 +126,7 @@ export default function ComparePage() {
         {/* Collected BEFORE the model runs and locked afterwards. A pick made
             after seeing the answer measures nothing, so the UI makes the blind
             version the only one available. */}
-        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-dashed border-rule-strong p-3 text-sm-strong">
+        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-dashed border-rule-strong p-3 text-sm">
           <span className="text-muted">
             Optional — your own pick first:
           </span>
@@ -155,7 +155,7 @@ export default function ComparePage() {
           <button
             onClick={() => setVariants((p) => [...p, ""])}
             disabled={variants.length >= 8}
-            className="rounded-md border border-rule-strong px-3 py-1.5 text-sm disabled:opacity-40-strong"
+            className="rounded-md border border-rule-strong px-3 py-1.5 text-sm disabled:opacity-40"
           >
             Add variant
           </button>
@@ -317,12 +317,12 @@ export default function ComparePage() {
                     value={label}
                     onChange={(e) => setLabel(e.target.value)}
                     placeholder="Campaign name (optional)"
-                    className="flex-1 rounded-md border border-rule-strong bg-surface px-3 py-1.5 text-sm-strong"
+                    className="flex-1 rounded-md border border-rule-strong bg-surface px-3 py-1.5 text-sm"
                   />
                   <button
                     onClick={seal}
                     disabled={sealing}
-                    className="rounded-md border border-rule-strong px-3 py-1.5 text-sm font-medium disabled:opacity-40-strong"
+                    className="rounded-md border border-rule-strong px-3 py-1.5 text-sm font-medium disabled:opacity-40"
                   >
                     {sealing ? "Sealing…" : "Seal prediction"}
                   </button>

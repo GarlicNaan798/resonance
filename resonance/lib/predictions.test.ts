@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
+import { buildExport, EXPORT_SCHEMA } from "./export";
 import {
   commitPrediction,
   listPredictions,
@@ -102,7 +103,15 @@ describe("outcomesNeeded", () => {
   });
 });
 
-function resolved(hits: boolean[], userHits?: boolean[]): Prediction[] {
+/**
+ * @param hits      whether the MODEL was right, which also fixes the winner:
+ *                  true means arm 0 won, false means arm 1 won.
+ * @param userPicks whether the user picked ARM 0 — not whether they were
+ *                  right. When the model misses, the winner is arm 1, so a
+ *                  `false` here is a correct human pick. Easy to misread, and
+ *                  it produced a wrong expectation in the export tests below.
+ */
+function resolved(hits: boolean[], userPicks?: boolean[]): Prediction[] {
   return hits.map((hit, i) => ({
     id: String(i),
     createdAt: "2026-01-01T00:00:00.000Z",
@@ -111,7 +120,7 @@ function resolved(hits: boolean[], userHits?: boolean[]): Prediction[] {
     predictedWinner: 0,
     tier: "high" as const,
     margin: 1,
-    userPick: userHits ? (userHits[i] ? 0 : 1) : null,
+    userPick: userPicks ? (userPicks[i] ? 0 : 1) : null,
     actualWinner: hit ? 0 : 1,
     resolvedAt: "2026-01-02T00:00:00.000Z",
   }));
@@ -177,5 +186,95 @@ describe("trackRecord", () => {
     const lucky = trackRecord(resolved([true, true, true, true, true]));
     const mixed = trackRecord(resolved([true, false, true, false, true]));
     expect(lucky.stillNeeded).toBe(mixed.stillNeeded);
+  });
+});
+
+describe("buildExport", () => {
+  const SECRET = "Cut your heating bill with one simple change";
+  const LABEL = "Nike Q4 launch — confidential";
+
+  function sample(): Prediction[] {
+    const base = resolved([true, false, true], [false, false, true]);
+    return base.map((p, i) => ({
+      ...p,
+      hash: `hash${i}`,
+      variants: [SECRET, "Save 20% this winter"],
+      label: LABEL,
+      createdAt: "2026-03-04T09:41:22.000Z",
+    }));
+  }
+
+  it("never emits the campaign copy or the label", () => {
+    // Serialise the WHOLE payload and search it. Checking individual fields
+    // would pass while a nested object still carried the text.
+    const json = JSON.stringify(buildExport(sample()));
+    expect(json).not.toContain(SECRET);
+    expect(json).not.toContain("heating");
+    expect(json).not.toContain(LABEL);
+    expect(json).not.toContain("Nike");
+  });
+
+  it("emits an allow-listed shape and nothing else", () => {
+    const [row] = buildExport(sample()).predictions;
+    expect(Object.keys(row).sort()).toEqual([
+      "date",
+      "hash",
+      "margin",
+      "modelCorrect",
+      "tier",
+      "userCorrect",
+      "variantCount",
+    ]);
+  });
+
+  it("reduces the timestamp to a date, not a minute", () => {
+    expect(buildExport(sample()).predictions[0].date).toBe("2026-03-04");
+  });
+
+  it("excludes predictions with no outcome yet", () => {
+    const pending: Prediction = {
+      ...sample()[0],
+      actualWinner: null,
+      resolvedAt: null,
+    };
+    const out = buildExport([...sample(), pending]);
+    expect(out.predictions).toHaveLength(3);
+    expect(out.summary.resolved).toBe(3);
+  });
+
+  it("summarises model and user rates over the right denominators", () => {
+    const out = buildExport(sample());
+    expect(out.summary.modelCorrect).toBe(2);
+    expect(out.summary.modelRate).toBeCloseTo(2 / 3, 6);
+    expect(out.summary.userScored).toBe(3);
+    // picks are [arm1, arm1, arm0] against winners [0, 1, 0] -> right on 2.
+    expect(out.summary.userCorrect).toBe(2);
+  });
+
+  it("scores the user only over comparisons with a blind pick", () => {
+    const mixed = sample().map((p, i) =>
+      i === 0 ? { ...p, userPick: null } : p,
+    );
+    const out = buildExport(mixed);
+    expect(out.summary.userScored).toBe(2);
+    expect(out.predictions[0].userCorrect).toBeNull();
+  });
+
+  it("reports no user rate rather than zero when nobody picked", () => {
+    const none = sample().map((p) => ({ ...p, userPick: null }));
+    expect(buildExport(none).summary.userRate).toBeNull();
+  });
+
+  it("carries a schema version and says what it withholds", () => {
+    const out = buildExport(sample());
+    expect(out.schema).toBe(EXPORT_SCHEMA);
+    expect(out.excludes.join(" ")).toMatch(/campaign copy/);
+  });
+
+  it("survives an empty history without dividing by zero", () => {
+    const out = buildExport([]);
+    expect(out.predictions).toEqual([]);
+    expect(out.summary.modelRate).toBe(0);
+    expect(out.summary.userRate).toBeNull();
   });
 });

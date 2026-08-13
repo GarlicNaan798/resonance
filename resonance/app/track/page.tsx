@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { buildExport } from "@/lib/export";
 import type { Prediction, TrackRecord, Scoreboard } from "@/lib/predictions";
 
 interface Row extends Prediction {
@@ -101,11 +102,11 @@ export default function TrackPage() {
   const done = data?.predictions.filter((p) => p.actualWinner !== null) ?? [];
 
   return (
-    <div className="space-y-10">
+    <div className="max-w-3xl space-y-10">
       <div>
         <p className="eyebrow">Measure</p>
         <h1 className="display text-3xl sm:text-4xl">Track record</h1>
-        <p className="mt-2 max-w-2xl text-sm text-muted">
+        <p className="mt-2 text-sm text-muted">
           The global 61.8% was measured on 2013–15 viral media. This page
           measures the model on <em>your</em> campaigns instead. Seal a
           prediction before launch, record the winner when you know it, and the
@@ -266,8 +267,111 @@ export default function TrackPage() {
               </div>
             </section>
           )}
+
+          {done.length > 0 && <Contribute predictions={data.predictions} />}
         </>
       )}
     </div>
+  );
+}
+
+/**
+ * Voluntary contribution.
+ *
+ * The app makes no outbound calls and this does not change that — it writes a
+ * file and the user decides whether to send it. That distinction is what keeps
+ * the `--network none` guarantee true, so the wording avoids implying anything
+ * is transmitted.
+ *
+ * The payload is shown in full before it can be downloaded. Asking someone to
+ * share data from a tool whose whole pitch is verifiability, without letting
+ * them read exactly what they would be sharing, would be the wrong way round.
+ */
+function Contribute({ predictions }: { predictions: Row[] }) {
+  const [payload, setPayload] = useState<string | null>(null);
+
+  const resolved = predictions.filter((p) => p.actualWinner !== null).length;
+
+  function preview() {
+    setPayload(JSON.stringify(buildExport(predictions), null, 2));
+  }
+
+  function download() {
+    if (!payload) return;
+    const url = URL.createObjectURL(
+      new Blob([payload], { type: "application/json" }),
+    );
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `resonance-track-record-${new Date()
+      .toISOString()
+      .slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <section className="card space-y-4 p-6">
+      <div className="space-y-2">
+        <span className="tag tag-blue">Optional</span>
+        <h2 className="display text-xl">
+          See how your hit rate compares to other teams
+        </h2>
+        <p className="max-w-2xl text-sm leading-relaxed text-muted">
+          Your {resolved} resolved prediction{resolved === 1 ? "" : "s"} only
+          describe your own campaigns. Pooled with other teams they answer a
+          question none of us can answer alone: whether the model holds up
+          outside the 2013–15 viral media it was trained on.
+        </p>
+      </div>
+
+      <ul className="space-y-1.5 text-sm text-muted">
+        {[
+          "Your campaign copy is not included — not the text of any variant",
+          "Campaign names and labels are not included",
+          "No impressions, clicks or spend figures",
+          "Nothing identifying you, your machine or your organisation",
+        ].map((line) => (
+          <li key={line} className="flex gap-2.5">
+            <span aria-hidden="true" className="text-pale-green-ink">
+              &minus;
+            </span>
+            <span>{line}</span>
+          </li>
+        ))}
+      </ul>
+
+      <p className="text-sm text-muted">
+        What is included: the sealed hash, the date, how many variants, the
+        confidence tier, the margin, and whether each pick was right.
+      </p>
+
+      {payload === null ? (
+        <button onClick={preview} className="btn btn-secondary">
+          Show me exactly what would be shared
+        </button>
+      ) : (
+        <div className="space-y-3">
+          <pre className="max-h-80 overflow-auto rounded-lg border border-rule bg-sunk p-4 font-mono text-xs leading-relaxed">
+            {payload}
+          </pre>
+          <div className="flex flex-wrap items-center gap-3">
+            <button onClick={download} className="btn btn-primary">
+              Download this file
+            </button>
+            <button
+              onClick={() => setPayload(null)}
+              className="btn btn-secondary"
+            >
+              Close
+            </button>
+          </div>
+          <p className="text-xs text-faint">
+            Nothing has been sent. The file is written to your downloads folder
+            and goes nowhere unless you send it yourself.
+          </p>
+        </div>
+      )}
+    </section>
   );
 }

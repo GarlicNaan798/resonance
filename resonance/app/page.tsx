@@ -37,7 +37,7 @@ const CAPABILITIES = [
       "useful answer when it is true.",
     href: "/compare",
     cta: "Compare copy",
-    span: "sm:col-span-3",
+    span: "sm:col-span-6",
   },
   {
     tag: "Diagnose",
@@ -49,7 +49,7 @@ const CAPABILITIES = [
       "for the segment you specify.",
     href: "/analyse",
     cta: "Analyse copy",
-    span: "sm:col-span-3",
+    span: "sm:col-span-2",
   },
   {
     tag: "Allocate",
@@ -73,7 +73,7 @@ const CAPABILITIES = [
       "you learn how your judgement scores too.",
     href: "/track",
     cta: "Track record",
-    span: "sm:col-span-4",
+    span: "sm:col-span-2",
   },
 ];
 

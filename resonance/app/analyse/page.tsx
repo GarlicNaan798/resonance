@@ -77,11 +77,11 @@ export default function AnalysePage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-3xl space-y-8">
       <div>
         <p className="eyebrow">Diagnose</p>
         <h1 className="display text-3xl sm:text-4xl">Analyse copy</h1>
-        <p className="mt-2 max-w-2xl text-sm text-muted">
+        <p className="mt-2 text-sm text-muted">
           Scores your copy on six constructs drawn from published behavioural
           research. Every score traces back to human word ratings, and every
           module carries its own limitation.
@@ -94,7 +94,7 @@ export default function AnalysePage() {
           onChange={(e) => setText(e.target.value)}
           rows={5}
           placeholder="Paste your headline or ad copy…"
-          className="w-full rounded-lg border border-rule-strong bg-surface p-3 text-sm-strong"
+          className="w-full rounded-lg border border-rule-strong bg-surface p-3 text-sm"
         />
 
         <div className="grid gap-4 sm:grid-cols-4">
@@ -107,7 +107,7 @@ export default function AnalysePage() {
               onChange={(e) =>
                 setInvolvement(e.target.value as (typeof INVOLVEMENTS)[number])
               }
-              className="w-full rounded-md border border-rule-strong bg-surface p-2-strong"
+              className="w-full rounded-md border border-rule-strong bg-surface p-2"
             >
               {INVOLVEMENTS.map((v) => (
                 <option key={v} value={v}>
@@ -131,7 +131,7 @@ export default function AnalysePage() {
               <select
                 value={value}
                 onChange={(e) => (setter as (v: string) => void)(e.target.value)}
-                className="w-full rounded-md border border-rule-strong bg-surface p-2-strong"
+                className="w-full rounded-md border border-rule-strong bg-surface p-2"
               >
                 {options.map((v) => (
                   <option key={v} value={v}>

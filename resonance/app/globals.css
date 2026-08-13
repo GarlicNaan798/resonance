@@ -180,7 +180,16 @@ body {
 }
 .btn-secondary { border: 1px solid var(--rule-strong); color: var(--ink); }
 .btn-secondary:hover { background: var(--surface-sunk); }
-.btn:disabled { opacity: 0.4; pointer-events: none; }
+/* Not opacity. A near-black button at 40% over the warm canvas turns a muddy
+   olive that reads as a rendering fault rather than a disabled control. An
+   explicit flat pair stays legible and obviously inert. */
+.btn:disabled { pointer-events: none; }
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  background: var(--surface-sunk);
+  border-color: var(--rule);
+  color: var(--ink-faint);
+}
 
 kbd {
   font-family: var(--font-mono);

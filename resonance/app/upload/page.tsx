@@ -61,13 +61,13 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-3xl space-y-8">
       <div>
         <p className="eyebrow">Check</p>
         <h1 className="display text-3xl sm:text-4xl">
           Check your campaign export
         </h1>
-        <p className="mt-2 max-w-2xl text-sm text-muted">
+        <p className="mt-2 text-sm text-muted">
           Tells you whether a Meta or Google export is readable, how many
           campaigns in it clear the noise floor, and whether it contains
           personal data that would have to be refused. Nothing is uploaded,
@@ -130,7 +130,7 @@ export default function UploadPage() {
           />
           <button
             onClick={() => setCsv(SAMPLE)}
-            className="rounded-md border border-rule-strong px-3 py-1.5 text-sm-strong"
+            className="rounded-md border border-rule-strong px-3 py-1.5 text-sm"
           >
             Use sample
           </button>
@@ -196,7 +196,7 @@ export default function UploadPage() {
             <p className="mt-1">{result.readiness.message}</p>
             {!result.readiness.eligible && (
               <div className="mt-3">
-                <div className="h-2 w-full overflow-hidden rounded-full bg-black/10/10">
+                <div className="h-2 w-full overflow-hidden rounded-full bg-black/10">
                   <div
                     className="h-full rounded-full bg-current opacity-70"
                     style={{

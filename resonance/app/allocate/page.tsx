@@ -41,13 +41,13 @@ export default function AllocatePage() {
     setRows((p) => p.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-3xl space-y-8">
       <div>
         <p className="eyebrow">Allocate</p>
         <h1 className="display text-3xl sm:text-4xl">
           Split your test budget
         </h1>
-        <p className="mt-2 max-w-2xl text-sm text-muted">
+        <p className="mt-2 text-sm text-muted">
           Enter each variant&apos;s results so far and get the split for the next
           batch of impressions. Measured on 1,894 held-out experiments:{" "}
           <strong>31.8% less budget spent on losing variants</strong> than an
@@ -63,21 +63,21 @@ export default function AllocatePage() {
               value={r.text}
               onChange={(e) => set(i, "text", e.target.value)}
               placeholder={`Variant ${i + 1} (optional label)`}
-              className="min-w-[16rem] flex-1 rounded-lg border border-rule-strong bg-surface p-2 text-sm-strong"
+              className="min-w-[16rem] flex-1 rounded-lg border border-rule-strong bg-surface p-2 text-sm"
             />
             <input
               value={r.impressions}
               onChange={(e) => set(i, "impressions", e.target.value)}
               inputMode="numeric"
               placeholder="impressions"
-              className="w-28 rounded-lg border border-rule-strong bg-surface p-2 text-sm-strong"
+              className="w-28 rounded-lg border border-rule-strong bg-surface p-2 text-sm"
             />
             <input
               value={r.clicks}
               onChange={(e) => set(i, "clicks", e.target.value)}
               inputMode="numeric"
               placeholder="clicks"
-              className="w-24 rounded-lg border border-rule-strong bg-surface p-2 text-sm-strong"
+              className="w-24 rounded-lg border border-rule-strong bg-surface p-2 text-sm"
             />
             <span className="w-16 text-right font-mono text-sm tabular-nums">
               {weights[i] === undefined ? "—" : `${(weights[i] * 100).toFixed(0)}%`}
@@ -89,14 +89,14 @@ export default function AllocatePage() {
           <button
             onClick={() => setRows((p) => [...p, { ...BLANK }])}
             disabled={rows.length >= 8}
-            className="rounded-md border border-rule-strong px-3 py-1.5 text-sm disabled:opacity-40-strong"
+            className="rounded-md border border-rule-strong px-3 py-1.5 text-sm disabled:opacity-40"
           >
             Add variant
           </button>
           {rows.length > 2 && (
             <button
               onClick={() => setRows((p) => p.slice(0, -1))}
-              className="rounded-md border border-rule-strong px-3 py-1.5 text-sm-strong"
+              className="rounded-md border border-rule-strong px-3 py-1.5 text-sm"
             >
               Remove
             </button>
