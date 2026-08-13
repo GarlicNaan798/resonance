@@ -100,8 +100,11 @@ chance, but a fair coin does that one time in sixteen.
 
 ## Running it
 
+Requires **Node 20+**. No GPU, no API key, no account.
+
 ```bash
-cd resonance
+git clone https://github.com/GarlicNaan798/resonance.git
+cd resonance/resonance
 npm install
 npm run fetch-encoder     # one-time, ~87 MB — the only download that ever happens
 npm run dev               # http://localhost:3000
@@ -214,3 +217,27 @@ predictor and says so, a diagnostic that never pretends to explain the
 prediction, and a track-record feature built to find out whether any of it
 transfers to your campaigns. The training data is 2013–15 viral media and you
 are probably not that; the constructs travel better than the calibration does.
+
+## Licence
+
+MIT — see [LICENSE](LICENSE). The code is yours to use, modify and sell.
+
+That covers the **code only**. The model is derived from datasets with their
+own terms (Upworthy Research Archive, Warriner and Brysbaert norms), and the
+encoder is fetched from `sentence-transformers/all-MiniLM-L6-v2` at build time.
+Read their licences before any commercial use — see
+[docs/papers/README.md](docs/papers/README.md).
+
+## Contributing
+
+The most useful thing anyone can send is **evidence**, not code.
+
+- **Run the study.** `python model/human_baseline.py build` produces a blind
+  60-item quiz. If you work in marketing, take it and send the JSON back — it
+  measures whether human judgement beats the model on identical items, which
+  nobody has established. Ten participants settles it.
+- **Share a track record.** After a few sealed predictions, the Track page
+  exports a file containing outcomes and no campaign copy. Pooled across teams
+  it answers whether the model transfers outside 2013–15 viral media.
+
+Both are voluntary, and neither requires the app to make a network call.

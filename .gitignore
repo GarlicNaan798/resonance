@@ -75,3 +75,10 @@ andrej-karpathy-skills-main.zip
 data/processed/human_quiz.html
 data/processed/human_quiz.json
 data/processed/human_key.json
+
+# Someone's unrelated personal system, previously a stray gitlink with no
+# .gitmodules — which broke every clone.
+personal-os/
+
+# Publishers' PDFs are not ours to redistribute. See docs/papers/README.md.
+docs/papers/*.pdf
