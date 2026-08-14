@@ -312,6 +312,23 @@ def write_quiz_html(quiz: list[dict], seed: int) -> None:
  result is far more useful to us than a flattering one. Roughly ten minutes.</p>
  <p><strong>Please do not look anything up.</strong> We are measuring judgement,
  not search skill.</p>
+ <!-- Collected because docs/PREREGISTRATION.md commits to reporting accuracy
+      broken out by experience, and to treating professionals as the primary
+      subgroup. A pre-registration whose instrument cannot supply the fields it
+      promises is paperwork. -->
+ <p class="meta" style="margin-top:2rem">Two questions first</p>
+ <p><label>Years writing or testing marketing copy<br>
+  <select id="years" style="font:inherit;padding:.5rem;margin-top:.35rem;
+   border:1px solid var(--rule);border-radius:8px">
+   <option value="">Prefer not to say</option>
+   <option value="0">None</option>
+   <option value="1">Less than 1</option>
+   <option value="3">1&ndash;3</option>
+   <option value="7">4&ndash;10</option>
+   <option value="15">More than 10</option>
+  </select></label></p>
+ <p><label><input type="checkbox" id="paid"> Writing or testing copy is part of
+  my paid work</label></p>
  <button class="opt" onclick="start()"><strong>Begin</strong></button>
 </div>
 <div id="quiz" hidden>
@@ -329,8 +346,13 @@ def write_quiz_html(quiz: list[dict], seed: int) -> None:
 </div>
 </main><script>
 const ITEMS=__ITEMS__, SEED=__SEED__;
-let i=0; const answers=[];
-function start(){document.getElementById('intro').hidden=true;
+let i=0; const answers=[]; let shown=0; let profile={};
+function start(){
+ // Snapshot the intake before the quiz replaces the screen.
+ const y=document.getElementById('years').value;
+ profile={years:(y===''?null:Number(y)),
+          paid:document.getElementById('paid').checked};
+ document.getElementById('intro').hidden=true;
  document.getElementById('quiz').hidden=false; render();}
 function render(){
  if(i>=ITEMS.length) return finish();
@@ -338,17 +360,23 @@ function render(){
  document.getElementById('progress').textContent=`Item ${i+1} of ${ITEMS.length}`;
  document.getElementById('fill').style.width=(100*i/ITEMS.length)+'%';
  const o=document.getElementById('opts'); o.innerHTML='';
+ // Milliseconds spent on THIS item. The pre-registered exclusion rule drops a
+ // response whose median is under 2s (clicking through without reading), and
+ // it cannot be applied to data that was never recorded. Elapsed time only —
+ // no wall-clock timestamp, so this reveals nothing about when someone worked.
+ shown=Date.now();
  [it.a,it.b].forEach((text,choice)=>{
    const b=document.createElement('button');
    b.className='opt'; b.textContent=text;
-   b.onclick=()=>{answers.push({id:it.id,choice:choice});i++;render();};
+   b.onclick=()=>{answers.push({id:it.id,choice:choice,ms:Date.now()-shown});
+     i++;render();};
    o.appendChild(b);
  });
 }
 document.getElementById('skip').onclick=()=>{
- answers.push({id:ITEMS[i].id,choice:null});i++;render();};
+ answers.push({id:ITEMS[i].id,choice:null,ms:Date.now()-shown});i++;render();};
 function payload(){return JSON.stringify({seed:SEED,n:ITEMS.length,
- answers:answers},null,1);}
+ profile:profile,answers:answers},null,1);}
 function finish(){document.getElementById('quiz').hidden=true;
  const e=document.getElementById('end'); e.hidden=false;
  document.getElementById('out').value=payload();}
@@ -364,6 +392,32 @@ function dl(){const b=new Blob([payload()],{type:'application/json'});
 
 # -------------------------------------------------------------------- score
 
+MIN_COMPLETION = 0.80      # of items offered
+MIN_MEDIAN_MS = 2000       # per item; faster than this is clicking, not reading
+
+
+def excluded_reason(resp: dict, n_items: int) -> str | None:
+    """Apply the pre-registered exclusion rules. Returns None to keep.
+
+    Deliberately blind to accuracy: nothing here can look at whether the
+    participant agreed with the model. See docs/PREREGISTRATION.md section 8.
+    """
+    answered = [a for a in resp.get("answers", []) if a.get("choice") is not None]
+    if len(answered) < MIN_COMPLETION * n_items:
+        return (f"answered {len(answered)}/{n_items}, below the "
+                f"{MIN_COMPLETION:.0%} completion floor")
+
+    times = sorted(a["ms"] for a in answered if isinstance(a.get("ms"), (int, float)))
+    if not times:
+        # Older responses predate timing capture. Keep them, but say so rather
+        # than silently applying a rule that cannot be evaluated.
+        return None
+    median = times[len(times) // 2]
+    if median < MIN_MEDIAN_MS:
+        return f"median {median} ms per item, below the {MIN_MEDIAN_MS} ms floor"
+    return None
+
+
 def score(paths: list[str]) -> None:
     with open(KEY_JSON, encoding="utf-8") as fh:
         key_file = json.load(fh)
@@ -375,6 +429,7 @@ def score(paths: list[str]) -> None:
 
     all_human, all_model, per_person = [], [], []
     b_total = c_total = 0
+    excluded = []
 
     for path in files:
         with open(path, encoding="utf-8") as fh:
@@ -384,6 +439,15 @@ def score(paths: list[str]) -> None:
                 f"{os.path.basename(path)} was generated from seed "
                 f"{resp.get('seed')}, key is seed {key_file['seed']}. "
                 "Answers and items would not line up.")
+
+        # Pre-registered exclusions (docs/PREREGISTRATION.md section 8), applied
+        # mechanically before any score is computed. Deciding who to drop after
+        # seeing their accuracy is how a clean-looking study gets rigged, so the
+        # rule runs here and reports itself either way.
+        reason = excluded_reason(resp, key_file["n"])
+        if reason:
+            excluded.append((os.path.basename(path), reason))
+            continue
 
         h_right = m_right = answered = b = c = 0
         for a in resp["answers"]:
@@ -404,11 +468,33 @@ def score(paths: list[str]) -> None:
 
         b_total += b
         c_total += c
-        per_person.append((os.path.basename(path), h_right, m_right, answered))
+        prof = resp.get("profile") or {}
+        per_person.append((os.path.basename(path), h_right, m_right, answered,
+                           prof.get("years"), bool(prof.get("paid"))))
 
-    print(f"{'participant':<34}{'human':>10}{'model':>10}{'n':>6}")
-    for name, h, m, n in per_person:
-        print(f"{name:<34}{h/n:>9.1%}{m/n:>10.1%}{n:>6}")
+    if excluded:
+        print(f"EXCLUDED {len(excluded)} response(s) under the pre-registered rules:")
+        for name, why in excluded:
+            print(f"  {name}: {why}")
+        print()
+    if not per_person:
+        raise SystemExit("no responses survived the exclusion rules")
+
+    print(f"{'participant':<30}{'yrs':>5}{'paid':>6}{'human':>9}{'model':>9}{'n':>6}")
+    for name, h, m, n, yrs, paid in per_person:
+        y = "-" if yrs is None else str(yrs)
+        print(f"{name:<30}{y:>5}{('yes' if paid else 'no'):>6}"
+              f"{h/n:>8.1%}{m/n:>9.1%}{n:>6}")
+
+    # Pre-registered: if 3 or more participants are not paid copy professionals,
+    # the professional subgroup becomes the primary figure.
+    pros = [r for r in per_person if r[5]]
+    if len(per_person) - len(pros) >= 3 and pros:
+        ph = sum(r[1] for r in pros); pn = sum(r[3] for r in pros)
+        print(f"\n  PRIMARY (paid professionals only): {ph}/{pn} = "
+              f"{ph/pn:.1%} over {len(pros)} participant(s)")
+        print("  Reported as primary because 3+ respondents are not paid "
+              "professionals - see docs/PREREGISTRATION.md section 7.")
 
     n = len(all_human)
     h_right = sum(all_human)

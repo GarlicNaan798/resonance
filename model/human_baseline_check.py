@@ -99,19 +99,65 @@ def main() -> None:
         out = run(tmp, key_file, ["perfect", "coin", "position0"], rng)
         assert f"{3 * n} answered items" in out, out
 
-        # Skipped items must be dropped, not scored as wrong.
-        p = os.path.join(tmp, "skipper.json")
+        # A FEW skips must be dropped, not scored as wrong.
+        def write(name, answers, **extra):
+            path = os.path.join(tmp, name)
+            with open(path, "w", encoding="utf-8") as fh:
+                json.dump({"seed": key_file["seed"], "n": n,
+                           "answers": answers, **extra}, fh)
+            return path
+
+        skips = 3
+        answers = responses_for(items, "perfect", rng)
+        for a in answers[:skips]:
+            a["choice"] = None
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            hb.score([write("light-skipper.json", answers)])
+        out = buf.getvalue()
+        assert "100.0%" in out, "a few skips must not count against the participant"
+        assert f"{n - skips} answered items" in out, out
+
+        # ---- pre-registered exclusions (docs/PREREGISTRATION.md section 8) ----
+        # Below the completion floor: excluded, and said out loud.
         answers = responses_for(items, "perfect", rng)
         for a in answers[: n // 3]:
             a["choice"] = None
-        with open(p, "w", encoding="utf-8") as fh:
-            json.dump({"seed": key_file["seed"], "n": n, "answers": answers}, fh)
+        try:
+            with redirect_stdout(io.StringIO()):
+                hb.score([write("heavy-skipper.json", answers)])
+        except SystemExit as exc:
+            assert "no responses survived" in str(exc), str(exc)
+        else:
+            raise AssertionError("a 67%-complete response was scored anyway")
+
+        # Clicking through without reading: excluded on median time.
+        fast = [dict(a, ms=400) for a in responses_for(items, "perfect", rng)]
+        try:
+            with redirect_stdout(io.StringIO()):
+                hb.score([write("speedrunner.json", fast)])
+        except SystemExit:
+            pass
+        else:
+            raise AssertionError("a 400ms-per-item response was scored anyway")
+
+        # The rule must be BLIND to accuracy. A slow, careful participant is kept
+        # whether they agree with the model or contradict it completely — if this
+        # ever became accuracy-dependent the whole study would be riggable.
+        for kind in ("perfect", "inverted"):
+            slow = [dict(a, ms=9000) for a in responses_for(items, kind, rng)]
+            buf = io.StringIO()
+            with redirect_stdout(buf):
+                hb.score([write(f"slow-{kind}.json", slow)])
+            assert "EXCLUDED" not in buf.getvalue(), f"{kind} was excluded on merit"
+
+        # Experience is captured and reported, because the pre-registration
+        # promises a breakdown by it.
         buf = io.StringIO()
         with redirect_stdout(buf):
-            hb.score([p])
-        out = buf.getvalue()
-        assert "100.0%" in out, "skips must not count against the participant"
-        assert f"{n - n // 3} answered items" in out, out
+            hb.score([write("pro.json", responses_for(items, "perfect", rng),
+                            profile={"years": 7, "paid": True})])
+        assert "yrs" in buf.getvalue() and "yes" in buf.getvalue(), buf.getvalue()
 
         # A response built from a different sample must be refused, not scored
         # against items it never saw.
