@@ -314,14 +314,24 @@ def write_quiz_html(quiz: list[dict], seed: int) -> None:
    font-size:.75rem;border:1px solid var(--rule);border-radius:8px;padding:1rem}
  .done{background:var(--surface);border:1px solid var(--rule);
    border-radius:12px;padding:2rem}
+ .statgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;
+   margin:1.5rem 0}
+ @media(min-width:34rem){.statgrid{grid-template-columns:repeat(4,1fr)}}
+ .stat{border:1px solid var(--rule);border-radius:10px;padding:.85rem}
+ .stat b{display:block;font-size:1.5rem;font-weight:500;
+   font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+ .stat span{font-family:ui-monospace,monospace;font-size:.62rem;
+   letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 </style></head><body><main>
 <div id="intro">
- <h1>Which headline got more clicks?</h1>
+ <h1>Can you beat the machine?</h1>
  <p>Each screen shows two real headlines that ran as a randomised A/B test on
  the same article, at the same moment, to the same audience. Exactly one won.</p>
- <p>Pick the one you believe got the higher click-through rate. Go with your
- professional instinct — there is no penalty for being wrong, and a realistic
- result is far more useful to us than a flattering one. Roughly ten minutes.</p>
+ <p>Pick the one you believe got the higher click-through rate. A model has
+ already answered these same pairs and scored <strong>58%</strong>. Most people
+ assume they can do better. Nobody has checked &mdash; that is what this is.</p>
+ <p>Five minutes. Go with instinct; there is no penalty for being wrong, and a
+ realistic result is far more useful to us than a flattering one.</p>
  <p><strong>Please do not look anything up.</strong> We are measuring judgement,
  not search skill.</p>
  <!-- Collected because docs/PREREGISTRATION.md commits to reporting accuracy
@@ -358,11 +368,17 @@ def write_quiz_html(quiz: list[dict], seed: int) -> None:
  <p><button class="opt" onclick="extend()">Keep going</button></p>
 </div>
 <div id="end" hidden class="done">
- <h1>Done &mdash; thank you</h1>
- <p>Copy everything in the box and send it back. It contains your answers and
- nothing else: no name, no email, nothing about your device.</p>
+ <h1>Send this back to get your score</h1>
+ <div id="stats" class="statgrid"></div>
+ <p><strong>We deliberately do not score you here.</strong> Doing that would
+ mean shipping the answer key inside this page, where anyone could read it —
+ and one person peeking would quietly ruin the study for everyone. So the
+ answers stay on our side.</p>
+ <p>Send the block below and you get back: how many you got right, how many the
+ model got right on your exact pairs, and whether you beat it.</p>
  <textarea id="out" readonly onclick="this.select()"></textarea>
- <p><button class="opt" onclick="dl()"><strong>Download instead</strong></button></p>
+ <p><button class="opt" onclick="copyOut()"><strong id="copybtn">Copy to clipboard</strong></button></p>
+ <p><button class="opt" onclick="dl()">Download as a file instead</button></p>
 </div>
 </main><script>
 const ITEMS=__ITEMS__, SEED=__SEED__, CORE=__CORE__;
@@ -424,7 +440,26 @@ function payload(){return JSON.stringify({seed:SEED,n:ITEMS.length,core:CORE,
 function finish(){document.getElementById('quiz').hidden=true;
  document.getElementById('more').hidden=true;
  const e=document.getElementById('end'); e.hidden=false;
- document.getElementById('out').value=payload();}
+ document.getElementById('out').value=payload();
+ // Stats that reveal nothing about correctness — computable without the key,
+ // so they cost the study nothing and still give the screen something to say.
+ const done=answers.filter(a=>a.choice!==null);
+ const times=done.map(a=>a.ms).sort((x,y)=>x-y);
+ const med=times.length?times[Math.floor(times.length/2)]/1000:0;
+ const total=done.reduce((s,a)=>s+a.ms,0)/1000;
+ const fast=done.filter(a=>a.ms<3000).length;
+ const cell=(v,l)=>`<div class="stat"><b>${v}</b><span>${l}</span></div>`;
+ document.getElementById('stats').innerHTML=
+   cell(done.length,'calls made')+
+   cell(med.toFixed(1)+'s','median per call')+
+   cell(Math.round(total)+'s','total thinking')+
+   cell(Math.round(100*fast/Math.max(done.length,1))+'%','snap judgements');
+}
+function copyOut(){const t=document.getElementById('out');
+ t.select(); let ok=false;
+ try{ok=document.execCommand('copy');}catch(e){}
+ if(navigator.clipboard&&!ok){navigator.clipboard.writeText(t.value);ok=true;}
+ document.getElementById('copybtn').textContent=ok?'Copied':'Select it and copy';}
 function dl(){const b=new Blob([payload()],{type:'application/json'});
  const a=document.createElement('a');a.href=URL.createObjectURL(b);
  a.download='headline-study-response.json';a.click();}
@@ -506,7 +541,7 @@ def refuse_if_tracked(files: list[str]) -> None:
             "and keep responses in responses/, which is gitignored.\n")
 
 
-def score(paths: list[str]) -> None:
+def score(paths: list[str], reply: bool = False) -> None:
     with open(KEY_JSON, encoding="utf-8") as fh:
         key_file = json.load(fh)
     key = {k["id"]: k for k in key_file["items"]}
@@ -569,6 +604,26 @@ def score(paths: list[str]) -> None:
     if not per_person:
         raise SystemExit("no responses survived the exclusion rules")
 
+    if reply:
+        # The quiz promises each participant their score in exchange for
+        # sending the file. Promising it and then not delivering would be a
+        # small betrayal of the only people helping, so the text is generated
+        # here rather than left to be written by hand and forgotten.
+        print("=" * 66)
+        for name, h, m, n, _yrs, _paid in per_person:
+            verdict = ("You beat it." if h > m else
+                       "It beat you." if m > h else
+                       "A dead heat.")
+            print(f"\n--- reply for {name} " + "-" * max(0, 44 - len(name)))
+            print(f"You got {h} of {n} right ({h/n:.0%}).")
+            print(f"The model got {m} of the same {n} right ({m/n:.0%}).")
+            print(f"{verdict}")
+            print("For scale: a coin flip is 50%, and on this task even perfect")
+            print("knowledge of every headline's true click rate would only score")
+            print("about 66% — the outcomes are that noisy. Thank you, genuinely;")
+            print("the result gets published either way, including if people win.")
+        print("\n" + "=" * 66 + "\n")
+
     print(f"{'participant':<30}{'yrs':>5}{'paid':>6}{'human':>9}{'model':>9}{'n':>6}")
     for name, h, m, n, yrs, paid in per_person:
         y = "-" if yrs is None else str(yrs)
@@ -626,12 +681,14 @@ def main() -> None:
     b.add_argument("--seed", type=int, default=7)
     s = sub.add_parser("score", help="score response files against the key")
     s.add_argument("responses", nargs="+")
+    s.add_argument("--reply", action="store_true",
+                   help="also print the message to send back to each participant")
     args = ap.parse_args()
 
     if args.cmd == "build":
         build(args.n, args.seed)
     else:
-        score(args.responses)
+        score(args.responses, reply=args.reply)
 
 
 if __name__ == "__main__":
