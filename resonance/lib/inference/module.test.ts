@@ -2,12 +2,12 @@
  * Parity test: the TypeScript port must agree with PyTorch.
  *
  * This is the most important test in the inference layer. A hand-ported forward
- * pass that is subtly wrong produces plausible-looking numbers forever — no
+ * pass that is subtly wrong produces plausible-looking numbers forever, no
  * crash, no error, just a product that quietly reports the wrong thing. The
  * fixtures in parity_cases.json are real feature vectors with outputs generated
  * by model/export_weights.py straight from the trained PyTorch model.
  *
- * If this fails after a model retrain, regenerate the fixtures — do not relax
+ * If this fails after a model retrain, regenerate the fixtures. Do not relax
  * the tolerance.
  */
 

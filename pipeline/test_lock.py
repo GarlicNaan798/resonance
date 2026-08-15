@@ -2,13 +2,13 @@
 The real test-set lock, for the corpus the models actually use.
 
 WHY THIS EXISTS. pipeline/splits.py implements a lock, a SHA-256 fingerprint
-and an unlock_test(reason) gate — for `data/interim/ads_*.jsonl`, the
+and an unlock_test(reason) gate, for `data/interim/ads_*.jsonl`, the
 HuggingFace ads corpus the project abandoned. `data/splits/test.jsonl` holds
 2,806 rows of LLM instruction prompts that no model was ever trained on or
 evaluated against. It had zero callers.
 
 Meanwhile every model script split the Upworthy rows in-process via
-`train_final.split_indices()` — grouped and deterministic, so the separation
+`train_final.split_indices()`, grouped and deterministic, so the separation
 was genuine, but ungated and unrecorded. The consequence was not leakage; it
 was that nobody could say how many times the test set had been opened, which
 is why three documents in this repo gave three different answers.
@@ -16,11 +16,11 @@ is why three documents in this repo gave three different answers.
 This module closes that gap for the corpus in use:
 
   1. ONE definition of the split, imported everywhere rather than re-derived.
-  2. FINGERPRINTED — the test partition is hashed and pinned, so a change to
+  2. FINGERPRINTED. The test partition is hashed and pinned, so a change to
      the corpus or the seed is detected instead of silently revaluing every
      number ever reported.
-  3. GATED — reads require a written reason.
-  4. RECORDED — every read appends to data/processed/test_reads.jsonl. The
+  3. GATED, reads require a written reason.
+  4. RECORDED. Every read appends to data/processed/test_reads.jsonl. The
      count is now a fact on disk rather than a recollection.
 
 The historical reads are seeded into that log from the audit in the docstring
@@ -52,7 +52,7 @@ MIN_REASON = 20
 def split_indices(rows: list[dict]) -> dict[str, np.ndarray]:
     """Canonical grouped split. The single definition; do not re-derive it.
 
-    The unit is `row["group"]` — the transitive closure over shared test-id and
+    The unit is `row["group"]`. The transitive closure over shared test-id and
     shared headline. Splitting on rows would leak, because ~50% of headlines
     recur across experiments.
     """
@@ -144,7 +144,7 @@ def unlock_test(rows: list[dict], reason: str, *, evaluation: bool = True) -> np
     """Return the test indices. Requires a written reason, and records the read.
 
     `evaluation=False` marks a read that does not produce a reported number
-    (fixture extraction, shape checks). Recorded either way — the distinction
+    (fixture extraction, shape checks). Recorded either way. The distinction
     is reported, not used to hide anything.
     """
     if not reason or len(reason.strip()) < MIN_REASON:

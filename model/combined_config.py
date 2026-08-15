@@ -1,9 +1,9 @@
 """
 Combine the regularising changes, then ensemble on top.
 
-The sweep showed five independent axes all pointing the same way — lower
+The sweep showed five independent axes all pointing the same way, lower
 learning rate, shallower net, fewer epochs, more dropout, smaller hidden layer
-— and removing dropout entirely was the single worst result. That is not five
+, and removing dropout entirely was the single worst result. That is not five
 separate findings; it is one finding seen five ways: THE ORIGINAL CONFIG WAS
 OVERFITTING.
 

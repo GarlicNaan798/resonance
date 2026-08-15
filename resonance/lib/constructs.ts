@@ -47,7 +47,7 @@ export interface ModuleDefinition {
   detail: string;
   /**
    * The functional system the literature associates with this construct.
-   * An association for naming purposes — not a claim of measurement.
+   * An association for naming purposes, not a claim of measurement.
    */
   functionalReferent: string;
   /** Published grounding, shown in the methodology panel. */
@@ -75,8 +75,8 @@ export const MODULES: readonly ModuleDefinition[] = [
       "never attended to cannot be evaluated.",
     functionalReferent: "anterior insula / dorsal anterior cingulate",
     sources: [
-      "Pradeep K et al. (2026), F1000Research — attention as a measurable construct",
-      "Warriner et al. (2013) — valence/arousal/dominance norms, 13,915 words",
+      "Pradeep K et al. (2026), F1000Research, attention as a measurable construct",
+      "Warriner et al. (2013), valence/arousal/dominance norms, 13,915 words",
     ],
     response: "higher-is-better",
     caveat:
@@ -94,9 +94,9 @@ export const MODULES: readonly ModuleDefinition[] = [
       "and opposite in valence.",
     functionalReferent: "amygdala",
     sources: [
-      "Warriner et al. (2013) — arousal norms",
-      "Russell (1980) — circumplex model of affect",
-      "Yerkes & Dodson (1908) — arousal/performance inverted-U",
+      "Warriner et al. (2013), arousal norms",
+      "Russell (1980), circumplex model of affect",
+      "Yerkes & Dodson (1908), arousal/performance inverted-U",
     ],
     response: "inverted-u",
     optimalBand: [0.45, 0.65],
@@ -110,12 +110,12 @@ export const MODULES: readonly ModuleDefinition[] = [
     label: "Valuation",
     short: "How much worth or benefit the copy conveys.",
     detail:
-      "Positive valence and dominance of content words, gated by salience — " +
+      "Positive valence and dominance of content words, gated by salience, " +
       "value cannot be assigned to something that was never attended to.",
     functionalReferent: "ventromedial prefrontal cortex / ventral striatum",
     sources: [
-      "Krajbich et al. (2010) — attentional drift-diffusion; attention gates value",
-      "Warriner et al. (2013) — valence and dominance norms",
+      "Krajbich et al. (2010), attentional drift-diffusion; attention gates value",
+      "Warriner et al. (2013), valence and dominance norms",
     ],
     response: "higher-is-better",
     caveat:
@@ -131,9 +131,9 @@ export const MODULES: readonly ModuleDefinition[] = [
       "imageable language is recalled more reliably than abstract language.",
     functionalReferent: "hippocampus / medial temporal lobe",
     sources: [
-      "Brysbaert et al. (2014) — concreteness norms, 39,954 words",
-      "Cahill & McGaugh (1998) — emotional arousal enhances consolidation",
-      "Paivio (1971) — dual coding theory",
+      "Brysbaert et al. (2014), concreteness norms, 39,954 words",
+      "Cahill & McGaugh (1998), emotional arousal enhances consolidation",
+      "Paivio (1971), dual coding theory",
     ],
     response: "higher-is-better",
     caveat: "Memorability is not persuasion. Irritating copy is often highly memorable.",
@@ -147,8 +147,8 @@ export const MODULES: readonly ModuleDefinition[] = [
       "indicate avoidance-oriented framing.",
     functionalReferent: "left/right prefrontal asymmetry (frontal alpha asymmetry)",
     sources: [
-      "Pradeep K et al. (2026) — frontal alpha asymmetry and approach motivation",
-      "Davidson (1992) — anterior asymmetry and approach/withdrawal",
+      "Pradeep K et al. (2026), frontal alpha asymmetry and approach motivation",
+      "Davidson (1992), anterior asymmetry and approach/withdrawal",
     ],
     response: "higher-is-better",
     caveat:
@@ -162,12 +162,12 @@ export const MODULES: readonly ModuleDefinition[] = [
     short: "How easily the copy is understood.",
     detail:
       "Word length, sentence length, lexical diversity and dictionary coverage. " +
-      "Easily processed text is judged more favourably — an effect independent " +
+      "Easily processed text is judged more favourably. An effect independent " +
       "of the content itself.",
     functionalReferent: "dorsolateral prefrontal cortex",
     sources: [
-      "Reber, Winkielman & Schwarz (1998) — fluency and positive evaluation",
-      "Brysbaert & New (2009) — word frequency and processing speed",
+      "Reber, Winkielman & Schwarz (1998), fluency and positive evaluation",
+      "Brysbaert & New (2009), word frequency and processing speed",
     ],
     response: "higher-is-better",
     caveat:
@@ -192,7 +192,7 @@ export function getModule(id: ModuleId): ModuleDefinition {
  * Var(observed) = Var(true) + Var(noise), that spread the arms further apart
  * than reality and inflated the estimate. Deconvolving the noise gives 0.662,
  * and the variance decomposition behind it is stark: of the target's 0.0794
- * variance, 0.0697 is sampling noise and only 0.0097 — about 12% — is signal.
+ * variance, 0.0697 is sampling noise and only 0.0097, about 12%, is signal.
  *
  * A third, analytic estimate gave 0.544, but that is refuted by our own test
  * accuracy of 0.5942: a real ceiling cannot sit below measured performance.
@@ -205,7 +205,7 @@ export const PERFORMANCE = {
   // Listwise ensemble, from the pre-registered read in test_read_listwise.py.
   // This comment previously called it the "third and final test read". By
   // execution order it is the second of two evaluations; reads were not logged
-  // at the time, so the ordinal could not be checked. They are logged now —
+  // at the time, so the ordinal could not be checked. They are logged now,
   // see pipeline/test_lock.py and FUNDAMENTALS.md §10. Was 0.5942 for the single
   // pairwise model; an identically-trained pairwise reference scored 0.6009 in
   // the same run, so ~+0.017 of the gain is attributable to the ensemble and
@@ -220,7 +220,7 @@ export const PERFORMANCE = {
   signalFraction: 0.12,
   nExperiments: 2665,
   nPairs: 20452,
-  trainingData: "Upworthy Research Archive — 32,487 randomised A/B tests",
+  trainingData: "Upworthy Research Archive, 32,487 randomised A/B tests",
 } as const;
 
 /** Claims the product must never make. Enforced by review; listed here. */

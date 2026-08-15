@@ -75,7 +75,7 @@ def main() -> None:
     # --- positions must be balanced, or position0 is not a chance-level probe
     second = sum(k["winner_position"] for k in items)
     assert abs(second - n / 2) <= 1, (
-        f"winner shown second in {second}/{n} — positions are not balanced")
+        f"winner shown second in {second}/{n}, positions are not balanced")
 
     with tempfile.TemporaryDirectory() as tmp:
         out = run(tmp, key_file, ["perfect"], rng)
@@ -121,7 +121,7 @@ def main() -> None:
         # ---- pre-registered exclusions (docs/PREREGISTRATION.md section 8) ----
         # Stopping at the core block is a COMPLETE response, not abandonment.
         # The floor is absolute (24 items), so someone who answers 30 of 60 and
-        # takes the offered exit must be kept — a "80% of 60" rule would have
+        # takes the offered exit must be kept. A "80% of 60" rule would have
         # discarded the majority of participants by design.
         answers = responses_for(items, "perfect", rng)
         for a in answers[hb.CORE_ITEMS:]:
@@ -156,7 +156,7 @@ def main() -> None:
             raise AssertionError("a 400ms-per-item response was scored anyway")
 
         # The rule must be BLIND to accuracy. A slow, careful participant is kept
-        # whether they agree with the model or contradict it completely — if this
+        # whether they agree with the model or contradict it completely, if this
         # ever became accuracy-dependent the whole study would be riggable.
         for kind in ("perfect", "inverted"):
             slow = [dict(a, ms=9000) for a in responses_for(items, kind, rng)]

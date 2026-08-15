@@ -33,7 +33,7 @@ const CAPABILITIES = [
     title: "Know which variant wins before you spend",
     body:
       "Give it two or more versions of a headline and it picks the likely " +
-      "winner — or tells you the two are too close to call, which is the more " +
+      "winner, or tells you the two are too close to call, which is the more " +
       "useful answer when it is true.",
     href: "/compare",
     cta: "Compare copy",
@@ -44,7 +44,7 @@ const CAPABILITIES = [
     tagClass: "tag-green",
     title: "Six constructs, scored against your audience",
     body:
-      "Salience, affect, valuation, encoding, approach and control — computed " +
+      "Salience, affect, valuation, encoding, approach and control, computed " +
       "from published human word ratings, with the demographic ratings applied " +
       "for the segment you specify.",
     href: "/analyse",
@@ -69,7 +69,7 @@ const CAPABILITIES = [
     title: "Find out if any of this works on your campaigns",
     body:
       "Seal a prediction before launch, record the winner afterwards. The " +
-      "track record is yours, not ours — including your own blind picks, so " +
+      "track record is yours, not ours, including your own blind picks, so " +
       "you learn how your judgement scores too.",
     href: "/track",
     cta: "Track record",
@@ -88,7 +88,7 @@ export default function Home() {
         </h1>
         <p className="max-w-xl text-[1.0625rem] leading-relaxed text-muted">
           Resonance ranks marketing copy and profiles it against published
-          behavioural science. Built on the {PERFORMANCE.trainingData} — real
+          behavioural science. Built on the {PERFORMANCE.trainingData}, real
           randomised experiments with real click outcomes, not opinion.
         </p>
         <div className="flex flex-wrap items-center gap-3">
@@ -182,7 +182,7 @@ export default function Home() {
               <span className="numeric text-ink">
                 {Math.round(PERFORMANCE.signalFraction * 100)}%
               </span>{" "}
-              of the variance in the results is real signal — the rest is
+              of the variance in the results is real signal. The rest is
               sampling noise. So{" "}
               <span className="text-ink">
                 a model with perfect knowledge would still only score{" "}
@@ -228,7 +228,7 @@ export default function Home() {
               <span className="numeric text-ink">
                 {pct(ABSTAINED.accuracyIfForced)}
               </span>{" "}
-              — better than a coin, and nowhere near enough to spend a test
+, better than a coin, and nowhere near enough to spend a test
               budget on. Being told which half is which is the point.
             </p>
           </div>
@@ -269,14 +269,14 @@ export default function Home() {
           <p className="text-sm leading-relaxed text-muted">
             Resonance makes no outbound network calls at runtime. Models run
             in-process, and the encoder is fetched once at build time then
-            locked to local files — there is no setting that re-enables a remote
+            locked to local files. There is no setting that re-enables a remote
             fetch. Verify it rather than trust it:
           </p>
           <pre className="overflow-x-auto rounded-lg border border-rule bg-sunk p-4 font-mono text-xs text-muted">
             docker compose run --rm --network none app npm run selftest
           </pre>
           <p className="text-sm leading-relaxed text-muted">
-            Or skip the server entirely — <code>npm run desktop</code> builds a
+            Or skip the server entirely, <code>npm run desktop</code> builds a
             local app whose campaign data never leaves the machine it runs on.
             Uploads containing emails, phone numbers, addresses, IPs or card
             numbers are rejected at ingest rather than stored and redacted.
@@ -295,7 +295,7 @@ export default function Home() {
           footnote: the constructs transfer across domains more readily than the
           calibration does. A model refitted on your own campaign results should
           be expected to beat the global one. That is the intended path, not a
-          workaround — but the tool is useful before you get there, which is why
+          workaround, but the tool is useful before you get there, which is why
           nothing above requires you to hand over anything.
         </p>
         <div className="mt-7 flex flex-wrap gap-3">
@@ -351,7 +351,7 @@ function FauxWindow() {
         <span className="h-2.5 w-2.5 rounded-full bg-rule-strong" />
         <span className="h-2.5 w-2.5 rounded-full bg-rule-strong" />
         <span className="ml-3 font-mono text-[0.6875rem] text-faint">
-          resonance — compare
+          resonance. Compare
         </span>
       </div>
 
@@ -359,7 +359,7 @@ function FauxWindow() {
         <div className="rounded-lg border border-rule bg-pale-yellow/60 p-4 text-sm text-pale-yellow-ink">
           These variants score too closely to separate. At margins this small
           the model is near chance, so the honest answer is that we cannot tell
-          them apart — pick on other grounds, or run a live test.
+          them apart. Pick on other grounds, or run a live test.
         </div>
 
         <ol className="space-y-3">

@@ -6,7 +6,7 @@
  * Why this exists. transformers.js will happily fetch a model from the
  * HuggingFace hub the first time it is asked for one, and cache it inside
  * node_modules. That is convenient and completely incompatible with the claim
- * in docs/SELF_HOSTING.md that nothing is fetched at runtime — the app was
+ * in docs/SELF_HOSTING.md that nothing is fetched at runtime. The app was
  * making an outbound call on first inference, into a directory that is not part
  * of any build artifact.
  *
@@ -14,7 +14,7 @@
  * locked to local files only (see lib/inference/ranker.ts). The app now fails
  * loudly on a missing encoder rather than quietly reaching for the network.
  *
- * The weights are NOT committed — ~90 MB has no business in a git history. This
+ * The weights are NOT committed, ~90 MB has no business in a git history. This
  * script reproduces them, and the desktop build copies them into the bundle.
  */
 

@@ -43,7 +43,7 @@ HF_TOKEN = env_loader.get("HF_TOKEN")
 
 
 def _headers() -> dict[str, str]:
-    """Authenticate when a token exists — gated datasets 401 without it."""
+    """Authenticate when a token exists, gated datasets 401 without it."""
     h = {"User-Agent": UA}
     if HF_TOKEN:
         h["Authorization"] = f"Bearer {HF_TOKEN}"
@@ -140,7 +140,7 @@ def main() -> None:
     os.makedirs(OUT_DIR, exist_ok=True)
     print(f"HF_TOKEN: {env_loader.redact(HF_TOKEN or '')}")
     if not HF_TOKEN:
-        print("  (no token — gated datasets such as AdImageNet will be skipped)")
+        print("  (no token, gated datasets such as AdImageNet will be skipped)")
     grand = 0
     for name, (ds, cfg, split, fields) in DATASETS.items():
         try:

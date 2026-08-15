@@ -1,4 +1,4 @@
-# Resonance — Model Card
+# Resonance, Model Card
 
 Last updated: 2026-08-05
 
@@ -6,9 +6,9 @@ Last updated: 2026-08-05
 
 Given marketing copy, Resonance produces two **independent** outputs:
 
-1. **A ranking prediction** — given two or more variants, which is likelier to
+1. **A ranking prediction**, given two or more variants, which is likelier to
    perform better. Produced by a ranker over sentence embeddings.
-2. **A diagnostic profile** — six behavioural-science scores (salience, affect,
+2. **A diagnostic profile**, six behavioural-science scores (salience, affect,
    valuation, encoding, approach, control) computed from published human word
    ratings.
 
@@ -34,7 +34,7 @@ Both intervals exclude chance, so both are genuinely better than guessing.
 with perfect knowledge of every headline's true click rate would still only
 agree with the recorded winner 66.2% of the time. Only ~12% of the target's
 variance is signal; the rest is sampling noise. Read every figure here against
-0.662, not against 1.00 — at 0.6176 the ranker captures roughly 72% of the
+0.662, not against 1.00, at 0.6176 the ranker captures roughly 72% of the
 achievable signal.
 
 (This was reported as 0.788 until 2026-08-06. That estimate used each arm's
@@ -49,7 +49,7 @@ quoted externally.** No tuning was performed after the test set was opened.
 ## What the system cannot do
 
 - **It cannot predict campaign outcomes.** Regression against the within-test
-  effect reaches R² ≈ 0.01 — and an *unconstrained* 512-unit network reaches the
+  effect reaches R² ≈ 0.01, and an *unconstrained* 512-unit network reaches the
   same. This is a property of the task, not a limitation of the architecture.
   Any claim of the form "this campaign will lift conversions by X%" is
   unsupported.
@@ -63,7 +63,7 @@ quoted externally.** No tuning was performed after the test set was opened.
 
 ## Training data
 
-**Upworthy Research Archive** (Matias et al.) — 32,487 randomised A/B tests,
+**Upworthy Research Archive** (Matias et al.), 32,487 randomised A/B tests,
 150,624 arms after filtering to ≥500 impressions.
 
 Why randomised experiments matter: arms within one test share article, image and
@@ -80,7 +80,7 @@ al. (2014) concreteness for 39,954 words.
 
 ## Known limitations
 
-**Domain shift — the most important one.** Training data is 2013–15 viral
+**Domain shift. The most important one.** Training data is 2013–15 viral
 media. A B2B SaaS or luxury retail advertiser is a different domain. The
 constructs plausibly transfer; the calibration does not. Per-tenant
 recalibration on client data is the intended mitigation, and a client's
@@ -92,7 +92,7 @@ engineering produced nothing:
 - v2 (+28 features: discrete emotion, curiosity gap, self-reference, word
   frequency, social proof): **−0.0009** vs the 50-feature baseline.
 - v3 (+8 features: identifiable-individual effect, narrative markers):
-  **+0.0057**, against a measured noise floor of 0.0232 — discarded under a
+  **+0.0057**, against a measured noise floor of 0.0232, discarded under a
   pre-registered threshold.
 
 A disagreement analysis found no interpretable feature separating

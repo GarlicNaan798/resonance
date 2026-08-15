@@ -5,7 +5,7 @@ Solution 1 from the Phase 5 list, and the cheapest untried idea.
 
 Every model so far learns from PAIRS: an experiment with 5 arms is decomposed
 into 10 independent comparisons, and the model never sees that they came from
-one experiment. That throws away structure — the arms compete for one fixed
+one experiment. That throws away structure. The arms compete for one fixed
 pool of impressions, and their relative order is a single joint fact, not ten
 separate ones.
 
@@ -19,7 +19,7 @@ pairwise decomposition over-weights experiments with many arms (they generate
 quadratically more pairs) and lets the model see the same arm many times with
 inconsistent partners. Listwise weights every experiment equally.
 
-Kept deliberately simple — one loss function, same architecture, same splits.
+Kept deliberately simple. One loss function, same architecture, same splits.
 Evaluated on the same copy-only pairs so the number is comparable to everything
 else in the project.
 """

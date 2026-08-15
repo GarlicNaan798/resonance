@@ -1,7 +1,7 @@
 /**
- * GET   /api/predictions  — the log and the track record
- * POST  /api/predictions  — seal a prediction before launch
- * PATCH /api/predictions  — record which variant actually won
+ * GET   /api/predictions. The log and the track record
+ * POST  /api/predictions, seal a prediction before launch
+ * PATCH /api/predictions, record which variant actually won
  *
  * This is the only route in the app that writes to disk. Everything else
  * analyses and discards. It writes locally and nowhere else: see
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
     if (!clean) {
       return Response.json(
         {
-          // Kinds only — the matched values are never echoed back.
+          // Kinds only. The matched values are never echoed back.
           error:
             "Personal data detected in a variant: " +
             `${[...new Set(findings.map((f) => f.kind))].join(", ")}. ` +

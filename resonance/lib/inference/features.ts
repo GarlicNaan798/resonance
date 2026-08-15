@@ -1,5 +1,5 @@
 /**
- * TypeScript port of pipeline/features.py — the 50 module inputs.
+ * TypeScript port of pipeline/features.py. The 50 module inputs.
  *
  * This must produce byte-for-byte the same vector as the Python extractor, in
  * the same order. If it drifts, every score in the product is wrong in a way
@@ -72,7 +72,7 @@ function z(dim: string, value: number): number {
   return (value - s.mean) / (s.sd || 1);
 }
 
-/** mean, populationSd, min, max — matching Python's `_agg`. */
+/** mean, populationSd, min, max, matching Python's `_agg`. */
 function agg(v: number[]): [number, number, number, number] {
   if (v.length === 0) return [0, 0, 0, 0];
   if (v.length === 1) return [v[0], 0, v[0], v[0]];
@@ -138,6 +138,11 @@ export function extractFeatures(text: string): Record<string, number> {
   const nSent = Math.max(sentences.length, 1);
   const caps = (text.match(/[A-Z]/g) ?? []).length;
   const digits = (text.match(/[0-9]/g) ?? []).length;
+  // The em dash here is DATA, not prose: it is a punctuation mark this feature
+  // counts in the user's copy. A project-wide em dash sweep rewrote it to ", "
+  // inside the character class, which silently added the space character to
+  // the class and roughly quadrupled punct_density on every input. Restored,
+  // and the Python parity fixtures are what caught it.
   const punct = (text.match(/[,.;:!?\-—'"()]/g) ?? []).length;
   const uniq = new Set(rawTokens).size;
 

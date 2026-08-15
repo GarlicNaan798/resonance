@@ -10,7 +10,7 @@
  * Encryption at rest is delegated to the storage layer (managed database
  * encryption, or an encrypted volume) rather than reimplemented here. Rolling
  * our own record encryption would mean owning key rotation, envelope
- * encryption and backup key escrow — all of which the platform already does
+ * encryption and backup key escrow. All of which the platform already does
  * better. What this module owns is *asserting* that it is switched on, and
  * refusing to run if it is not.
  */
@@ -88,7 +88,7 @@ export function loadSafetyConfig(
 
 /**
  * Fail fast on a configuration that would be indefensible in a security
- * review. These are refusals, not warnings — a warning in a startup log is a
+ * review. These are refusals, not warnings. A warning in a startup log is a
  * warning nobody reads.
  */
 export function assertSafe(cfg: SafetyConfig): void {
@@ -139,9 +139,9 @@ export function isExpired(
 /**
  * REMOVED: describeSafety().
  *
- * It returned a customer-facing list of guarantees — "Retention: 365 days, then
+ * It returned a customer-facing list of guarantees, "Retention: 365 days, then
  * purged", "Model isolation: per-tenant; your data never trains another
- * tenant's model" — carrying the comment "Safe to show a customer". Neither
+ * tenant's model", carrying the comment "Safe to show a customer". Neither
  * claim was true. There is no store to purge from and no per-tenant model; the
  * only thing this app persists is the local prediction log.
  *
@@ -149,7 +149,7 @@ export function isExpired(
  * rather than leave it: the next person to wire a data-protection panel would
  * have shipped false assurances from a function that told them it was safe to.
  *
- * The config it read is real and still enforced — see assertSafe() above. Only
+ * The config it read is real and still enforced. See assertSafe() above. Only
  * the unearned summary is gone. Reinstate it alongside the features it
  * describes, not before.
  */

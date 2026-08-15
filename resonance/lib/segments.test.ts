@@ -1,7 +1,7 @@
 /**
  * Stress tests for the segment priors.
  *
- * The danger with theory-derived gains is not that any single one is wrong —
+ * The danger with theory-derived gains is not that any single one is wrong,
  * each is bounded and cited. It is that several small, individually-defensible
  * adjustments COMPOSE into a large, indefensible one, and that the resulting
  * number then looks like a measurement. These tests attack that directly:
@@ -114,7 +114,7 @@ describe("bounds hold under adversarial composition", () => {
     ) as Record<ModuleId, number>;
     const once = applyGains(acts, r);
     for (let i = 0; i < 20; i++) acts = applyGains(acts, r);
-    // Repeated application obviously compounds — the point is that the caller
+    // Repeated application obviously compounds. The point is that the caller
     // must not do it, and that a single application is modest.
     for (const m of MODULES) {
       expect(Math.abs(once[m] - 0.5)).toBeLessThanOrEqual(
@@ -153,7 +153,7 @@ describe("directions match the cited theory", () => {
     expect(r.gains.valuation).toBeGreaterThan(1);
   });
 
-  it("gender priors are opposite and small — the weakest evidence here", () => {
+  it("gender priors are opposite and small. The weakest evidence here", () => {
     const m = resolveGains(spec({ gender: "male" }));
     const f = resolveGains(spec({ gender: "female" }));
     expect(m.gains.affect).toBeGreaterThan(1);

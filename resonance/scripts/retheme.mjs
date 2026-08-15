@@ -5,7 +5,7 @@
  * Written as a script rather than done by hand because the same dozen
  * substitutions recur across six files, and a manual pass over ~140 sites is
  * where typos and missed `dark:` twins come from. Each token pair encodes a
- * MEANING — surface, rule, muted — so the dark variants disappear entirely:
+ * MEANING, surface, rule, muted, so the dark variants disappear entirely:
  * the palette inverts once in CSS instead of at every element.
  *
  * Not intended to be re-run. Kept in the tree as the record of what changed.
@@ -148,7 +148,7 @@ for (const rel of FILES) {
 }
 
 // A leftover `dark:` means a pair this script did not know about, which would
-// render wrong in one theme only — the kind of thing nobody notices until a
+// render wrong in one theme only. The kind of thing nobody notices until a
 // screenshot. Report rather than fail; the remainder gets handled by hand.
 for (const rel of FILES) {
   const src = await readFile(join(ROOT, rel), "utf-8");

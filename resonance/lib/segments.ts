@@ -5,7 +5,7 @@
  * -----------------------
  * The founding premise is telling a company how a campaign lands with THEIR
  * demographic. But no dataset in this project links copy to outcome by
- * demographic — Upworthy recorded what ran and how it did, never who saw it —
+ * demographic, Upworthy recorded what ran and how it did, never who saw it,
  * so the model's audience gains were never fitted and sit at zero. Without
  * something here, the audience selector is a control that does nothing.
  *
@@ -20,8 +20,8 @@
  *    *involvement* and *need for cognition*. The common shortcut of
  *    "higher education -> central route" is unsupported: need for cognition
  *    correlates with education at only r ~ 0.2-0.3. So involvement is a
- *    first-class input the marketer supplies directly — they know whether they
- *    sell cars or chewing gum — and education contributes only a small,
+ *    first-class input the marketer supplies directly. They know whether they
+ *    sell cars or chewing gum, and education contributes only a small,
  *    explicitly low-confidence NFC adjustment.
  *
  * 2. A rating difference is not a response difference. Warriner shows men rate
@@ -53,7 +53,7 @@ export interface SegmentPrior {
 }
 
 /**
- * Purchase involvement — the actual ELM moderator, supplied by the marketer.
+ * Purchase involvement. The actual ELM moderator, supplied by the marketer.
  * High: considered, high-cost, high-risk (cars, software, insurance).
  * Low: habitual, low-cost, low-risk (snacks, toiletries).
  */
@@ -61,7 +61,7 @@ export type Involvement = "high" | "low" | "unknown";
 
 /**
  * Gains are bounded to +/- this fraction. Published effect sizes here are
- * d ~ 0.2-0.35 — small. A prior that swung scores by 50% would imply a
+ * d ~ 0.2-0.35, small. A prior that swung scores by 50% would imply a
  * precision the literature does not support.
  */
 export const MAX_GAIN_DELTA = 0.15;
@@ -115,7 +115,7 @@ const AGE_PRIORS: Record<"younger" | "older", SegmentPrior> = {
       "positively-framed, approach-oriented messaging.",
   },
   younger: {
-    // Warriner arousal difference (+0.182, d = 0.20) — a RATING difference,
+    // Warriner arousal difference (+0.182, d = 0.20). A RATING difference,
     // hence low confidence and a small gain.
     gains: { affect: 1.06, salience: 1.04 },
     source: "Warriner et al. (2013), measured in pipeline/audience_analysis.py",
@@ -129,7 +129,7 @@ const AGE_PRIORS: Record<"younger" | "older", SegmentPrior> = {
 
 /**
  * Gender. Warriner: men rate words +0.285 higher on arousal (d = 0.32). Again a
- * rating difference. Deliberately the weakest prior here — gender is also the
+ * rating difference. Deliberately the weakest prior here, gender is also the
  * axis where an over-confident model does the most social harm, so the gain is
  * kept minimal and the confidence flag is explicit.
  */
@@ -156,7 +156,7 @@ const GENDER_PRIORS: Record<"male" | "female", SegmentPrior> = {
 
 /**
  * Education as a weak need-for-cognition proxy. NFC correlates with education
- * at only r ~ 0.2-0.3, so this gain is deliberately tiny — included for
+ * at only r ~ 0.2-0.3, so this gain is deliberately tiny, included for
  * completeness, not because it carries much weight.
  */
 const EDUCATION_PRIORS: Record<"lower" | "higher", SegmentPrior> = {
@@ -187,7 +187,7 @@ export interface SegmentSpec extends Audience {
 export interface ResolvedGains {
   gains: Record<ModuleId, number>;
   applied: SegmentPrior[];
-  /** True when nothing was applied — every gain is exactly 1. */
+  /** True when nothing was applied. Every gain is exactly 1. */
   isNeutral: boolean;
   /** Largest deviation from 1.0 across modules. */
   maxDeviation: number;

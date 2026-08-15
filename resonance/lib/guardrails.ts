@@ -16,7 +16,7 @@
  *
  * Meanwhile we have direct evidence from the SAME 32,487 randomised
  * experiments that exclamation marks hurt: `exclaim_count`, negated, reached
- * 0.5698 pairwise accuracy — the strongest single feature found in the whole
+ * 0.5698 pairwise accuracy. The strongest single feature found in the whole
  * project, and stronger than the constrained module model.
  *
  * This module applies that evidence where the ranker is blind. It is not a
@@ -62,8 +62,8 @@ const CAPS_THRESHOLD = 0.3;
  * Density alone gives false positives: one exclamation mark in a 60-character
  * headline already exceeds any useful density threshold, and a single "!" is
  * ordinary punctuation rather than shouting. Requiring at least two keeps the
- * guardrail on the behaviour the evidence is actually about — repeated
- * exclamation — and off normal copy. A guardrail that fires on ordinary
+ * guardrail on the behaviour the evidence is actually about, repeated
+ * exclamation, and off normal copy. A guardrail that fires on ordinary
  * sentences gets switched off, which helps nobody.
  */
 const EXCLAIM_DENSITY = 1.5;
@@ -81,8 +81,8 @@ export function checkSurface(text: string): GuardrailReport {
       severity: Math.min(1, (f.caps_ratio - CAPS_THRESHOLD) / (1 - CAPS_THRESHOLD)),
       message:
         `${Math.round(f.caps_ratio * 100)}% of characters are capitals. The ` +
-        "ranking model cannot see capitalisation at all — its encoder is " +
-        "uncased — so its recommendation does not account for this.",
+        "ranking model cannot see capitalisation at all. Its encoder is " +
+        "uncased, so its recommendation does not account for this.",
       evidence:
         "Verified: uppercase and lowercase copy produce identical embeddings " +
         "(cosine 1.000000).",
@@ -99,7 +99,7 @@ export function checkSurface(text: string): GuardrailReport {
         "exclamation marks predicted higher click-through.",
       evidence:
         "Strongest single feature in this project: exclamation count, negated, " +
-        "reached 0.5698 pairwise accuracy on held-out experiments — better " +
+        "reached 0.5698 pairwise accuracy on held-out experiments, better " +
         "than the behavioural model's 0.5346.",
     });
   }
@@ -128,7 +128,7 @@ export interface GuardedRanking<T> {
  * top-ranked item is the riskiest one.
  *
  * The ordering is left untouched. The caller is told what the model could not
- * see and decides for themselves — which is the correct division of labour when
+ * see and decides for themselves, which is the correct division of labour when
  * the model is right 59% of the time.
  */
 export function guardRanking<T extends { text: string }>(

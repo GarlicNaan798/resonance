@@ -40,7 +40,7 @@ export interface PiiFinding {
   /** Character offset in the scanned string. */
   start: number;
   end: number;
-  /** Length only — the matched text is deliberately never retained. */
+  /** Length only. The matched text is deliberately never retained. */
   length: number;
   /** Human-readable, value-free explanation for the upload UI. */
   message: string;
@@ -59,7 +59,7 @@ interface Detector {
   validate?: (match: string) => boolean;
 }
 
-/** Luhn checksum — distinguishes a real card number from any 16 digits. */
+/** Luhn checksum, distinguishes a real card number from any 16 digits. */
 function luhnValid(raw: string): boolean {
   const digits = raw.replace(/[^0-9]/g, "");
   if (digits.length < 13 || digits.length > 19) return false;
@@ -79,7 +79,7 @@ function luhnValid(raw: string): boolean {
 
 /**
  * Reject strings of digits that are obviously not phone numbers in a marketing
- * context — prices, years, impression counts, percentages.
+ * context, prices, years, impression counts, percentages.
  */
 function plausiblePhone(match: string): boolean {
   const digits = match.replace(/[^0-9]/g, "");
@@ -87,7 +87,7 @@ function plausiblePhone(match: string): boolean {
   // "2020-2024", "1,000,000 impressions" and similar are not phone numbers.
   if (/^(19|20)\d{2}$/.test(digits)) return false;
   if (/^0+$/.test(digits)) return false;
-  // Require punctuation, a leading +, or a country/area grouping — a bare run
+  // Require punctuation, a leading +, or a country/area grouping. A bare run
   // of digits inside copy is far more often a metric than a number to call.
   return /[+()\-.\s]/.test(match.trim()) || digits.length >= 11;
 }
@@ -210,8 +210,8 @@ export function scanRows(
 }
 
 /**
- * Thrown at the ingest boundary. Carries locations and kinds only — never the
- * offending values — so it stays safe to log.
+ * Thrown at the ingest boundary. Carries locations and kinds only, never the
+ * offending values, so it stays safe to log.
  */
 export class PiiRejectedError extends Error {
   readonly problems: RowScan[];

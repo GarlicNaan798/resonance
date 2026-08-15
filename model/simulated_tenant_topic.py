@@ -2,7 +2,7 @@
 Per-tenant recalibration under TOPIC shift (second attempt).
 
 The temporal version (simulated_tenant.py) returned no gain at any tenant size,
-but its premise was weak: the filtered corpus spans 2014-06 to 2014-11 — five
+but its premise was weak: the filtered corpus spans 2014-06 to 2014-11, five
 months of a single publisher. There is almost no drift there to adapt to, so
 "recalibration doesn't help" was never going to be informative.
 
@@ -13,7 +13,7 @@ embeddings keying on.
 
 Method: k-means over headline embeddings, then hold out the most distinctive
 cluster as the "tenant". The global model trains on everything else, so the
-tenant's content genuinely differs from what the global model saw — which is the
+tenant's content genuinely differs from what the global model saw, which is the
 situation Phase 4 exists to fix.
 
 Leakage discipline is unchanged: splits are by group, and tenant-train and

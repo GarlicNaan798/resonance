@@ -2,7 +2,7 @@
  * Resonance desktop shell.
  *
  * Runs the Next.js server as a child process on a loopback port and points a
- * BrowserWindow at it. The point of the desktop build is not convenience — it
+ * BrowserWindow at it. The point of the desktop build is not convenience. It
  * is that the trust claim stops being a promise and becomes something the user
  * can check with their own firewall. Three things make that true:
  *
@@ -26,7 +26,7 @@ const isDev = !app.isPackaged;
 
 /**
  * Resources live in different places packaged vs not. Getting this wrong is the
- * classic Electron bug — it works in development and ships broken.
+ * classic Electron bug. It works in development and ships broken.
  */
 const APP_ROOT = isDev
   ? path.join(__dirname, "..")
@@ -58,7 +58,7 @@ function waitForServer(port, timeoutMs = 60000) {
         });
         if (res.ok) return resolve();
       } catch {
-        // Not up yet — expected while the server boots.
+        // Not up yet, expected while the server boots.
       }
       if (Date.now() > deadline) {
         return reject(new Error(`Server did not start within ${timeoutMs}ms`));
@@ -117,7 +117,7 @@ function createWindow() {
     backgroundColor: "#fafafa",
     title: "Resonance",
     webPreferences: {
-      // No renderer needs Node here — the app is an ordinary web page talking
+      // No renderer needs Node here. The app is an ordinary web page talking
       // to a local HTTP server. Leaving these on would hand full filesystem
       // access to any script that made it into the page.
       nodeIntegration: false,

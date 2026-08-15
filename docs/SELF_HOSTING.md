@@ -2,7 +2,7 @@
 
 For agencies and in-house teams whose campaign data cannot leave their own
 infrastructure. In self-hosted mode Resonance makes **no outbound network calls
-at all** — models run locally, and there is no telemetry.
+at all**, models run locally, and there is no telemetry.
 
 This is the deployment most enterprise security reviews will require, so it is
 supported as a first-class mode rather than an afterthought.
@@ -19,7 +19,7 @@ supported as a first-class mode rather than an afterthought.
 
 ### The encoder, precisely
 
-The weights are **not** in the git history — 87 MB has no business there. They are
+The weights are **not** in the git history, 87 MB has no business there. They are
 downloaded once, explicitly, by a build step:
 
 ```bash
@@ -104,7 +104,7 @@ nobody reads.
 
 ## Verifying there is no egress
 
-Do not take the claim on trust — the point of self-hosting is that you can check
+Do not take the claim on trust. The point of self-hosting is that you can check
 it. Run the container with networking disabled and confirm the app still works:
 
 ```bash
@@ -140,7 +140,7 @@ the result. `module_model.json` carries `format_version` for exactly this.
 Stated plainly, because a security review will ask:
 
 - **No outcome prediction.** The tool ranks variants and profiles copy. It does
-  not forecast conversions or revenue — see `data/processed/model_card.md`.
+  not forecast conversions or revenue. See `data/processed/model_card.md`.
 - **Global model accuracy is 61.8%** on held-out randomised experiments
   (chance 50%, measured ceiling 66.2%). Recalibrating on your own campaigns is
   expected to beat that, and is the intended path.

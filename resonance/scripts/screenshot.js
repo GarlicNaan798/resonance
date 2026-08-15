@@ -6,7 +6,7 @@
  *
  * Why Electron rather than Playwright: Electron is already a dependency for the
  * desktop shell, so this needs no extra 300 MB of browser binaries, and it
- * renders with the same engine the desktop app ships with — which is the thing
+ * renders with the same engine the desktop app ships with, which is the thing
  * whose appearance we actually care about.
  *
  * Each page is measured first and the window resized to its full height, so the
@@ -56,7 +56,7 @@ async function main() {
     // Shrink back before measuring. scrollHeight is never less than the
     // viewport, so leaving the window at the previous (tall) page's height
     // makes every short page report that height and capture as mostly empty
-    // space — which is exactly what the first run produced.
+    // space, which is exactly what the first run produced.
     win.setContentSize(WIDTH, 900);
     await win.loadURL(BASE + route);
 

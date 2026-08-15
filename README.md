@@ -32,7 +32,7 @@ the rest is sampling noise.
 So the honest scale runs 50% → 66.2%, not 50% → 100%. On that scale the model
 captures about **72% of the signal that exists to be captured**.
 
-That ceiling was measured, not assumed — see `model/ceiling_robustness.py`. An
+That ceiling was measured, not assumed. See `model/ceiling_robustness.py`. An
 earlier estimate of 0.788 was wrong because it treated each arm's *observed*
 click rate as its true rate. Correcting it moved the ceiling down and made the
 model look better; it was corrected anyway.
@@ -43,7 +43,7 @@ Enumerated in code as `PROHIBITED_CLAIMS` in `resonance/lib/constructs.ts`, not
 just in prose:
 
 - **Predict conversions, revenue or ROI.** Regression against the outcome
-  reaches R² ≈ 0.01 — and so does an unconstrained 512-unit network. That is a
+  reaches R² ≈ 0.01, and so does an unconstrained 512-unit network. That is a
   property of the task, not of the architecture.
 - **Measure neurochemistry.** The six diagnostic modules are named for
   functional systems the literature associates with each construct. They are
@@ -55,14 +55,14 @@ just in prose:
 - **Replace A/B testing.**
 
 **It has never been measured against a human baseline.** The obvious pitch line
-— "beats copywriter intuition" — is not evidenced, so it is not made.
+, "beats copywriter intuition", is not evidenced, so it is not made.
 
 The study to settle it is built and pre-registered but has **no participants
 yet**: `model/human_baseline.py` draws 60 blind pairs from the held-out set,
 balances winner position exactly 30/30, scores the model on the identical items
 a participant answered, and compares them with McNemar's exact test. The power
-calculation was fixed before collection — ≈560 answered items, 10 participants
-— so a null result cannot later be passed off as evidence of equivalence.
+calculation was fixed before collection, ≈560 answered items, 10 participants
+, so a null result cannot later be passed off as evidence of equivalence.
 
 Whatever it returns gets published here, including the outcome where humans win.
 
@@ -73,8 +73,8 @@ than a disclaimer.
 
 **It might not, and we have not measured whether it does.**
 
-What plausibly transfers is the mechanics — concreteness, specificity,
-curiosity, how a claim is framed — because those are properties of language
+What plausibly transfers is the mechanics, concreteness, specificity,
+curiosity, how a claim is framed, because those are properties of language
 rather than of Upworthy. What almost certainly does not transfer is the
 **calibration**: the thresholds were fitted to that audience, clicking those
 articles, in that decade.
@@ -90,21 +90,21 @@ Also worth knowing before you install anything. The model answers roughly **50%*
 of comparisons and says "too close to call" on the rest.
 
 That is a result, not a malfunction. Forced to guess on the pairs it passes on,
-it would score **56.3%** — better than a coin, and nowhere near enough to justify
+it would score **56.3%**, better than a coin, and nowhere near enough to justify
 spending a test budget. Knowing which half is which is most of the value.
 
 ## Two layers, deliberately separate
 
 1. **The ranker** predicts. It reads sentence embeddings, scores 61.8%, and
    cannot explain itself.
-2. **The diagnostic profile** explains. Six constructs — salience, affect,
-   valuation, encoding, approach, control — from Warriner et al. (2013)
+2. **The diagnostic profile** explains. Six constructs, salience, affect,
+   valuation, encoding, approach, control, from Warriner et al. (2013)
    valence/arousal/dominance norms and Brysbaert et al. (2014) concreteness.
    It scores 53.5%, barely above chance.
 
 **The profile does not explain the ranking.** The ranker never sees those
 features. Presenting one as the reason for the other would be post-hoc
-rationalisation, so the two are reported side by side even when they disagree —
+rationalisation, so the two are reported side by side even when they disagree,
 and when they disagree, that is information.
 
 ## Sealed predictions
@@ -114,7 +114,7 @@ The part that answers *"does this work on MY campaigns?"*
 1. Before launch, seal a comparison. Variants and the model's pick are SHA-256
    hashed with a timestamp; send the hash to a client and it proves afterwards
    the call preceded the result.
-2. Record the real winner when it is known. Write-once — a record you can
+2. Record the real winner when it is known. Write-once. A record you can
    revise measures nothing.
 3. Read the track record: hit rate with a Wilson interval, on your campaigns.
 
@@ -122,7 +122,7 @@ You can also log **your own pick, made before the model runs and locked
 afterwards**, so the same page scores your judgement against the model's.
 
 The page refuses to claim an edge below 10 resolved outcomes, whatever the
-interval says. Wilson's lower bound at 4-of-4 is 0.51 — technically excluding
+interval says. Wilson's lower bound at 4-of-4 is 0.51, technically excluding
 chance, but a fair coin does that one time in sixteen.
 
 ## Running it
@@ -133,7 +133,7 @@ Requires **Node 20+**. No GPU, no API key, no account.
 git clone https://github.com/GarlicNaan798/resonance.git
 cd resonance/resonance
 npm install
-npm run fetch-encoder     # one-time, ~87 MB — the only download that ever happens
+npm run fetch-encoder     # one-time, ~87 MB. The only download that ever happens
 npm run dev               # http://localhost:3000
 ```
 
@@ -145,7 +145,7 @@ npm run desktop
 
 Campaign data goes to the OS user-data directory; **File → Show data folder**
 opens it. Not code-signed yet, so a distributed build would trip SmartScreen
-and Gatekeeper — running from source does not.
+and Gatekeeper, running from source does not.
 
 ## Verifying the no-egress claim
 
@@ -163,7 +163,7 @@ This was not always true. Until 2026-08-12 the offline lock was gated behind
 `RESONANCE_MODE=self-hosted`, so the default configuration silently downloaded
 the encoder from HuggingFace on first inference. The claim on the tin was true
 only of a deployment that had already run once with network access. The gate is
-gone rather than fixed — a guarantee you have to remember to switch on is not a
+gone rather than fixed. A guarantee you have to remember to switch on is not a
 guarantee.
 
 ## What did not work
@@ -195,7 +195,7 @@ specifically to study headlines.
 
 - The corpus was **49% exact duplicates**, with 89% of items in near-duplicate
   clusters. Splitting is therefore on the transitive closure of shared test-id
-  *and* shared headline — never on rows.
+  *and* shared headline, never on rows.
 - Verified that no row, cluster or headline string crosses a split boundary.
 - Feature standardisation is fitted on training data only.
 - A shuffled-label control runs throughout; its deviation from chance
@@ -215,14 +215,14 @@ specifically to study headlines.
 > **How this came about**, since the fix is more interesting than the feature.
 >
 > `pipeline/splits.py` advertised exactly this protocol and had **zero callers**
-> — it guarded `data/splits/test.jsonl`, 2,806 LLM instruction prompts from an
+>. It guarded `data/splits/test.jsonl`, 2,806 LLM instruction prompts from an
 > abandoned corpus no model ever touched. Every real read used an ungated
 > in-process split instead.
 >
 > Nothing leaked: the split was grouped, deterministic and consistent, so
 > train/test separation held and every reported number stands. But because no
 > read was gated or recorded, **the project could not say how many times the
-> test set had been opened** — three documents gave three different answers. A
+> test set had been opened**, three documents gave three different answers. A
 > static audit finds two evaluations plus one non-evaluative fixture read; the
 > historical count cannot be certified from code alone, which is precisely the
 > argument for the log. The known reads are backfilled and flagged as such.
@@ -247,12 +247,12 @@ are probably not that; the constructs travel better than the calibration does.
 
 ## Licence
 
-MIT — see [LICENSE](LICENSE). The code is yours to use, modify and sell.
+MIT. See [LICENSE](LICENSE). The code is yours to use, modify and sell.
 
 That covers the **code only**. The model is derived from datasets with their
 own terms (Upworthy Research Archive, Warriner and Brysbaert norms), and the
 encoder is fetched from `sentence-transformers/all-MiniLM-L6-v2` at build time.
-Read their licences before any commercial use — see
+Read their licences before any commercial use. See
 [docs/papers/README.md](docs/papers/README.md).
 
 ## Contributing
@@ -260,7 +260,7 @@ Read their licences before any commercial use — see
 The most useful thing anyone can send is **evidence**, not code.
 
 - **Run the study.** `python model/human_baseline.py build` produces a blind
-  60-item quiz. If you work in marketing, take it and send the JSON back — it
+  60-item quiz. If you work in marketing, take it and send the JSON back. It
   measures whether human judgement beats the model on identical items, which
   nobody has established. Ten participants settles it.
 - **Share a track record.** After a few sealed predictions, the Track page

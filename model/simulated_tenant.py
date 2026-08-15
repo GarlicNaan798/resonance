@@ -15,7 +15,7 @@ Protocol:
   2. The late 40% is the "tenant". Its groups are split into tenant-train and
      tenant-test, so no near-duplicate cluster spans the two.
   3. Recalibrate: warm-start from the global weights and continue training on
-     tenant-train at a low learning rate — standard transfer, and what the
+     tenant-train at a low learning rate, standard transfer, and what the
      product would actually do.
   4. Compare global vs recalibrated on tenant-test.
 

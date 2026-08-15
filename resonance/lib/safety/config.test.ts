@@ -89,7 +89,7 @@ describe("retention", () => {
 });
 
 // The "customer-facing summary" suite is gone with describeSafety(). It
-// asserted that the output contained "never trains another tenant" — a
+// asserted that the output contained "never trains another tenant". A
 // guarantee about a per-tenant model that was never built. The test passed and
 // the claim was false, which is the failure mode where a test certifies
 // wording rather than behaviour.

@@ -3,7 +3,7 @@
  *
  * Measured on 1,894 held-out experiments: 31.8% less budget wasted on losing
  * variants than a 50/50 A/B test. 29.1 of those points come from adaptive
- * allocation alone, 2.7 from seeding it with the model's prior — so this is the
+ * allocation alone, 2.7 from seeding it with the model's prior, so this is the
  * larger half of the product, and it works even when the model is wrong.
  */
 

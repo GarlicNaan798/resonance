@@ -2,7 +2,7 @@
 Are we leaving usable copy on the table in the Upworthy archive?
 
 We train on `headline` only, but each arm also carries `excerpt`, `lede` and
-`share_text`. If those vary within a test they would be extra copy signal — and
+`share_text`. If those vary within a test they would be extra copy signal, and
 they would rescue pairs currently discarded as "identical copy", which is 10.8%
 of all within-test pairs (32,119 of them).
 
@@ -22,7 +22,7 @@ about 0.80 (half-normal).
 
 Result: body-only pairs are indistinguishable from no-change pairs, while
 headline-differing pairs are far above both. The extra fields carry no click
-signal — presumably because the excerpt is not visible at the moment of the
+signal, presumably because the excerpt is not visible at the moment of the
 click decision. Adding those 32,119 pairs would add noise, not data.
 """
 
@@ -122,7 +122,7 @@ def main() -> None:
 
     # Overdispersion note: even 'nothing differs' sits above the 0.80 that pure
     # binomial sampling predicts, so some variation is driven by factors we
-    # never observe — time within the test, position, audience mix. That is
+    # never observe, time within the test, position, audience mix. That is
     # consistent with the low signal fraction measured in ceiling_robustness.py.
     print(f"\nNote: 'nothing differs' at {null:.3f} exceeds the 0.80 expected")
     print("from binomial noise alone, so unobserved factors (timing, position,")

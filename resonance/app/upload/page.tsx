@@ -71,7 +71,7 @@ export default function UploadPage() {
           Tells you whether a Meta or Google export is readable, how many
           campaigns in it clear the noise floor, and whether it contains
           personal data that would have to be refused. Nothing is uploaded,
-          stored or sent anywhere — the file is parsed in place and discarded.
+          stored or sent anywhere. The file is parsed in place and discarded.
         </p>
         <div className="mt-4 max-w-2xl rounded-lg border border-rule bg-pale-yellow p-4 text-sm text-pale-yellow-ink">
           <strong>This does not fit a model to your data.</strong> Per-tenant
@@ -82,14 +82,14 @@ export default function UploadPage() {
           <Link href="/track" className="underline underline-offset-4">
             Track record
           </Link>{" "}
-          — that works, and needs no export at all.
+, that works, and needs no export at all.
         </div>
       </div>
 
       <section className="space-y-3 card p-5 text-sm">
         <h2 className="font-medium">Drop your export in as-is</h2>
         <p className="text-muted">
-          Meta Ads Manager and Google Ads exports are read directly — no
+          Meta Ads Manager and Google Ads exports are read directly, no
           renaming columns, no reformatting. We look for the ad text,
           impressions and clicks under whatever your platform calls them
           (Meta uses <code className="font-mono text-xs">Title</code> and{" "}
@@ -165,7 +165,7 @@ export default function UploadPage() {
             <div className="rounded-lg border border-rule bg-pale-red p-4 text-sm text-pale-red-ink">
               <p className="font-medium">
                 Personal data found in {result.piiCount} location
-                {result.piiCount === 1 ? "" : "s"} — this file would be rejected
+                {result.piiCount === 1 ? "" : "s"}. This file would be rejected
               </p>
               <ul className="mt-2 space-y-1 text-xs">
                 {result.piiProblems.map((p) => (
@@ -176,7 +176,7 @@ export default function UploadPage() {
                 ))}
               </ul>
               <p className="mt-2 text-xs">
-                Locations only — the detected values are never echoed back.
+                Locations only. The detected values are never echoed back.
               </p>
             </div>
           )}
@@ -236,7 +236,7 @@ export default function UploadPage() {
 
           <p className="text-xs text-faint">
             Compatibility check only. The file was parsed in memory and
-            discarded — nothing was uploaded, stored or sent anywhere.
+            discarded. Nothing was uploaded, stored or sent anywhere.
           </p>
         </section>
       )}

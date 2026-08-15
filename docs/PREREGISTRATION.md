@@ -1,4 +1,4 @@
-# Pre-registration — human baseline study
+# Pre-registration, human baseline study
 
 **Status: fixed before any participant data exists. Committed 2026-08-14.**
 
@@ -26,21 +26,21 @@ unless this study earns it.
 
 - **Items.** 60 pairs per participant, drawn by seed from the 20,452 copy-only
   pairs in the locked test partition (fingerprint `081f57f3…`). Each pair is two
-  real headlines from the same randomised Upworthy experiment — same article,
-  same moment, same audience — so exactly one genuinely won.
+  real headlines from the same randomised Upworthy experiment, same article,
+  same moment, same audience, so exactly one genuinely won.
 - **Blind.** Two headlines and nothing else. No scores, no impressions, no
   indication of which experiment they came from.
 - **Position balanced by construction.** The winner appears first in exactly 30
   of 60 items, shuffled. A participant who always picks the first option scores
   50% by definition rather than inheriting an edge from our sampling.
 - **The model answers the same items**, and is scored only on the items a given
-  participant actually answered — never on its global 61.8%.
+  participant actually answered, never on its global 61.8%.
 - **Key withheld.** The quiz file contains no answers. Scoring happens locally
   against a key participants never receive.
 
 ## 3. Primary test
 
-**McNemar's exact test, two-sided, α = 0.05**, on discordant items — those where
+**McNemar's exact test, two-sided, α = 0.05**, on discordant items. Those where
 exactly one of {participant, model} was correct. Concordant items carry no
 information about which judge is better.
 
@@ -54,7 +54,7 @@ test and would have less power.
 
 That figure comes from `items_needed()` in `model/human_baseline.py`, computed
 before collection. Detecting humans at 50% against the model at **35/60 =
-58.33%** — its measured accuracy on this exact item sample — needs **560**
+58.33%**. Its measured accuracy on this exact item sample, needs **560**
 answered items for 80% power. (Rounding that rate to 58.3% gives 565; the
 figure is sensitive at the third digit, so the exact fraction is used.)
 
@@ -70,16 +70,16 @@ than empty.
 **Stopping rule: collection closes at a fixed date or at 560 answered items,
 whichever is later. The analysis is run once, after collection closes.** No
 interim peeking, and specifically no stopping the moment a result turns
-significant — that inflates the false-positive rate well past 5% and is the most
+significant, that inflates the false-positive rate well past 5% and is the most
 common way an honest-looking study becomes worthless.
 
-## 5. What each outcome licenses — decided now
+## 5. What each outcome licenses, decided now
 
 | Result | What may be claimed | What may not |
 |---|---|---|
 | **Model ahead, p < 0.05** | "On held-out randomised tests, the model picked the winner more often than experienced marketers did (n items, CI)." Always with the sampling caveat from §7. | Any claim about *your* campaigns. The items are still Upworthy. |
 | **No significant difference** | "No difference of 8.4 points or more was detected between the model and experienced marketers on identical items." Combined with instant, free and always-available, that is still a real product claim. | **"As good as a professional."** Non-significance is not equivalence. Differences smaller than 8.4 points remain entirely possible and this study cannot resolve them. |
-| **Humans ahead, p < 0.05** | Publish it, prominently, in README and FUNDAMENTALS. The accuracy claim is withdrawn; the product's remaining case is speed, consistency, calibrated abstention and the track record — not being right more often. | Any framing that buries it, or a follow-up study run until a better number appears. |
+| **Humans ahead, p < 0.05** | Publish it, prominently, in README and FUNDAMENTALS. The accuracy claim is withdrawn; the product's remaining case is speed, consistency, calibrated abstention and the track record, not being right more often. | Any framing that buries it, or a follow-up study run until a better number appears. |
 
 All three outcomes are publishable. That is the entire reason for fixing them in
 advance.
@@ -94,19 +94,19 @@ them will be reported as a finding.
 - Model accuracy on this item sample against its global 61.8%.
 - Position bias: how often participants chose the first option.
 - Between-participant spread in accuracy.
-- Accuracy split by the model's confidence tier — do humans also find the
+- Accuracy split by the model's confidence tier. Do humans also find the
   low-margin pairs hard? If they do, that is evidence the abstention is tracking
   genuine difficulty rather than model weakness.
 
 Anything not on this list, if it appears in the write-up, is labelled
 exploratory.
 
-## 7. Sampling — the honest limitation
+## 7. Sampling. The honest limitation
 
 Participants will be a **convenience sample**: self-selected, recruited through
 social media and personal networks, possibly compensated. This is exactly the
-kind of sample this project's own machinery — Wilson intervals, the
-10-outcome floor, the measured noise ceiling — was built to distrust. Pretending
+kind of sample this project's own machinery, Wilson intervals, the
+10-outcome floor, the measured noise ceiling, was built to distrust. Pretending
 otherwise would be inconsistent with everything else here.
 
 What that does and does not invalidate, stated precisely:
@@ -131,7 +131,7 @@ Mitigations, all fixed now:
 - If ≥3 participants report no professional copywriting experience, report the
   professional subgroup separately as the primary figure.
 
-## 8. Exclusion criteria — fixed before seeing any data
+## 8. Exclusion criteria, fixed before seeing any data
 
 A response is excluded only if:
 
@@ -161,7 +161,7 @@ that hides its own amendments is worse than none.*
 
 ---
 
-## Amendment 1 — 2026-08-15, before any data collection
+## Amendment 1, 2026-08-15, before any data collection
 
 Recorded as a dated addition rather than by editing the text above, per the
 note at the end of this document. **No participant data exists at the time of
@@ -175,7 +175,7 @@ no relationship to the project. Thirty is about five.
 
 This costs nothing statistically. **Power is set by total answered items, not by
 items per person**: 560 remains the floor. It changes only how those items are
-distributed — 19 participants if everyone takes the exit, 10 if everyone
+distributed, 19 participants if everyone takes the exit, 10 if everyone
 completes all 60, and in practice a mix. More participants slightly *improves*
 the pooled estimate, because responses cluster within people and more clusters
 is better, and it widens the sample, which is the one weakness §7 concedes.
@@ -186,11 +186,11 @@ Two consequences, both handled:
   finisher would answer the same first 30 pairs, leaving half the item sample
   with no responses and narrowing what the result generalises over. Answers
   carry the item id, so scoring is unaffected by display order, and the
-  winner's left/right position is fixed per item in the key — shuffling the
+  winner's left/right position is fixed per item in the key, shuffling the
   sequence does not disturb the 30/30 position balance.
 - **The completion floor in §8 becomes absolute: 24 answered items** (80% of the
   core block), replacing "80% of 60". Under the old rule every participant who
-  took the offered exit would have been excluded by design — the rule would have
+  took the offered exit would have been excluded by design. The rule would have
   discarded the majority of the sample. The floor still catches genuine
   abandonment; `model/human_baseline_check.py` asserts both directions.
 

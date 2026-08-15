@@ -20,7 +20,7 @@ describe("localCeiling", () => {
     expect(c).toBeGreaterThan(0.6);
   });
 
-  it("rises with sample size — the point of the exercise", () => {
+  it("rises with sample size. The point of the exercise", () => {
     const small = localCeiling(3000, 0.0125);
     const big = localCeiling(30000, 0.0125);
     expect(big).toBeGreaterThan(small + 0.1);
@@ -60,7 +60,7 @@ describe("requiredImpressions", () => {
   });
 
   it("gives a sane figure for a typical test", () => {
-    // ~0.2 log-odds at 1.25% CTR should land in the tens of thousands —
+    // ~0.2 log-odds at 1.25% CTR should land in the tens of thousands,
     // several times what Upworthy actually ran.
     const n = requiredImpressions(0.2, 0.0125);
     expect(n).toBeGreaterThan(10_000);
@@ -118,7 +118,7 @@ describe("assessDecidability", () => {
 });
 
 describe("seLogOddsDiff", () => {
-  it("shrinks as 1/sqrt(n) — the reason more traffic raises the ceiling", () => {
+  it("shrinks as 1/sqrt(n). The reason more traffic raises the ceiling", () => {
     const a = seLogOddsDiff(1000, 0.0125);
     const b = seLogOddsDiff(4000, 0.0125);
     expect(a / b).toBeCloseTo(2, 1);

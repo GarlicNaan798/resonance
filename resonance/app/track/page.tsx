@@ -133,7 +133,7 @@ export default function TrackPage() {
                 ) : (
                   <p className="text-xs text-faint">
                     No blind picks recorded yet. On the Compare page you can
-                    choose your own favourite before running the model — that is
+                    choose your own favourite before running the model, that is
                     the only way to find out how your own judgement scores, and
                     it has to be chosen before you see the answer to mean
                     anything.
@@ -206,7 +206,7 @@ export default function TrackPage() {
                       ))}
                     </div>
                     <p className="text-xs text-faint">
-                      Recording is one-way — an outcome cannot be changed once
+                      Recording is one-way. An outcome cannot be changed once
                       saved, which is what stops the record being tuned after
                       the fact.
                     </p>
@@ -248,7 +248,7 @@ export default function TrackPage() {
                           </td>
                           <td className="py-3 pr-4">{modelHit ? "✓" : "✗"}</td>
                           <td className="py-3 pr-4">
-                            {userHit === null ? "—" : userHit ? "✓" : "✗"}
+                            {userHit === null ? "n/a" : userHit ? "✓" : "✗"}
                           </td>
                           <td className="py-3 text-xs">
                             {p.sealValid ? (
@@ -278,7 +278,7 @@ export default function TrackPage() {
 /**
  * Voluntary contribution.
  *
- * The app makes no outbound calls and this does not change that — it writes a
+ * The app makes no outbound calls and this does not change that. It writes a
  * file and the user decides whether to send it. That distinction is what keeps
  * the `--network none` guarantee true, so the wording avoids implying anything
  * is transmitted.
@@ -327,7 +327,7 @@ function Contribute({ predictions }: { predictions: Row[] }) {
 
       <ul className="space-y-1.5 text-sm text-muted">
         {[
-          "Your campaign copy is not included — not the text of any variant",
+          "Your campaign copy is not included, not the text of any variant",
           "Campaign names and labels are not included",
           "No impressions, clicks or spend figures",
           "Nothing identifying you, your machine or your organisation",

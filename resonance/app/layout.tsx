@@ -14,7 +14,7 @@ import { PERFORMANCE } from "@/lib/constructs";
  */
 
 export const metadata: Metadata = {
-  title: "Resonance — behavioural analysis for campaign copy",
+  title: "Resonance: behavioural analysis for campaign copy",
   description:
     "Rank and diagnose marketing copy against published behavioural science. " +
     "A decision aid, not an outcome predictor.",
@@ -77,7 +77,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <span className="numeric text-ink">
                 {pct(PERFORMANCE.oracleCeiling)}
               </span>{" "}
-              ceiling — low because only ~
+              ceiling, low because only ~
               {Math.round(PERFORMANCE.signalFraction * 100)}% of the variance in
               the training labels is signal rather than sampling noise.
             </p>

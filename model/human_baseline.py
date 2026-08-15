@@ -15,7 +15,7 @@ METHOD, and the parts that are easy to get wrong:
 
   ORDER RANDOMISED. Which arm appears first is decided by coin flip at build
   time and recorded. Without this, a participant who always picks the top one
-  would inherit the winner's position rather than judge the copy — and we would
+  would inherit the winner's position rather than judge the copy, and we would
   have measured our own pair-construction order.
 
   SAME ITEMS. The model is scored on exactly the pairs each participant saw,
@@ -28,7 +28,7 @@ METHOD, and the parts that are easy to get wrong:
   eyeballed for overlap.
 
   KEY WITHHELD. The quiz file contains no answers. Scoring happens here,
-  against a key that never leaves this machine — otherwise a curious
+  against a key that never leaves this machine, otherwise a curious
   participant can read the labels out of the page they are being tested with.
 
 This reads the held-out test set, so it goes through the gate in
@@ -69,7 +69,7 @@ QUIZ_HTML = os.path.join(PROC, "human_quiz.html")
 
 # Second copy, served by GitHub Pages. Recruiting converts far better on "click
 # this link" than on "download this file and open it", and a hosted page also
-# sidesteps the unsigned-binary problem entirely — taking part requires no
+# sidesteps the unsigned-binary problem entirely, taking part requires no
 # install at all. Safe to publish: the quiz carries no answer key, which is
 # asserted in model/human_baseline_check.py rather than assumed.
 PUBLIC_QUIZ = os.path.join(ROOT, "docs", "quiz", "index.html")
@@ -143,7 +143,7 @@ def items_needed(p_human: float, p_model: float, power: float = 0.80) -> int:
         n_disc = (z_a/2 * 0.5 + z_b * sqrt(q(1-q)))^2 / (q - 0.5)^2
         n_total = n_disc / d
 
-    ponytail: the independence assumption is optimistic — a human and a model
+    ponytail: the independence assumption is optimistic. A human and a model
     that both find the same items easy are positively correlated, which shrinks
     d and RAISES the requirement. Treat the number as a floor.
     """
@@ -163,7 +163,7 @@ def mcnemar_exact(b: int, c: int) -> float:
 
     b = human right, model wrong. c = human wrong, model right. Items both got
     right or both got wrong carry no information about which is better, so they
-    are excluded — that is the whole reason to run a paired test rather than
+    are excluded, that is the whole reason to run a paired test rather than
     compare two intervals.
     """
     n = b + c
@@ -183,7 +183,7 @@ def build(n_items: int, seed: int) -> None:
     # The seed goes in the reason so the log is self-interpreting: rebuilding
     # with the same seed re-reads the SAME items, and a reader should be able to
     # tell one sample accessed repeatedly from several distinct studies. The
-    # repeat entries are left in the log rather than tidied away — quietly
+    # repeat entries are left in the log rather than tidied away, quietly
     # collapsing them is the habit this record exists to prevent.
     test_idx = unlock_test(
         rows,
@@ -199,7 +199,7 @@ def build(n_items: int, seed: int) -> None:
 
     # Assert the ORDER matches, not merely the length. A length check would pass
     # on a permuted array and every label in this study would be attached to the
-    # wrong headline — silently, and in the direction of nonsense results.
+    # wrong headline, silently, and in the direction of nonsense results.
     target = np.array([rows[int(i)]["target"] for i in test_idx], dtype=np.float64)
     if not np.allclose(target, y_te.astype(np.float64), atol=1e-6):
         raise SystemExit(
@@ -281,7 +281,7 @@ def build(n_items: int, seed: int) -> None:
     print(f"  The quiz asks for a {core}-item core and offers {len(key)-core} more,")
     print(f"  so that is {math.ceil(need/core)} participants if everyone takes "
           f"the exit, or {people} if everyone completes all {len(key)}.")
-    print(f"  Total items is what power depends on — a shorter ask does not")
+    print(f"  Total items is what power depends on. A shorter ask does not")
     print(f"  reduce the work, it spreads it over more people, which also")
     print(f"  widens the sample. Below the total, a null result means the study")
     print(f"  was too small, not that humans and the model are equal.")
@@ -329,7 +329,7 @@ def write_quiz_html(quiz: list[dict], seed: int) -> None:
  the same article, at the same moment, to the same audience. Exactly one won.</p>
  <p>Pick the one you believe got the higher click-through rate. A model has
  already answered these same pairs and scored <strong>58%</strong>. Most people
- assume they can do better. Nobody has checked &mdash; that is what this is.</p>
+ assume they can do better. Nobody has checked, that is what this is.</p>
  <p>Five minutes. Go with instinct; there is no penalty for being wrong, and a
  realistic result is far more useful to us than a flattering one.</p>
  <p><strong>Please do not look anything up.</strong> We are measuring judgement,
@@ -357,10 +357,10 @@ def write_quiz_html(quiz: list[dict], seed: int) -> None:
  <div class="meta" id="progress"></div>
  <div class="bar"><div id="fill"></div></div>
  <div id="opts"></div>
- <p class="meta" id="skip" style="cursor:pointer">No idea &mdash; skip this one</p>
+ <p class="meta" id="skip" style="cursor:pointer">No idea, skip this one</p>
 </div>
 <div id="more" hidden class="done">
- <h1>That is the study &mdash; thank you</h1>
+ <h1>That is the study, thank you</h1>
  <p>You have done the part we need. Finish here and your answers count in full.</p>
  <p>If you have another five minutes, there are <span id="left"></span> more
  pairs. Every extra one narrows the result, and means we need fewer people.</p>
@@ -371,7 +371,7 @@ def write_quiz_html(quiz: list[dict], seed: int) -> None:
  <h1>Send this back to get your score</h1>
  <div id="stats" class="statgrid"></div>
  <p><strong>We deliberately do not score you here.</strong> Doing that would
- mean shipping the answer key inside this page, where anyone could read it —
+ mean shipping the answer key inside this page, where anyone could read it,
  and one person peeking would quietly ruin the study for everyone. So the
  answers stay on our side.</p>
  <p>Send the block below and you get back: how many you got right, how many the
@@ -389,7 +389,7 @@ let i=0; const answers=[]; let shown=0; let profile={}; let extended=false;
 // sample would carry no responses at all and the result would generalise over
 // 30 items rather than 60. Answers carry the item id, so scoring is unaffected
 // by display order, and the winner's left/right position is fixed per item in
-// the key — shuffling the sequence does not disturb that balance.
+// the key, shuffling the sequence does not disturb that balance.
 const ORDER=ITEMS.map((_,k)=>k);
 for(let k=ORDER.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));
  [ORDER[k],ORDER[j]]=[ORDER[j],ORDER[k]];}
@@ -421,7 +421,7 @@ function render(){
  const o=document.getElementById('opts'); o.innerHTML='';
  // Milliseconds spent on THIS item. The pre-registered exclusion rule drops a
  // response whose median is under 2s (clicking through without reading), and
- // it cannot be applied to data that was never recorded. Elapsed time only —
+ // it cannot be applied to data that was never recorded. Elapsed time only,
  // no wall-clock timestamp, so this reveals nothing about when someone worked.
  shown=Date.now();
  [it.a,it.b].forEach((text,choice)=>{
@@ -441,7 +441,7 @@ function finish(){document.getElementById('quiz').hidden=true;
  document.getElementById('more').hidden=true;
  const e=document.getElementById('end'); e.hidden=false;
  document.getElementById('out').value=payload();
- // Stats that reveal nothing about correctness — computable without the key,
+ // Stats that reveal nothing about correctness, computable without the key,
  // so they cost the study nothing and still give the screen something to say.
  const done=answers.filter(a=>a.choice!==null);
  const times=done.map(a=>a.ms).sort((x,y)=>x-y);
@@ -472,7 +472,7 @@ function dl(){const b=new Blob([payload()],{type:'application/json'});
         fh.write(doc)
 
     # Rebuilding with a different seed republishes a different study. That is
-    # intended — the hosted page and the local key must always describe the same
+    # intended. The hosted page and the local key must always describe the same
     # sample, and writing both from one call is what keeps them in step. A
     # mismatch would be caught by score() (it compares seeds), but it is better
     # not to create the opportunity.
@@ -520,7 +520,7 @@ def refuse_if_tracked(files: list[str]) -> None:
     The repository is public. Participant data reaching it would be a real
     breach, and `git add -A` is a habit. The .gitignore already covers
     responses/, but an ignore rule is a promise and this is the check that the
-    promise held — the same reason every other guarantee in this project has
+    promise held. The same reason every other guarantee in this project has
     something that fails when it does not.
     """
     import subprocess
@@ -620,7 +620,7 @@ def score(paths: list[str], reply: bool = False) -> None:
             print(f"{verdict}")
             print("For scale: a coin flip is 50%, and on this task even perfect")
             print("knowledge of every headline's true click rate would only score")
-            print("about 66% — the outcomes are that noisy. Thank you, genuinely;")
+            print("about 66%. The outcomes are that noisy. Thank you, genuinely;")
             print("the result gets published either way, including if people win.")
         print("\n" + "=" * 66 + "\n")
 
@@ -659,7 +659,7 @@ def score(paths: list[str], reply: bool = False) -> None:
     elif h_lo > 0.5:
         print("  Humans are better than chance.")
     else:
-        print("  Humans are WORSE than chance — check for an inverted key "
+        print("  Humans are WORSE than chance. Check for an inverted key "
               "before believing it.")
 
     if p < 0.05:

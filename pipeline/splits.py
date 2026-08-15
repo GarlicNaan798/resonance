@@ -1,5 +1,5 @@
 """
-RETIRED — this splits a corpus the project no longer uses.
+RETIRED. This splits a corpus the project no longer uses.
 
 Kept for provenance only. It operates on `data/interim/ads_*.jsonl`, the
 HuggingFace ads corpus abandoned early on; `data/splits/test.jsonl` holds 2,806

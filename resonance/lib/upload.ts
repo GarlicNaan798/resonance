@@ -11,7 +11,7 @@
  * marketer already has rather than something they must construct.
  *
  * What is NOT accepted: anything resembling personal data. Rows are rejected at
- * ingest, not stored and redacted — see lib/safety/pii.ts for why.
+ * ingest, not stored and redacted. See lib/safety/pii.ts for why.
  */
 
 import { assertNoPii, scanRows } from "./safety/pii";
@@ -69,7 +69,7 @@ const REQUIRED = ["copy", "impressions", "clicks"] as const;
  * the first matching rule wins, so more specific patterns come first.
  */
 const HEADER_RULES: [RegExp, string][] = [
-  // Clicks before impressions — "link clicks" contains neither ambiguously,
+  // Clicks before impressions, "link clicks" contains neither ambiguously,
   // but "clicks" must not be swallowed by a looser rule later.
   [/^(link)?clicks?$/, "clicks"],
   [/^(all|unique|outbound|website)?(link)?clicks?$/, "clicks"],
@@ -222,7 +222,7 @@ export interface RecalibrationReadiness {
  * does not exist.
  *
  * Below the floor the design is to shrink toward the global model in proportion
- * to how much data exists and report the shrinkage — more honest than refusing
+ * to how much data exists and report the shrinkage, more honest than refusing
  * the client or pretending 50 campaigns is enough. That remains the plan, not a
  * description of current behaviour.
  */

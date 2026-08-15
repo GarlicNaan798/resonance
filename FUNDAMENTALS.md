@@ -1,10 +1,10 @@
-# Resonance — Project Fundamentals
+# Resonance, Project Fundamentals
 
 Last updated: 2026-08-05
 
 The single document to read before working on, selling, or evaluating this
 system. It records what the product is, what the evidence supports, what it must
-never claim, and every result — including the negative ones, which are the most
+never claim, and every result, including the negative ones, which are the most
 useful part.
 
 ---
@@ -14,13 +14,13 @@ useful part.
 A decision aid for marketing teams. Given campaign copy it produces two
 **independent** outputs:
 
-1. **A ranking prediction** — of two or more variants, which is likelier to
+1. **A ranking prediction**, of two or more variants, which is likelier to
    perform better. From a ranker over sentence embeddings.
-2. **A diagnostic profile** — six behavioural-science scores, computed from
+2. **A diagnostic profile**, six behavioural-science scores, computed from
    published human word ratings, optionally conditioned on audience.
 
 **These layers are separate and must be presented separately.** The diagnostic
-profile does *not* explain the ranking prediction — the ranker does not use
+profile does *not* explain the ranking prediction. The ranker does not use
 those features. Presenting one as the other is post-hoc rationalisation and is
 the most likely way this product would lose credibility with a technical buyer.
 
@@ -37,8 +37,8 @@ that question was harder to answer than it should have been, see §10.
 | Signal captured | **~72% of achievable** |
 | Evaluated on | 2,665 experiments / 20,452 copy-only pairs |
 
-**The ceiling is the number people miss.** Labels are noisy estimates — the
-median arm had 3,118 impressions and 42 clicks — so a model with *perfect*
+**The ceiling is the number people miss.** Labels are noisy estimates. The
+median arm had 3,118 impressions and 42 clicks, so a model with *perfect*
 knowledge of every headline's true click rate would still only agree with the
 recorded labels 66.2% of the time. Read every accuracy figure against 0.662, not
 against 1.00.
@@ -46,7 +46,7 @@ against 1.00.
 Practically: given two variants where one genuinely performed better, the model
 picks correctly ~62 times in 100. With calibrated abstention it answers the most
 confident quarter of comparisons at **76%**, and says "we cannot tell these
-apart" on the rest — which is more useful than a hedged guess on all of them.
+apart" on the rest, which is more useful than a hedged guess on all of them.
 
 ## 3. What it must never claim
 
@@ -58,14 +58,14 @@ Enforced in code as `PROHIBITED_CLAIMS` in `resonance/lib/constructs.ts`.
 - Replacing A/B testing
 - Any accuracy figure above the 0.662 measured ceiling
 
-**Outcome prediction is not achievable on this data.** R² ≈ 0.01 — including for
+**Outcome prediction is not achievable on this data.** R² ≈ 0.01, including for
 an *unconstrained* 512-unit network. That is a property of the task, not a
 limitation of the architecture.
 
 **We have never measured against human baseline.** The natural pitch line
 ("beats copywriter intuition") is not evidenced, so it is not made. The honest
 answer to "better than my creative director?" remains *"we haven't tested
-that"* — and it stays that way until the study below returns data.
+that"*, and it stays that way until the study below returns data.
 
 The instrument now exists (`model/human_baseline.py`), pre-registered before
 any participant has seen it:
@@ -82,7 +82,7 @@ any participant has seen it:
   same questions. Two independent intervals eyeballed for overlap would be the
   wrong test.
 - **Power, fixed in advance.** Detecting humans at 50% against the model at 58%
-  needs ≈560 answered items at 80% power — **10 participants × 60**. Below that
+  needs ≈560 answered items at 80% power, **10 participants × 60**. Below that
   a null result means the study was underpowered, not that the two are equal.
   The independence assumption in that calculation is optimistic, so treat 560
   as a floor.
@@ -90,7 +90,7 @@ any participant has seen it:
   against a key participants never receive.
 
 `model/human_baseline_check.py` drives the scorer with simulated responders of
-known accuracy — perfect, inverted, always-first, coin — and asserts each lands
+known accuracy, perfect, inverted, always-first, coin, and asserts each lands
 where it must. An inverted key reports as suspicious rather than as a finding.
 
 ## 4. The six modules
@@ -135,7 +135,7 @@ helps.
 
 ## 5. Data
 
-**Training:** Upworthy Research Archive — 32,487 randomised A/B tests, 150,624
+**Training:** Upworthy Research Archive, 32,487 randomised A/B tests, 150,624
 arms after filtering to ≥500 impressions.
 
 Randomisation is why this dataset was chosen over ad-library data: arms within
@@ -151,7 +151,7 @@ splits; Brysbaert et al. (2014) concreteness for 39,954 words.
 
 **Also collected but not used for training:** 18,100 ad creatives (no outcome
 labels); Google Ads Transparency bundle (spend/impressions/longevity/targeting
-but **no ad text** — creatives are archived as images).
+but **no ad text**, creatives are archived as images).
 
 ## 6. Leakage controls
 
@@ -185,7 +185,7 @@ An identically-trained pairwise reference scored 0.6009 in the same run, so
 
 Listwise *alone* is slightly worse (−0.0031). It only helps because it ensembles
 better: +0.0239 from averaging versus +0.0129 for pairwise. Variance is not what
-makes an ensemble work — **decorrelated errors** are, and listwise members are
+makes an ensemble work, **decorrelated errors** are, and listwise members are
 wrong in different ways.
 
 ### The pattern
@@ -198,7 +198,7 @@ remaining error is estimation noise.
 ### The nine that did not work
 
 **Feature engineering round 1 (v2, +28 features).** Discrete emotion, curiosity
-gap, self-reference, word frequency, social proof — all cited, all
+gap, self-reference, word frequency, social proof. All cited, all
 theory-motivated. Result: **−0.0009**.
 
 **Feature engineering round 2 (v3, +8 features).** Identifiable-victim effect
@@ -207,13 +207,13 @@ and narrative markers, derived from reading actual disagreement pairs. Result:
 threshold.
 
 **Pairwise interaction.** Feeding `[a, b, a−b, a·b]` instead of scoring headlines
-independently. Result: **−0.0038**. The bi-encoder was not the bottleneck — and
+independently. Result: **−0.0038**. The bi-encoder was not the bottleneck, and
 since those terms approximate cross-encoder attention, that is cheap evidence a
 full cross-encoder would not repay its compute.
 
 **Larger encoder (mpnet-base, 768d vs MiniLM 384d).** Unpaired comparison
-suggested +0.0215, apparently clearing the 0.02 bar. A **paired** test — correct,
-because both models score the same experiments — gave **+0.0128, CI [−0.0119,
+suggested +0.0215, apparently clearing the 0.02 bar. A **paired** test, correct,
+because both models score the same experiments, gave **+0.0128, CI [−0.0119,
 +0.0375]**, P(gain > 0.02) = 0.28. Kept MiniLM and avoided a 5× inference cost
 for noise.
 
@@ -224,7 +224,7 @@ residual signal is concrete subject matter rather than style. **The gap is
 semantic content that psycholinguistic norms cannot represent.**
 
 **Encoder fine-tuning (the last untried lever).** Unfroze the final transformer
-layer plus the ranking head — 8.1% of parameters — warm-started from a
+layer plus the ranking head, 8.1% of parameters, warm-started from a
 frozen-embedding head trained on the same split. Baseline 0.5958 [0.5766,
 0.6150]; fine-tuned 0.6011 [0.5820, 0.6201]. **Gain +0.0053**, below the 0.02
 threshold. Kept frozen embeddings.
@@ -241,7 +241,7 @@ a plausible-looking number from a broken setup:
 
 | Run | Baseline | Reported gain | What was actually wrong |
 |---|---|---|---|
-| 1 | 0.5052 (chance) | −0.0016 | Random head init; loss frozen at ln(2) — never trained |
+| 1 | 0.5052 (chance) | −0.0016 | Random head init; loss frozen at ln(2), never trained |
 | 2 | 0.4926 (chance) | +0.0103 | Subset-local pair indices used against the global headline array |
 | 3 | **0.8315** | −0.1393 | Warm start from a model fit on train+val, evaluated on data carved from train |
 | 4 | 0.5958 | +0.0053 | valid |
@@ -263,18 +263,18 @@ project with a measurable performance ceiling should assert against it in code.
 
 The generalisable rule: **a negative result is only informative when the
 machinery demonstrably worked.** Flat loss, chance baseline, or an
-above-ceiling baseline all mean the experiment failed — not the hypothesis.
+above-ceiling baseline all mean the experiment failed, not the hypothesis.
 
-### Simulated tenant validation (Phase 4 de-risking) — inconclusive
+### Simulated tenant validation (Phase 4 de-risking), inconclusive
 
 Two attempts to demonstrate that per-tenant recalibration beats the global
 model, using splits inside Upworthy as a stand-in for client data:
 
-**Temporal split** — no gain at any tenant size. Uninformative: the filtered
+**Temporal split**, no gain at any tenant size. Uninformative: the filtered
 corpus spans 2014-06 to 2014-11, five months of one publisher, so there was
 essentially no drift to adapt to.
 
-**Topic split** — k-means over embeddings, most distinctive cluster held out as
+**Topic split**, k-means over embeddings, most distinctive cluster held out as
 the tenant. All five deltas positive (+0.0013 to +0.0102), which is mildly
 suggestive, but the average is +0.007 against a 0.02 noise floor and there is
 **no dose-response**: 2,001 tenant arms performed worse than 200.
@@ -309,16 +309,16 @@ age +0.182, education −0.139.
 **Segment priors (`resonance/lib/segments.ts`)** therefore encode published
 findings, bounded to ±15%, labelled as priors:
 
-- **Involvement** (Petty & Cacioppo, ELM) — *the best-supported prior*. Note ELM
+- **Involvement** (Petty & Cacioppo, ELM), *the best-supported prior*. Note ELM
   is moderated by involvement and need for cognition, **not by demographics**;
   "education → central route" is unsupported (NFC–education r ≈ 0.2–0.3). So
   involvement is a first-class marketer input.
-- **Positivity effect** (Carstensen & Mikels; meta-analysis d ≈ 0.25) — older
+- **Positivity effect** (Carstensen & Mikels; meta-analysis d ≈ 0.25), older
   audiences favour positive framing.
-- **Arousal rating differences** — flagged **low confidence**, because a rating
+- **Arousal rating differences**, flagged **low confidence**, because a rating
   difference is not a demonstrated behavioural difference.
 
-### Measured impact (C12) — read this honestly
+### Measured impact (C12). Read this honestly
 
 Ranking flips on dev data, against a ~2% noise floor:
 
@@ -331,16 +331,16 @@ Ranking flips on dev data, against a ~2% noise floor:
 | all four combined | 2.93% – 3.71% |
 
 **The demographic axes individually fall below the noise floor.** The prior that
-actually moves the model is **involvement — which is not demographic**. Stated
+actually moves the model is **involvement, which is not demographic**. Stated
 plainly: today's demographic conditioning is close to explanatory framing, and
 the honest fix is client data, not better theory.
 
 **The real path:** Meta and Google already report performance broken down by age
 bracket and gender. A client's export supplies `(copy, segment, impressions,
-clicks)` — enough to *fit* segment gains rather than assume them. That converts
+clicks)`, enough to *fit* segment gains rather than assume them. That converts
 priors into measurement per tenant, and is the product's actual moat.
 
-## 8a. Calibrated abstention — the largest product gain
+## 8a. Calibrated abstention. The largest product gain
 
 The headline 59.4% is an average that hides real structure: the model is far
 more reliable when variants are far apart in score. Measured on dev pairs
@@ -354,7 +354,7 @@ more reliable when variants are far apart in score. Measured on dev pairs
 | 10% | 0.7672 | 0.739–0.795 |
 | 5% | 0.8059 | 0.771–0.841 |
 
-**+20.6 points from abstaining alone** — no new data, no new compute, no model
+**+20.6 points from abstaining alone**, no new data, no new compute, no model
 change. The product now answers the confident quarter at ~71% and says "we
 cannot tell" on the rest, rather than answering everything at 60%.
 
@@ -370,16 +370,16 @@ likes.
 **Side effect worth noting:** the calibrated threshold (margin ≥ 1.203) is far
 stricter than the arbitrary 0.15 used before. The "URGENT!!! SLASH YOUR
 BILLS!!!" case that previously produced a confident recommendation now correctly
-abstains at margin 0.74 — the model was never confident about it; the old
+abstains at margin 0.74. The model was never confident about it; the old
 threshold was simply too permissive.
 
 ## 9. Data protection
 
-- **PII rejected at ingest**, never stored and redacted — redaction still lets
+- **PII rejected at ingest**, never stored and redacted, redaction still lets
   raw values transit logs, backups and stack traces.
 - **No heuristic name detection**: any detector catching "Sarah Chen" also flags
   "Ray-Ban" and "Oscar Health". Names are excluded by upload schema instead.
-- Findings carry kind and position, **never the value** — tested.
+- Findings carry kind and position, **never the value**, tested.
 - **Tenant isolation is structural**: a query cannot be built without a tenant
   context; `tenantId` is stamped on insert, not accepted from the caller.
 - **Audit log is append-only and hash-chained**; tampering is detectable, and
@@ -392,7 +392,7 @@ threshold was simply too permissive.
 
 ## 10. Engineering invariants
 
-- **Test reads are gated and logged** — `pipeline/test_lock.py`. A read needs a
+- **Test reads are gated and logged**, `pipeline/test_lock.py`. A read needs a
   written reason and appends to `data/processed/test_reads.jsonl`. The test
   partition is fingerprinted (`081f57f3…`, n=22,648) so a change to the corpus
   or the seed is refused rather than silently revaluing every reported number.
@@ -403,8 +403,8 @@ threshold was simply too permissive.
   final test read". Three statements, three numbers.
 
   The cause: `pipeline/splits.py` implemented a lock and an `unlock_test(reason)`
-  gate for the **abandoned HuggingFace ads corpus** — `data/splits/test.jsonl`
-  holds 2,806 LLM instruction prompts no model ever touched — and had zero
+  gate for the **abandoned HuggingFace ads corpus**, `data/splits/test.jsonl`
+  holds 2,806 LLM instruction prompts no model ever touched, and had zero
   callers. Every real read went through an ungated in-process split.
 
   A static audit of the code finds **three sites** that index the test
@@ -412,14 +412,14 @@ threshold was simply too permissive.
   `export_ensemble.py` (six rows for parity fixtures, no metric). The
   `constructs.ts` "third" may count a read whose code no longer exists.
   **Because reads were never recorded, the historical count cannot be certified
-  from the code alone** — which is the whole argument for the log. The three
+  from the code alone**, which is the whole argument for the log. The three
   known reads are backfilled into it and marked `backfilled: true`.
 
   What this does *not* affect: the split is grouped, deterministic and now
   verified byte-identical across all three former definitions, so train/test
   separation held throughout and every reported number stands.
 
-- **Validation was evaluated ~10 times** and is optimistically biased — both
+- **Validation was evaluated ~10 times** and is optimistically biased, both
   models fell ~3 points from val to test, exactly as predicted.
 - **TS/PyTorch parity to 1e-4**, 8 fixtures, covering score and all six module
   activations. Two things that would have silently broken it: PyTorch's default
@@ -432,7 +432,7 @@ threshold was simply too permissive.
 
 ## 11. Environment notes
 
-- **PyTorch imports only under PowerShell**, not Git Bash — Git Bash mangles the
+- **PyTorch imports only under PowerShell**, not Git Bash, Git Bash mangles the
   DLL search path. All model commands must run in PowerShell.
 - Windows console is cp1252; non-ASCII in `print()` crashes scripts.
 - `data/` sits inside OneDrive and syncs. It is gitignored, and the corpora are
@@ -446,7 +446,7 @@ genuine data-protection engineering.
 
 It is **not** an outcome predictor, it does **not** measure brains, and its
 demographic conditioning is currently weaker than the premise implied. Every one
-of those limits is measured, documented, and has a concrete path forward — which
+of those limits is measured, documented, and has a concrete path forward, which
 is a better position than a product whose limits are unknown.
 
 
@@ -467,7 +467,7 @@ reality and makes the ordering artificially easy to recover.
 | Analytic from signal-to-noise | 0.5441 |
 
 The analytic estimate was **rejected because it is below our own measured test
-accuracy of 0.5942** — a ceiling cannot sit under measured performance. It
+accuracy of 0.5942**. A ceiling cannot sit under measured performance. It
 averages squared standard errors across all arms and so over-weights the
 noisiest ones.
 
@@ -483,7 +483,7 @@ Underlying variance decomposition:
 
 - At 0.5942 we capture **~58%** of achievable signal, not the ~33% previously
   claimed. We are far closer to the limit than reported.
-- The six failed signal-extraction experiments were not bad luck — there was
+- The six failed signal-extraction experiments were not bad luck. There was
   little left to extract.
 - It is consistent with published work where a fine-tuned Llama-3-8B performs
   comparably to our 2,688-parameter head.

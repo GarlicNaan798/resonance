@@ -15,7 +15,7 @@ So before modelling anything, quantify the damage:
 If timing explains most of the variance, the copy signal is buried and this
 corpus is not worth the compute. That is a cheap thing to find out.
 
-Output: data/interim/hn_pairs.jsonl — one row per pair, with the controls
+Output: data/interim/hn_pairs.jsonl. One row per pair, with the controls
 attached so any model can condition on them.
 """
 

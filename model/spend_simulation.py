@@ -2,7 +2,7 @@
 What is a 59%-accurate model actually WORTH in money?
 
 The objection is fair: a 41% miss rate sounds unusable when the pitch is "spend
-less". But that framing assumes the model is used as a COMMITMENT — pick one
+less". But that framing assumes the model is used as a COMMITMENT. Pick one
 variant, run it, live with it. Used that way a 59% model is worth little.
 
 Used as a PRIOR inside an adaptive test, the same model is worth a lot, because
@@ -16,7 +16,7 @@ This measures that directly on real experiments, comparing three strategies:
   2. BANDIT        - Thompson sampling, no model. Adapts from data alone.
   3. MODEL+BANDIT  - Thompson sampling warm-started with the model's prior.
 
-Metric: REGRET — impressions served to the inferior arm. That is the money
+Metric: REGRET, impressions served to the inferior arm. That is the money
 wasted, and it is what "hedge your bets" actually means in numbers.
 
 Everything runs on held-out experiments the ranker never trained on. Outcomes are
@@ -54,7 +54,7 @@ PRIOR_STRENGTH = 40.0
 def thompson(true_rates, budget, rounds, rng, prior=None):
     """Thompson sampling over Beta posteriors. Returns impressions per arm.
 
-    `prior` is (alpha0, beta0) per arm — this is where the model's opinion
+    `prior` is (alpha0, beta0) per arm. This is where the model's opinion
     enters. With no prior every arm starts at Beta(1,1), i.e. total ignorance.
     """
     k = len(true_rates)
@@ -82,7 +82,7 @@ def model_prior(scores, k, strength=PRIOR_STRENGTH, base_rate=0.0125):
 
     Softmax over scores gives a relative preference; that shifts each arm's
     prior click rate around the corpus base rate. `strength` caps how much
-    influence the model gets — with a 59% model, a confident prior would be
+    influence the model gets, with a 59% model, a confident prior would be
     actively harmful when it is wrong.
     """
     s = np.array(scores, dtype=float)

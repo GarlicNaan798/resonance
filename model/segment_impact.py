@@ -2,7 +2,7 @@
 Contingency C12: do the segment priors actually change rankings?
 
 A bounded prior that never flips a decision is a control that does nothing while
-implying it does something — worse than omitting it. This measures the real
+implying it does something, worse than omitting it. This measures the real
 effect on real headlines using the trained module model.
 
 Method: take dev-set headlines, compute the six module activations, apply each

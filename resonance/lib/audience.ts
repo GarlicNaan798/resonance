@@ -34,7 +34,7 @@
  *
  * Therefore this is DESCRIPTIVE SEGMENTATION, not predictive personalisation.
  * The honest claim is "this wording rates as more arousing among male raters
- * than female raters" — a fact about published norms. The dishonest claim is
+ * than female raters". A fact about published norms. The dishonest claim is
  * "this will perform better with men". The UI must say the former.
  */
 
@@ -116,7 +116,7 @@ export function audienceOffset(a: Audience): NormOffset {
   return out;
 }
 
-/** True when every axis is "all" — the offset is exactly zero. */
+/** True when every axis is "all". The offset is exactly zero. */
 export function isDefaultAudience(a: Audience): boolean {
   return a.gender === "all" && a.age === "all" && a.education === "all";
 }

@@ -32,7 +32,7 @@ def main() -> None:
         data = json.load(fh)
 
     # NO ROUNDING. An earlier version rounded to 2 decimals on the reasoning
-    # that "the third decimal is precision the data never had" — true of the
+    # that "the third decimal is precision the data never had", true of the
     # ratings, but it broke exact parity with the Python extractor. A 0.005
     # per-word rounding error becomes ~0.005 in z units, fifty times the 1e-4
     # parity tolerance, and parity is what guarantees the app feeds the model
@@ -46,7 +46,7 @@ def main() -> None:
     #
     # Reason: the model was TRAINED with the six demographic-gap features
     # carrying those values. Omitting them and sending zeros would feed the
-    # model out-of-distribution input at inference — a silent mismatch between
+    # model out-of-distribution input at inference. A silent mismatch between
     # training and serving, which is worse than shipping a slightly larger file.
     # They are excluded from the AUDIENCE layer (see lib/segments.ts), which is
     # a separate decision.

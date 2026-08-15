@@ -40,7 +40,7 @@ export interface ModuleResult {
    *
    * Not every module is 0-1. `approach` is signed (-1..1), and `encoding` is
    * multiplied by (1 + arousalToEncoding * affect) under constraint C2, so it
-   * can exceed 1. A bar assuming 0-1 silently clips it — which is exactly what
+   * can exceed 1. A bar assuming 0-1 silently clips it, which is exactly what
    * happened the first time this ran in a browser, despite every unit test
    * passing.
    */
@@ -225,7 +225,7 @@ export function compareVariants(
       "This layer is correct about 53% of the time on held-out data, so treat " +
       "it as a tiebreaker, not a verdict."
     : "These variants score too closely to separate. The honest answer is that " +
-      "we cannot tell them apart — run a live test rather than picking on this.";
+      "we cannot tell them apart. Run a live test rather than picking on this.";
 
   return { variants, ranking, margin, confident, guidance };
 }

@@ -1,13 +1,13 @@
 """
 Two standard techniques never applied here: systematic tuning, and ensembling.
 
-Every experiment so far used ONE hyperparameter configuration — hidden 128,
-lr 1e-3, 25 epochs, dropout 0.2 — chosen early and never revisited. And every
+Every experiment so far used ONE hyperparameter configuration, hidden 128,
+lr 1e-3, 25 epochs, dropout 0.2, chosen early and never revisited. And every
 result came from a SINGLE random seed. Both are ordinary sources of a point or
 two, and both are cheap on cached embeddings.
 
 Worth being clear about why these are the remaining candidates. Most published
-CTR work reaches high AUC using USER features — behavioural logs, session
+CTR work reaches high AUC using USER features, behavioural logs, session
 history, user ids. Those systems answer "will this user click this ad". We
 answer "which copy is better", from text alone, with no user information. The
 techniques that carry that literature do not transfer; generic model-selection

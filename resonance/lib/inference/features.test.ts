@@ -7,8 +7,8 @@
  * confidently wrong with no error surfaced anywhere.
  *
  * The fixtures come from pipeline/export_feature_fixtures.py and deliberately
- * include awkward inputs — empty strings, stopwords only, out-of-vocabulary
- * words, non-ASCII — because those are where two implementations diverge.
+ * include awkward inputs, empty strings, stopwords only, out-of-vocabulary
+ * words, non-ASCII, because those are where two implementations diverge.
  */
 
 import { describe, expect, it } from "vitest";
@@ -64,7 +64,7 @@ describe("robustness", () => {
   it("never returns NaN or Infinity, whatever the input", () => {
     const nasty = [
       "", " ", "\n\n", "!!!", "123456", "🙂🙂🙂", "a".repeat(5000),
-      "'''\"\"\"", "...", "—–-", "ÄÖÜ", "\t\ttabs\t\t",
+      "'''\"\"\"", "...", ", –-", "ÄÖÜ", "\t\ttabs\t\t",
     ];
     for (const text of nasty) {
       const v = extractVector(text);

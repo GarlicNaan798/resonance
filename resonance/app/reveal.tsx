@@ -6,7 +6,7 @@ import { useEffect } from "react";
  * Scroll-entry animation for every `[data-reveal]` element on the page.
  *
  * One IntersectionObserver for the document rather than a component per
- * element, and never a scroll listener — a scroll handler fires hundreds of
+ * element, and never a scroll listener. A scroll handler fires hundreds of
  * times a second and forces layout on each one.
  *
  * TWO FAILSAFES, because the hidden state is the default and a decoration that
@@ -23,7 +23,7 @@ import { useEffect } from "react";
  * was wrong, and a full-page screenshot showed why: the hero intersected, the
  * backstop was cancelled as "not needed", and the other twelve blocks sat at
  * opacity 0 waiting for a scroll that never came. The real failure mode is not
- * a broken observer — it is a working observer on content nobody scrolls to.
+ * a broken observer. It is a working observer on content nobody scrolls to.
  * Print, PDF export, reader modes and screenshots all hit it.
  *
  * So the deadline is unconditional. Anyone scrolling in the first few seconds
@@ -62,7 +62,7 @@ export function Reveal() {
 
     nodes().forEach((n) => observer.observe(n));
 
-    // Unconditional. Not "if the observer looks broken" — see the note above.
+    // Unconditional. Not "if the observer looks broken". See the note above.
     const deadline = window.setTimeout(() => {
       observer.disconnect();
       revealAll();

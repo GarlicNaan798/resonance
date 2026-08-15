@@ -7,7 +7,7 @@
  *   1. FALSE NEGATIVES leak personal data into storage.
  *   2. FALSE POSITIVES block legitimate marketing copy. A tool that rejects
  *      "Save 50% on orders over $100" or "Call to action" is unusable, and the
- *      user's only recourse is to disable the check entirely — which is worse
+ *      user's only recourse is to disable the check entirely, which is worse
  *      than not having it.
  *
  * So the negative cases below are as load-bearing as the positive ones.
@@ -24,7 +24,7 @@ describe("detects real PII", () => {
   });
 
   it("finds Luhn-valid card numbers", () => {
-    // Standard Visa test number — valid checksum, not a real card.
+    // Standard Visa test number, valid checksum, not a real card.
     const r = scanText("card 4111 1111 1111 1111 on file");
     expect(r.findings.some((f) => f.kind === "credit_card")).toBe(true);
   });
@@ -81,7 +81,7 @@ describe("does not block legitimate marketing copy", () => {
   }
 
   it("does not treat a 16-digit non-card number as a card", () => {
-    // Fails Luhn — an impression count, not a payment instrument.
+    // Fails Luhn. An impression count, not a payment instrument.
     expect(scanText("1234567812345678 impressions").clean).toBe(true);
   });
 });

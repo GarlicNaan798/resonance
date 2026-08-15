@@ -8,8 +8,8 @@
  * Before blaming domain shift, check the mechanical explanation:
  * all-MiniLM-L6-v2 is an UNCASED model. If so, "URGENT" and "urgent" produce
  * identical vectors, the ranker cannot see shouting at all, and it is
- * responding purely to word choice. That is a very different problem — and a
- * fixable one — from "the model learned that shouting works".
+ * responding purely to word choice. That is a very different problem, and a
+ * fixable one, from "the model learned that shouting works".
  */
 
 import { pipeline } from "@huggingface/transformers";

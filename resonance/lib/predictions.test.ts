@@ -43,7 +43,7 @@ describe("sealing", () => {
     expect(verifySeal(stored)).toBe(true);
   });
 
-  it("survives recording an outcome — the seal predates the result", async () => {
+  it("survives recording an outcome. The seal predates the result", async () => {
     const p = await commitPrediction(INPUT);
     const resolved = await recordOutcome(p.id, 0);
     expect(resolved.hash).toBe(p.hash);
@@ -93,7 +93,7 @@ describe("wilson", () => {
 });
 
 describe("outcomesNeeded", () => {
-  it("returns null at or below chance — more data never rescues it", () => {
+  it("returns null at or below chance, more data never rescues it", () => {
     expect(outcomesNeeded(0.5)).toBeNull();
     expect(outcomesNeeded(0.42)).toBeNull();
   });
@@ -106,7 +106,7 @@ describe("outcomesNeeded", () => {
 /**
  * @param hits      whether the MODEL was right, which also fixes the winner:
  *                  true means arm 0 won, false means arm 1 won.
- * @param userPicks whether the user picked ARM 0 — not whether they were
+ * @param userPicks whether the user picked ARM 0, not whether they were
  *                  right. When the model misses, the winner is arm 1, so a
  *                  `false` here is a correct human pick. Easy to misread, and
  *                  it produced a wrong expectation in the export tests below.
@@ -182,7 +182,7 @@ describe("trackRecord", () => {
 
   it("does not move the goalposts as results arrive", () => {
     // stillNeeded is derived from the global rate, so a lucky run must not
-    // shrink the target — otherwise the bar lowers itself into success.
+    // shrink the target, otherwise the bar lowers itself into success.
     const lucky = trackRecord(resolved([true, true, true, true, true]));
     const mixed = trackRecord(resolved([true, false, true, false, true]));
     expect(lucky.stillNeeded).toBe(mixed.stillNeeded);
@@ -191,7 +191,7 @@ describe("trackRecord", () => {
 
 describe("buildExport", () => {
   const SECRET = "Cut your heating bill with one simple change";
-  const LABEL = "Nike Q4 launch — confidential";
+  const LABEL = "Nike Q4 launch, confidential";
 
   function sample(): Prediction[] {
     const base = resolved([true, false, true], [false, false, true]);

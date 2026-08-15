@@ -102,7 +102,7 @@ export default function ComparePage() {
         <p className="mt-2 text-sm text-muted">
           Ranks your variants using the model trained on 32,487 randomised A/B
           tests. It is right {(PERFORMANCE.rankerAccuracy * 100).toFixed(1)}% of
-          the time against a 50% baseline — an edge worth having before you
+          the time against a 50% baseline. An edge worth having before you
           spend media budget, not a substitute for testing.
         </p>
 
@@ -120,8 +120,8 @@ export default function ComparePage() {
               the honest answer.
             </p>
             <p>
-              What plausibly carries across is the mechanics — concreteness,
-              specificity, curiosity, how a claim is framed — because those are
+              What plausibly carries across is the mechanics, concreteness,
+              specificity, curiosity, how a claim is framed, because those are
               properties of language rather than of Upworthy. What almost
               certainly does not carry is the calibration: the score thresholds
               were fitted to that audience clicking those articles in that
@@ -161,7 +161,7 @@ export default function ComparePage() {
             version the only one available. */}
         <div className="flex flex-wrap items-center gap-2 rounded-lg border border-dashed border-rule-strong p-3 text-sm">
           <span className="text-muted">
-            Optional — your own pick first:
+            Optional. Your own pick first:
           </span>
           {variants.map((_, i) => (
             <button
@@ -179,7 +179,7 @@ export default function ComparePage() {
           ))}
           <span className="text-xs text-faint">
             {result
-              ? "Locked — the model has run."
+              ? "Locked. The model has run."
               : "Scored against the model on your track record."}
           </span>
         </div>
@@ -292,7 +292,7 @@ export default function ComparePage() {
                   The margin here is too small for a reliable call. Across all
                   comparisons the model averages{" "}
                   {(result.ranking.accuracy * 100).toFixed(1)}%, but that average
-                  is carried by the clear-cut cases — not this one.
+                  is carried by the clear-cut cases, not this one.
                 </>
               ) : (
                 <>
@@ -343,7 +343,7 @@ export default function ComparePage() {
                 <p className="text-sm text-muted">
                   Stores this comparison locally so you can record the real
                   winner later and find out whether the model is right on your
-                  campaigns — not on 2013–15 viral media.
+                  campaigns, not on 2013–15 viral media.
                 </p>
                 <div className="flex flex-wrap items-center gap-2">
                   <input

@@ -1,5 +1,5 @@
 """
-Fine-tune the encoder end-to-end — the one untried accuracy lever.
+Fine-tune the encoder end-to-end. The one untried accuracy lever.
 
 Every previous experiment varied something AROUND a frozen representation:
 more features (v2, v3), pairwise interaction, a bigger frozen encoder. All four
@@ -104,7 +104,7 @@ def main() -> None:
 
     # build_pairs returns indices LOCAL to the subset it was given. This script
     # indexes the GLOBAL `heads` list when tokenising, so the local indices must
-    # be remapped to global row ids or the model scores unrelated headlines —
+    # be remapped to global row ids or the model scores unrelated headlines,
     # which is exactly what happened on the second attempt and produced a
     # chance-level baseline that looked like a modelling failure.
     #
@@ -142,7 +142,7 @@ def main() -> None:
     #     used to index the global headline list. The model scored unrelated
     #     text. Chance again.
     #  3. Warm start from final_ranker.pt: that model was fit on train+val, and
-    #     `dev` here is carved OUT of train — so the baseline was scoring data it
+    #     `dev` here is carved OUT of train, so the baseline was scoring data it
     #     had memorised. It read 0.8315, above the 0.788 ceiling, which is the
     #     tell: no held-out number can exceed the ceiling.
     #

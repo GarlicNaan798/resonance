@@ -4,11 +4,11 @@ Recalibrate the abstention thresholds for the ensemble.
 The tiers in ranker.ts (margin >= 2.16 -> "high", >= 1.203 -> "moderate") were
 measured on a single pairwise model's RAW score differences. The ensemble emits
 an average of per-member z-scores, which is a completely different scale, so
-those thresholds are meaningless now — and would silently mislabel confidence
+those thresholds are meaningless now, and would silently mislabel confidence
 rather than fail visibly.
 
 Same method as calibrate_abstention.py: sweep a margin threshold over dev pairs
-and record accuracy at each coverage level. Dev, not test — the test set is
+and record accuracy at each coverage level. Dev, not test. The test set is
 closed after the third read, and thresholds are a presentation choice rather
 than a model claim.
 """

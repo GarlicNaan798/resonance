@@ -1,5 +1,5 @@
 /**
- * POST /api/upload — validate a campaign export.
+ * POST /api/upload, validate a campaign export.
  *
  * This route validates and reports. It does NOT persist: storage requires the
  * tenant context and audit wiring from lib/safety, and a route that writes
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
       piiProblems: r.piiProblems.slice(0, 50).map((p) => ({
         row: p.row,
         column: p.column,
-        // Kinds only — never the matched values.
+        // Kinds only, never the matched values.
         kinds: [...new Set(p.findings.map((f) => f.kind))],
       })),
       piiCount: r.piiProblems.length,
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
       readiness: r.readiness,
       note:
         "Compatibility check only. The file was parsed in memory and " +
-        "discarded; nothing was stored. This endpoint does not fit a model — " +
+        "discarded; nothing was stored. This endpoint does not fit a model, " +
         "per-tenant recalibration is not built.",
     });
   } catch (e) {

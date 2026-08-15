@@ -1,8 +1,8 @@
 /**
  * POST /api/analyse
  *
- * Runs the diagnostic layer. Everything happens in-process — no ML service, no
- * outbound calls — which is what makes the self-hosted no-egress claim true.
+ * Runs the diagnostic layer. Everything happens in-process, no ML service, no
+ * outbound calls, which is what makes the self-hosted no-egress claim true.
  *
  * The copy submitted here is analysed and discarded. Nothing is persisted by
  * this route: campaign copy is the client's commercial property, and the
@@ -91,7 +91,7 @@ export async function POST(request: Request) {
           error:
             `Variant ${i + 1} appears to contain personal data ` +
             `(${kinds.join(", ")}). Remove it before analysing.`,
-          // Kinds only — never the matched values.
+          // Kinds only, never the matched values.
           kinds,
         },
         { status: 422 },
@@ -108,7 +108,7 @@ export async function POST(request: Request) {
 
     // Two layers, computed separately and reported separately.
     //
-    // The RANKING comes from the embedding ranker (0.6176) — the strong model.
+    // The RANKING comes from the embedding ranker (0.6176). The strong model.
     // The PROFILES come from the module model (0.5346) and are diagnostic only.
     // The profile does not explain the ranking: the ranker never sees these
     // features. Presenting one as the other would be post-hoc rationalisation,
@@ -118,7 +118,7 @@ export async function POST(request: Request) {
 
     // The ranker's encoder is uncased, so it cannot see shouting at all. The
     // guardrail applies the evidence it is blind to WITHOUT reordering the
-    // result — silently overriding a model makes the system impossible to
+    // result, silently overriding a model makes the system impossible to
     // reason about. The caution is surfaced beside the recommendation instead.
     const { guarded, caution } = guardRanking(ranking.ranked);
 

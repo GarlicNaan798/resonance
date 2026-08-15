@@ -12,7 +12,7 @@
  *
  * Every stored record carries `tenantId`, and reads, writes and deletes are all
  * filtered. Model artefacts are namespaced by tenant too, so one client's
- * uploads can never influence another's recalibrated model — the requirement
+ * uploads can never influence another's recalibrated model. The requirement
  * that made per-tenant isolation necessary in the first place.
  */
 
@@ -107,7 +107,7 @@ export class TenantRepository<T extends TenantOwned> {
   ) {}
 
   async insert(record: Omit<T, "tenantId">): Promise<void> {
-    // The caller does not supply tenantId — it is stamped here, so a client
+    // The caller does not supply tenantId. It is stamped here, so a client
     // cannot write into another tenant by forging a field.
     const owned = { ...record, tenantId: this.ctx.tenantId } as T;
     await this.store.insert(owned);

@@ -80,7 +80,7 @@ export default function AllocatePage() {
               className="w-24 rounded-lg border border-rule-strong bg-surface p-2 text-sm"
             />
             <span className="w-16 text-right font-mono text-sm tabular-nums">
-              {weights[i] === undefined ? "—" : `${(weights[i] * 100).toFixed(0)}%`}
+              {weights[i] === undefined ? "n/a" : `${(weights[i] * 100).toFixed(0)}%`}
             </span>
           </div>
         ))}
@@ -121,7 +121,7 @@ export default function AllocatePage() {
           {stop ? (
             <>
               <p className="font-medium">
-                Stop the test — variant {(winner ?? 0) + 1} wins
+                Stop the test, variant {(winner ?? 0) + 1} wins
               </p>
               <p className="mt-1">
                 It is best with ≥95% probability. Further spend on the others is
@@ -133,7 +133,7 @@ export default function AllocatePage() {
               <p className="font-medium">Keep testing</p>
               <p className="mt-1">
                 No variant is yet best with 95% confidence. Serve the next batch
-                in the percentages above — losers still get traffic, because a
+                in the percentages above, losers still get traffic, because a
                 variant that looks weak on 500 impressions may not be.
               </p>
             </>

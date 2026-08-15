@@ -1,5 +1,5 @@
 /**
- * The embedding ranker — the strong model.
+ * The embedding ranker. The strong model.
  *
  * 0.6176 on held-out test versus 0.5346 for the diagnostic module model, against
  * a measured ceiling of 0.662. This is what /compare uses.
@@ -13,7 +13,7 @@
  *
  * SELF-HOSTING: the encoder must be present locally. `allowRemoteModels` is
  * disabled when RESONANCE_MODE=self-hosted so a deployment that promises no
- * egress cannot silently reach out to huggingface.co on a cache miss — it fails
+ * egress cannot silently reach out to huggingface.co on a cache miss. It fails
  * loudly instead, which is the correct behaviour for a claim a customer can
  * verify with `--network none`.
  */
@@ -78,7 +78,7 @@ function forward(x: number[], layers: Layer[]): number {
  *
  * Each member is normalised by its own fit-set mean/sd before averaging.
  * Normalising within the request instead would flatten every member to the same
- * spread — with two variants each would emit exactly +/-0.707 — reducing the
+ * spread, with two variants each would emit exactly +/-0.707, reducing the
  * ensemble to a majority vote and discarding the margin the abstention tiers
  * depend on.
  */
@@ -187,7 +187,7 @@ export interface RankingResult {
   /** Calibrated tier for this specific comparison. */
   tier: ConfidenceTier;
   /**
-   * Accuracy measured for comparisons at this confidence level — not the
+   * Accuracy measured for comparisons at this confidence level, not the
    * headline average. This is the number that actually applies here.
    */
   tierAccuracy: number;
@@ -215,7 +215,7 @@ export interface RankingResult {
  *
  * So instead of answering every comparison at 63%, the product answers the
  * confident quarter at 76% and says "we cannot tell" on the rest. That is more
- * useful to a marketer, and it is what makes an 80% figure quotable — always
+ * useful to a marketer, and it is what makes an 80% figure quotable, always
  * with its coverage attached.
  *
  * RECALIBRATED for the ensemble. The previous thresholds (2.160 / 1.203) were
@@ -246,7 +246,7 @@ export const TIERS: TierSpec[] = [
  *
  * Coverage is CUMULATIVE in the table above: 50% of comparisons clear the
  * moderate threshold, so the model answers half and declines half. It is not
- * "answers a quarter" — that is the high tier alone, and confusing the two
+ * "answers a quarter", that is the high tier alone, and confusing the two
  * understates the product by a factor of two. It was briefly stated that way in
  * planning and the error is recorded here so it is not repeated.
  *
@@ -257,7 +257,7 @@ export const TIERS: TierSpec[] = [
  *     declined  7,394 pairs           ->  4,159 correct  =  0.5626
  *
  * That is the number the abstention is worth arguing about. Forced to guess on
- * the pairs it declines, the model manages 56.3% — six points above a coin, not
+ * the pairs it declines, the model manages 56.3%, six points above a coin, not
  * zero. Abstaining is not "the model has nothing"; it is "what the model has
  * here is too weak to spend money on".
  */
@@ -286,7 +286,7 @@ export async function rankVariants(texts: string[]): Promise<RankingResult> {
   const guidance = spec
     ? `Variant ${ranked[0].index + 1} is the stronger candidate. On comparisons ` +
       `this clear-cut the model is right ${(spec.accuracy * 100).toFixed(0)}% of ` +
-      `the time — measured, not estimated. Roughly ${(spec.coverage * 100).toFixed(0)}% ` +
+      `the time, measured, not estimated. Roughly ${(spec.coverage * 100).toFixed(0)}% ` +
       "of comparisons reach this confidence level."
     : // Lead with what WAS established. "Insufficient confidence" reads as the
       // tool failing; "these are within noise of each other" is the same fact
@@ -295,7 +295,7 @@ export async function rankVariants(texts: string[]): Promise<RankingResult> {
       `${(ABSTAINED.coverage * 100).toFixed(0)}% of comparisons; this is not one ` +
       "of them, so either choice is defensible and the difference is unlikely " +
       "to be worth a test. Forced to guess on pairs like these it manages " +
-      `${(ABSTAINED.accuracyIfForced * 100).toFixed(0)}% — better than a coin, ` +
+      `${(ABSTAINED.accuracyIfForced * 100).toFixed(0)}%, better than a coin, ` +
       "not enough to spend on. Pick on brand, clarity or gut, and put the test " +
       "budget somewhere it will settle something.";
 

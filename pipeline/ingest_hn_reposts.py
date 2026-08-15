@@ -74,7 +74,7 @@ def fetch(url: str, tries: int = 4) -> dict:
 
 
 def _window(begin: int, end: int) -> tuple[list[dict], int]:
-    """One query. Returns (hits, nbHits) — nbHits is the TRUE count in range."""
+    """One query. Returns (hits, nbHits), nbHits is the TRUE count in range."""
     q = urllib.parse.urlencode({
         "tags": "story",
         "hitsPerPage": HITS,
@@ -87,7 +87,7 @@ def _window(begin: int, end: int) -> tuple[list[dict], int]:
 def harvest() -> list[dict]:
     """Walk backwards through time, bisecting any window that overflows.
 
-    Algolia caps results at 1,000 per query no matter how you paginate — a
+    Algolia caps results at 1,000 per query no matter how you paginate. A
     single month returns nbHits=28,801 but hands back 1,000. The first version
     of this script ignored that and took 5 pages per 30-day window, which
     collected the most recent ~4 days of each month: 2.9% coverage in
@@ -115,7 +115,7 @@ def harvest() -> list[dict]:
         else:
             span = (min(r["created_at_i"] for r in rows),
                     max(r["created_at_i"] for r in rows))
-            print(f"WARNING: {RAW} is PARTIAL — {len(rows):,} stories covering "
+            print(f"WARNING: {RAW} is PARTIAL, {len(rows):,} stories covering "
                   f"{time.strftime('%Y-%m-%d', time.gmtime(span[0]))} to "
                   f"{time.strftime('%Y-%m-%d', time.gmtime(span[1]))}.")
             print("Analysing what is there. Delete the file to harvest again.")
@@ -152,7 +152,7 @@ def harvest() -> list[dict]:
         time.sleep(SLEEP)
         if total <= HITS or end - begin <= 3600 or depth > 14:
             # Complete, or narrowed to an hour and still overflowing (a spike
-            # we cannot split further — rare, and losing it beats looping).
+            # we cannot split further, rare, and losing it beats looping).
             keep(hits)
             return
         splits += 1

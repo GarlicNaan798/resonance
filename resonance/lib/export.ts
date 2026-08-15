@@ -7,7 +7,7 @@
  * guarantee stays literally true.
  *
  * predictions.ts imports node:fs and node:crypto. Value-importing it from a
- * client component fails the Turbopack build — "the chunking context does not
+ * client component fails the Turbopack build, "the chunking context does not
  * support external modules (request: node:fs/promises)". `tsc --noEmit` was
  * perfectly happy with it, which is a good reminder that a typecheck is not a
  * build. Only the TYPE is imported here, and types are erased, so nothing from
@@ -62,7 +62,7 @@ export interface TrackRecordExport {
 /**
  * Build the shareable payload.
  *
- * NEVER includes `variants` (the client's copy) or `label` (campaign name —
+ * NEVER includes `variants` (the client's copy) or `label` (campaign name,
  * "Nike Q4 launch" identifies an account as surely as the copy does). Without
  * those two the file needs no legal review, which is the only reason anyone
  * would ever send it.

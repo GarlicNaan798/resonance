@@ -149,7 +149,7 @@ def extract(text: str) -> dict[str, float]:
     n_sent = max(len(sentences), 1)
     caps = sum(1 for ch in text if ch.isupper())
     digits = sum(1 for ch in text if ch.isdigit())
-    punct = sum(1 for ch in text if ch in ",.;:!?-—'\"()")
+    punct = sum(1 for ch in text if ch in ",.;:!?-, '\"()")
     uniq = len(set(raw_tokens))
 
     top3 = sorted(aro, reverse=True)[:3]

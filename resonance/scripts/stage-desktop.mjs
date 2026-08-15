@@ -5,8 +5,8 @@
  * deliberately leaves out two directories, because a containerised deployment
  * usually serves them from a CDN:
  *
- *   .next/static  — the JS and CSS the browser loads
- *   public        — static assets
+ *   .next/static. The JS and CSS the browser loads
+ *   public, static assets
  *
  * A desktop app has no CDN. Without this step the window opens to an unstyled
  * page with no client JS, which looks like a broken app rather than a missing
@@ -32,7 +32,7 @@ async function exists(p) {
 
 if (!(await exists(join(STANDALONE, "server.js")))) {
   console.error(
-    "No .next/standalone/server.js — run `next build` with " +
+    "No .next/standalone/server.js. Run `next build` with " +
       'output: "standalone" in next.config.ts first.',
   );
   process.exit(1);
@@ -49,7 +49,7 @@ if (await exists(join(ROOT, "public"))) {
 }
 
 // The encoder is the whole no-egress claim. A desktop build that ships without
-// it would fall back to... nothing, since the runtime is locked offline — the
+// it would fall back to... nothing, since the runtime is locked offline. The
 // app would start and then fail on first inference. Better to fail here.
 if (!(await exists(join(ROOT, "models", "Xenova", "all-MiniLM-L6-v2", "onnx", "model.onnx")))) {
   console.error("Encoder weights missing. Run `npm run fetch-encoder`.");

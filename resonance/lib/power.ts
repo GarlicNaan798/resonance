@@ -1,7 +1,7 @@
 /**
  * Per-comparison ceiling, and how to raise it.
  *
- * The 0.662 oracle ceiling is not a property of the task — it is the ceiling at
+ * The 0.662 oracle ceiling is not a property of the task. It is the ceiling at
  * Upworthy's sample sizes (median 3,118 impressions per arm at ~1.25% CTR). A
  * perfect model cannot beat it THERE. Run the same test at 30,000 impressions
  * and the ceiling is far higher, because the labels are less noisy.
@@ -46,7 +46,7 @@ export function seLogOddsDiff(impressions: number, rate: number): number {
  * comparisons whose true effect is drawn with the given spread.
  *
  * NOT the same quantity as the headline 0.662, and the difference matters.
- * This is the UNCONDITIONAL ceiling — every pair, including the near-ties. The
+ * This is the UNCONDITIONAL ceiling. Every pair, including the near-ties. The
  * 0.662 from model/ceiling_robustness.py is measured on pairs filtered to
  * |gap| >= 0.05, which drops the hardest comparisons and so sits higher. At
  * Upworthy's median sample size this function returns ~0.629 against that
@@ -126,7 +126,7 @@ export function assessDecidability(
         `noise at ${minImpr.toLocaleString()} impressions. About ` +
         `${Math.round(shortfall).toLocaleString()} more impressions per arm ` +
         `would settle it. Best achievable accuracy at the current sample size ` +
-        `is ${pct(ceiling)} — no model can beat that here.`
+        `is ${pct(ceiling)}, no model can beat that here.`
       : `The arms are performing identically. No sample size will separate ` +
         `them, because there is nothing to separate.`;
 

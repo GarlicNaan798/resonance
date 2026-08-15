@@ -14,7 +14,7 @@ Method:
     right on those?
 
 Reported as a coverage/accuracy curve. Any headline accuracy figure taken from
-this MUST be quoted with its coverage — "80% accurate on the 25% of comparisons
+this MUST be quoted with its coverage, "80% accurate on the 25% of comparisons
 we answer" is honest; "80% accurate" alone is not.
 
 Nothing here is fitted to the test set. The threshold is chosen on dev and would

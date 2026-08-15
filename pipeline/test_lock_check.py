@@ -5,7 +5,7 @@ The previous lock apparatus was never exercised and never called, so nobody
 noticed it guarded the wrong corpus. A gate with no test is decoration, which
 is the failure mode this whole change exists to correct.
 
-Uses a synthetic corpus and a temporary directory — it must never touch the
+Uses a synthetic corpus and a temporary directory. It must never touch the
 real lock file or append to the real read log.
 """
 

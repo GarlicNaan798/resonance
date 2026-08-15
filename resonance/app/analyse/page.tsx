@@ -15,7 +15,7 @@ const EDUCATIONS = ["all", "lower", "higher"] as const;
 const INVOLVEMENTS = ["unknown", "high", "low"] as const;
 
 const INVOLVEMENT_HELP: Record<string, string> = {
-  unknown: "Not specified — no elaboration adjustment applied.",
+  unknown: "Not specified, no elaboration adjustment applied.",
   high: "Considered, higher-cost purchases (cars, software, insurance).",
   low: "Habitual, low-cost purchases (snacks, toiletries).",
 };
@@ -25,7 +25,7 @@ const INVOLVEMENT_HELP: Record<string, string> = {
  *
  * Modules do not share a 0-1 range: `approach` is signed, and `encoding` is
  * amplified by constraint C2 so it routinely exceeds 1. Assuming 0-1 clipped
- * encoding to a full bar regardless of value — invisible to unit tests, obvious
+ * encoding to a full bar regardless of value, invisible to unit tests, obvious
  * the moment it rendered.
  */
 function ModuleBar({ value, range }: { value: number; range: [number, number] }) {
@@ -97,8 +97,8 @@ export default function AnalysePage() {
           <p className="font-medium">This is a vocabulary, not a predictor.</p>
           <p className="mt-2 text-muted">
             These six scores are a way to say <em>what</em> a piece of copy is
-            doing — concrete or abstract, urgent or calm, self-referential or
-            not — in terms grounded in published human ratings rather than
+            doing, concrete or abstract, urgent or calm, self-referential or
+            not, in terms grounded in published human ratings rather than
             invented for a pitch deck. That is their whole job.
           </p>
           <p className="mt-2 text-muted">
@@ -111,7 +111,7 @@ export default function AnalysePage() {
             <Link href="/compare" className="underline underline-offset-4">
               Compare
             </Link>{" "}
-            uses a different and better model — and it does not read these
+            uses a different and better model, and it does not read these
             features at all, so this page cannot be its explanation.
           </p>
         </div>

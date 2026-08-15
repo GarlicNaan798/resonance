@@ -1,5 +1,5 @@
 """
-Minimal .env loader — no third-party dependency, no network, no surprises.
+Minimal .env loader, no third-party dependency, no network, no surprises.
 
 Reads KEY=VALUE lines from the project-root .env into a dict. Real process
 environment variables win over the file, so CI/secret-managers can override
@@ -15,7 +15,7 @@ ENV_PATH = os.path.join(ROOT, ".env")
 
 
 def load(path: str = ENV_PATH) -> dict[str, str]:
-    """Parse .env. Missing file is fine — returns whatever the OS env has."""
+    """Parse .env. Missing file is fine, returns whatever the OS env has."""
     values: dict[str, str] = {}
     if os.path.exists(path):
         with open(path, encoding="utf-8") as fh:

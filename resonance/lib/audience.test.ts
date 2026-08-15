@@ -42,7 +42,7 @@ describe("offsets", () => {
     expect(both.arousal).toBeCloseTo(g.arousal + ag.arousal, 10);
   });
 
-  it("keeps adjustments small — these are nudges, not personalisation", () => {
+  it("keeps adjustments small. These are nudges, not personalisation", () => {
     // Even the most extreme selection must stay well under 1 scale point,
     // otherwise the UI would imply a precision the norms do not support.
     const extreme = audienceOffset(

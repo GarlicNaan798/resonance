@@ -2,7 +2,7 @@
 Generate feature-parity fixtures for the TypeScript extractor.
 
 The TS port must reproduce pipeline/features.py exactly. If it drifts, every
-score in the product is quietly wrong — the model would be receiving inputs that
+score in the product is quietly wrong. The model would be receiving inputs that
 differ from what it was trained on, with no error anywhere.
 
 Cases deliberately include the awkward inputs, not just clean sentences:

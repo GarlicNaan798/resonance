@@ -5,7 +5,7 @@ import { SEGMENT_LIMITATION } from "@/lib/segments";
 /**
  * The methodology page.
  *
- * Written for the person whose job is to find the hole in this — a client's
+ * Written for the person whose job is to find the hole in this. A client's
  * data scientist, or a CMO who has been sold neuromarketing before. Every
  * number is stated with its uncertainty, every limitation is here rather than
  * in a footnote, and the negative results are included because a tool that
@@ -13,7 +13,7 @@ import { SEGMENT_LIMITATION } from "@/lib/segments";
  */
 
 export const metadata = {
-  title: "Methodology — Resonance",
+  title: "Methodology, Resonance",
   description:
     "How Resonance was built and measured, including what it cannot do.",
 };
@@ -55,7 +55,7 @@ const NEGATIVE_RESULTS = [
     what: "Larger encoder (mpnet-base, 768d)",
     detail:
       "An unpaired comparison suggested +0.0215, apparently clearing the bar. " +
-      "A paired test — correct, since both models score the same experiments — " +
+      "A paired test, correct, since both models score the same experiments, " +
       "gave +0.0128, CI [−0.0119, +0.0375].",
     result: "not significant",
     verdict: "Kept MiniLM. Avoided a 5× inference cost for noise.",
@@ -100,8 +100,8 @@ export default function MethodologyPage() {
         <div className="space-y-3 rounded-lg bg-sunk p-4 text-sm">
           <p>
             <strong>Read accuracy against the ceiling, not against 100%.</strong>{" "}
-            The training labels are noisy measurements — the median experiment
-            arm had 3,118 impressions and 42 clicks — so a model with perfect
+            The training labels are noisy measurements. The median experiment
+            arm had 3,118 impressions and 42 clicks, so a model with perfect
             knowledge of every headline&apos;s true click rate would still only
             agree with the recorded winner {pct(PERFORMANCE.oracleCeiling)} of
             the time. Only about{" "}
@@ -118,7 +118,7 @@ export default function MethodologyPage() {
               )}
               %
             </strong>{" "}
-            of the achievable signal — computed from the figures above rather
+            of the achievable signal, computed from the figures above rather
             than quoted, so it cannot drift out of date.
           </p>
           <p>
@@ -137,7 +137,7 @@ export default function MethodologyPage() {
             two evaluations against the held-out set, plus one non-evaluative
             read that lifted six rows for parity fixtures. Until 2026-08-12
             those reads were neither gated nor recorded, so the historical count
-            cannot be certified from the code alone — three project documents
+            cannot be certified from the code alone, three project documents
             gave three different answers. Reads now require a written reason and
             append to a log, and the test partition is fingerprinted so a change
             to it is refused rather than silently revaluing every number here.
@@ -154,7 +154,7 @@ export default function MethodologyPage() {
           <div className="card p-5 text-sm">
             <h3 className="font-medium">Ranking ({pct(PERFORMANCE.rankerAccuracy)})</h3>
             <p className="mt-2 text-muted">
-              A model over sentence embeddings. Accurate, and uninterpretable —
+              A model over sentence embeddings. Accurate, and uninterpretable,
               it cannot tell you why.
             </p>
           </div>
@@ -172,7 +172,7 @@ export default function MethodologyPage() {
           <strong>The diagnostic profile does not explain the ranking.</strong>{" "}
           The ranking model never sees those features. Presenting one as the
           reason for the other would be post-hoc rationalisation, so the two are
-          reported separately even when they disagree — and when they disagree,
+          reported separately even when they disagree, and when they disagree,
           that is information worth having.
         </p>
       </section>
@@ -212,7 +212,7 @@ export default function MethodologyPage() {
           Modules are <em>named</em> for the functional systems the literature
           associates with each construct. That is an association for naming, not
           a measurement of neural activity. MacLean&apos;s triune brain and
-          left/right hemisphere dominance are deliberately excluded — both are
+          left/right hemisphere dominance are deliberately excluded, both are
           discredited as neuroscience despite their popularity in neuromarketing
           writing.
         </p>
@@ -293,7 +293,7 @@ export default function MethodologyPage() {
           <li>
             The corpus was 49% exact duplicates, with 89% of items in
             near-duplicate clusters. Splitting is therefore done on the
-            transitive closure of shared test-id and shared headline — never on
+            transitive closure of shared test-id and shared headline, never on
             individual rows.
           </li>
           <li>
@@ -305,7 +305,7 @@ export default function MethodologyPage() {
           </li>
           <li>
             The source experiments varied headline <em>and</em> image, so 48% of
-            raw pairs differ only by picture. Those are excluded — they are
+            raw pairs differ only by picture. Those are excluded. They are
             unpredictable from text by construction, and including them once
             produced a spurious below-chance result.
           </li>
@@ -329,7 +329,7 @@ export default function MethodologyPage() {
           Measured honestly: the demographic axes individually move rankings less
           than the noise floor (0.5–1.3% of pairs). The adjustment that clearly
           does move the model is <strong>involvement</strong>, which is not a
-          demographic at all — it is a property of the purchase that you supply.
+          demographic at all. It is a property of the purchase that you supply.
         </p>
       </section>
 

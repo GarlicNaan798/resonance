@@ -3,7 +3,7 @@ Export the embedding ranker to JSON for TypeScript inference.
 
 This is the strong model: 0.5942 on held-out test, against 0.5346 for the
 diagnostic module model and a measured 0.662 ceiling. It is what /compare must
-use — putting the weaker model there would undercut the whole two-layer design.
+use, putting the weaker model there would undercut the whole two-layer design.
 
 Architecture is a plain MLP over frozen MiniLM embeddings:
     Linear(384 -> 128) -> ReLU -> Dropout -> Linear(128 -> 128) -> ReLU

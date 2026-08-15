@@ -6,7 +6,7 @@
  * catches sign flips, scale errors and layer mis-wiring that a rank check on a
  * handful of cases could easily miss.
  *
- * The encoder itself is not exercised here — it is a downloaded ONNX model, and
+ * The encoder itself is not exercised here. It is a downloaded ONNX model, and
  * asserting on its weights would be testing HuggingFace rather than our code.
  * What matters is that our MLP consumes its output correctly.
  */
@@ -67,7 +67,7 @@ describe("provenance is honest", () => {
   });
 
   it("carries the ceiling so accuracy is never read against 100%", () => {
-    // 0.662, not the earlier 0.788 — that estimate treated observed click
+    // 0.662, not the earlier 0.788, that estimate treated observed click
     // rates as true rates and was inflated. See model/ceiling_robustness.py.
     expect(RANKER_PROVENANCE.oracle_ceiling).toBeCloseTo(0.662, 3);
     expect(RANKER_PROVENANCE.chance).toBe(0.5);

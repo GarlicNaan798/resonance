@@ -24,7 +24,7 @@ The whole payload, and nothing else:
 }
 ```
 
-No name. No email. No IP address — the quiz runs entirely in the browser and
+No name. No email. No IP address. The quiz runs entirely in the browser and
 makes no request. No device or browser fingerprint. No free text, so nobody can
 accidentally type something identifying. `ms` is elapsed time on that item, not
 a wall-clock timestamp, so it does not reveal when anyone was working.
@@ -39,7 +39,7 @@ they are handing over is sixty binary choices and how long each took.
 never be sent to a participant, posted, or committed. Anyone holding it can
 score perfectly, which would quietly destroy the study.
 
-The quiz file contains no answers — verified — so distributing
+The quiz file contains no answers, verified, so distributing
 `human_quiz.html` is safe.
 
 ## Naming

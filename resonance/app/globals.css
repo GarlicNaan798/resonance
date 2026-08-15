@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   Resonance — premium utilitarian minimalism.
+   Resonance, premium utilitarian minimalism.
 
    Warm monochrome canvas, editorial serif for display, colour used only where
    it carries meaning. Everything is a semantic token so components name what a
    colour MEANS rather than what it looks like, and the whole palette inverts at
    one place for dark mode instead of every element carrying a `dark:` twin.
 
-   NO WEBFONTS. Not a stylistic choice — `next/font/google` was removed from
+   NO WEBFONTS. Not a stylistic choice, `next/font/google` was removed from
    this project because it fetches from fonts.gstatic.com, which breaks the
    no-egress guarantee in docs/SELF_HOSTING.md. Every stack below names the
    premium faces first and degrades to a system face, so a machine that has
@@ -24,19 +24,23 @@
   --font-mono: "Geist Mono", "SF Mono", "JetBrains Mono", ui-monospace,
     "Cascadia Code", Consolas, monospace;
 
-  /* Warm monochrome. Never pure black — #111 reads as ink, #000 reads as a
-     rendering error. */
-  --canvas: #fbfbfa;
-  --surface: #ffffff;
-  --surface-sunk: #f7f6f3;
-  --rule: #eaeaea;
-  --rule-strong: #dcdcda;
-  --ink: #111111;
-  --ink-muted: #787774;
-  --ink-faint: #9b9a97;
-  --inverse: #ffffff;
+  /* Warm monochrome, and the values are measured rather than chosen by eye.
+     The first palette paired near-black ink at 18.2:1 with muted body text at
+     4.32:1 and captions at 2.72:1 — maximum glare next to text that fails WCAG
+     AA, which is the combination that actually hurts to read. Ink is softened
+     to 15.1:1, muted lifted to 7.2:1 (AAA) and faint to 5.1:1, checked against
+     both the canvas and the sunk panel it sometimes sits on. */
+  --canvas: #faf9f6;
+  --surface: #fffefc;
+  --surface-sunk: #f3f1ec;
+  --rule: #e6e3dc;
+  --rule-strong: #d5d1c8;
+  --ink: #242220;
+  --ink-muted: #57544d;
+  --ink-faint: #6e6a62;
+  --inverse: #fffefc;
 
-  /* Spot pastels. Semantic only — a tag, an inline code background, a status.
+  /* Spot pastels. Semantic only. A tag, an inline code background, a status.
      Never a section background. */
   --pale-red: #fdebec;
   --pale-red-ink: #9f2f2d;
@@ -50,15 +54,15 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --canvas: #111110;
-    --surface: #1a1a19;
-    --surface-sunk: #201f1e;
-    --rule: #2b2b29;
-    --rule-strong: #3a3a37;
-    --ink: #ededeb;
-    --ink-muted: #a1a09b;
-    --ink-faint: #7c7b76;
-    --inverse: #111110;
+    --canvas: #161513;
+    --surface: #1e1d1a;
+    --surface-sunk: #252320;
+    --rule: #302e2a;
+    --rule-strong: #403d38;
+    --ink: #eceae5;
+    --ink-muted: #aeaca5;
+    --ink-faint: #918e86;
+    --inverse: #161513;
 
     --pale-red: #2e1b1b;
     --pale-red-ink: #e8908d;
@@ -98,12 +102,26 @@
 
 /* -------------------------------------------------------------- base type */
 
+/* 17px root rather than 16. Most body copy here is Tailwind's text-sm, which
+   is 14px at the default root and small for sustained reading; this lifts it to
+   just under 15 without touching a single utility class. Everything scales
+   proportionally because the whole system is in rem. */
+html {
+  font-size: 17px;
+}
+
 body {
   background: var(--canvas);
   color: var(--ink);
   font-family: var(--font-sans);
-  line-height: 1.6;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Long prose gets a wider gap between lines than dense UI does. */
+p {
+  line-height: 1.7;
 }
 
 /* Display type is serif and tightly set. The tracking is what separates an
@@ -249,7 +267,7 @@ code {
 /* --------------------------------------------------------------- motion */
 
 /* Gated on the attribute app/reveal.tsx sets at mount. Without JavaScript the
-   attribute never appears and the content is simply visible — the animation is
+   attribute never appears and the content is simply visible. The animation is
    an enhancement and is never allowed to be load-bearing. */
 html[data-reveal-ready] [data-reveal] {
   opacity: 0;
@@ -257,7 +275,7 @@ html[data-reveal-ready] [data-reveal] {
 }
 /* Must repeat the `html[data-reveal-ready]` prefix. Without it this rule scores
    lower than the hidden one above and loses, leaving revealed elements
-   invisible — which is precisely what happened the first time. */
+   invisible, which is precisely what happened the first time. */
 html[data-reveal-ready] [data-reveal].is-visible {
   opacity: 1;
   transform: none;
