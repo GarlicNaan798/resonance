@@ -273,13 +273,18 @@ def build(n_items: int, seed: int) -> None:
     # Recruitment target, stated before any data is collected.
     need = items_needed(0.50, model_right / len(key))
     people = math.ceil(need / len(key))
+    core = min(CORE_ITEMS, len(key))
     print(f"\nPOWER, decided now rather than after the fact:")
     print(f"  To detect humans at 50% against the model at "
           f"{model_right/len(key):.0%} on these items needs about {need} "
-          f"answered items at 80% power")
-    print(f"  = {people} participants x {len(key)} items.")
-    print(f"  Below that, a null result means the study was too small, not "
-          f"that humans and the model are equal.")
+          f"answered items at 80% power.")
+    print(f"  The quiz asks for a {core}-item core and offers {len(key)-core} more,")
+    print(f"  so that is {math.ceil(need/core)} participants if everyone takes "
+          f"the exit, or {people} if everyone completes all {len(key)}.")
+    print(f"  Total items is what power depends on — a shorter ask does not")
+    print(f"  reduce the work, it spreads it over more people, which also")
+    print(f"  widens the sample. Below the total, a null result means the study")
+    print(f"  was too small, not that humans and the model are equal.")
 
 
 def write_quiz_html(quiz: list[dict], seed: int) -> None:
@@ -344,6 +349,14 @@ def write_quiz_html(quiz: list[dict], seed: int) -> None:
  <div id="opts"></div>
  <p class="meta" id="skip" style="cursor:pointer">No idea &mdash; skip this one</p>
 </div>
+<div id="more" hidden class="done">
+ <h1>That is the study &mdash; thank you</h1>
+ <p>You have done the part we need. Finish here and your answers count in full.</p>
+ <p>If you have another five minutes, there are <span id="left"></span> more
+ pairs. Every extra one narrows the result, and means we need fewer people.</p>
+ <p><button class="opt" onclick="finish()"><strong>Finish now</strong></button></p>
+ <p><button class="opt" onclick="extend()">Keep going</button></p>
+</div>
 <div id="end" hidden class="done">
  <h1>Done &mdash; thank you</h1>
  <p>Copy everything in the box and send it back. It contains your answers and
@@ -352,8 +365,19 @@ def write_quiz_html(quiz: list[dict], seed: int) -> None:
  <p><button class="opt" onclick="dl()"><strong>Download instead</strong></button></p>
 </div>
 </main><script>
-const ITEMS=__ITEMS__, SEED=__SEED__;
-let i=0; const answers=[]; let shown=0; let profile={};
+const ITEMS=__ITEMS__, SEED=__SEED__, CORE=__CORE__;
+let i=0; const answers=[]; let shown=0; let profile={}; let extended=false;
+
+// Each participant sees the items in their OWN order. Without this, everyone
+// who stops at the core block answers the SAME first 30 pairs, so half the
+// sample would carry no responses at all and the result would generalise over
+// 30 items rather than 60. Answers carry the item id, so scoring is unaffected
+// by display order, and the winner's left/right position is fixed per item in
+// the key — shuffling the sequence does not disturb that balance.
+const ORDER=ITEMS.map((_,k)=>k);
+for(let k=ORDER.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));
+ [ORDER[k],ORDER[j]]=[ORDER[j],ORDER[k]];}
+
 function start(){
  // Snapshot the intake before the quiz replaces the screen.
  const y=document.getElementById('years').value;
@@ -361,11 +385,23 @@ function start(){
           paid:document.getElementById('paid').checked};
  document.getElementById('intro').hidden=true;
  document.getElementById('quiz').hidden=false; render();}
+function extend(){extended=true;
+ document.getElementById('more').hidden=true;
+ document.getElementById('quiz').hidden=false; render();}
 function render(){
  if(i>=ITEMS.length) return finish();
- const it=ITEMS[i];
- document.getElementById('progress').textContent=`Item ${i+1} of ${ITEMS.length}`;
- document.getElementById('fill').style.width=(100*i/ITEMS.length)+'%';
+ // Offer the exit at the end of the core block. Ten minutes is a big ask of a
+ // stranger; five is not. Anyone stopping here has given a complete response.
+ if(i>=CORE && !extended){
+   document.getElementById('quiz').hidden=true;
+   document.getElementById('left').textContent=String(ITEMS.length-i);
+   document.getElementById('more').hidden=false;
+   return;
+ }
+ const it=ITEMS[ORDER[i]];
+ const total=extended?ITEMS.length:CORE;
+ document.getElementById('progress').textContent=`Item ${i+1} of ${total}`;
+ document.getElementById('fill').style.width=(100*i/total)+'%';
  const o=document.getElementById('opts'); o.innerHTML='';
  // Milliseconds spent on THIS item. The pre-registered exclusion rule drops a
  // response whose median is under 2s (clicking through without reading), and
@@ -381,10 +417,12 @@ function render(){
  });
 }
 document.getElementById('skip').onclick=()=>{
- answers.push({id:ITEMS[i].id,choice:null,ms:Date.now()-shown});i++;render();};
-function payload(){return JSON.stringify({seed:SEED,n:ITEMS.length,
+ answers.push({id:ITEMS[ORDER[i]].id,choice:null,ms:Date.now()-shown});
+ i++;render();};
+function payload(){return JSON.stringify({seed:SEED,n:ITEMS.length,core:CORE,
  profile:profile,answers:answers},null,1);}
 function finish(){document.getElementById('quiz').hidden=true;
+ document.getElementById('more').hidden=true;
  const e=document.getElementById('end'); e.hidden=false;
  document.getElementById('out').value=payload();}
 function dl(){const b=new Blob([payload()],{type:'application/json'});
@@ -392,7 +430,9 @@ function dl(){const b=new Blob([payload()],{type:'application/json'});
  a.download='headline-study-response.json';a.click();}
 </script></body></html>
 """
-    doc = doc.replace("__ITEMS__", items).replace("__SEED__", str(seed))
+    doc = (doc.replace("__ITEMS__", items)
+              .replace("__SEED__", str(seed))
+              .replace("__CORE__", str(min(CORE_ITEMS, len(quiz)))))
     with open(QUIZ_HTML, "w", encoding="utf-8") as fh:
         fh.write(doc)
 
@@ -408,7 +448,8 @@ function dl(){const b=new Blob([payload()],{type:'application/json'});
 
 # -------------------------------------------------------------------- score
 
-MIN_COMPLETION = 0.80      # of items offered
+CORE_ITEMS = 30            # the block everyone is asked for; the rest is opt-in
+MIN_ANSWERED = 24          # 80% of the core block
 MIN_MEDIAN_MS = 2000       # per item; faster than this is clicking, not reading
 
 
@@ -418,10 +459,14 @@ def excluded_reason(resp: dict, n_items: int) -> str | None:
     Deliberately blind to accuracy: nothing here can look at whether the
     participant agreed with the model. See docs/PREREGISTRATION.md section 8.
     """
+    # An ABSOLUTE floor, not a fraction of the full set. The quiz asks for a
+    # 30-item core and offers 30 more; someone who takes the exit at 30 has
+    # given a complete response, and a "80% of 60" rule would have thrown away
+    # every one of them. The floor still catches genuine abandonment.
     answered = [a for a in resp.get("answers", []) if a.get("choice") is not None]
-    if len(answered) < MIN_COMPLETION * n_items:
-        return (f"answered {len(answered)}/{n_items}, below the "
-                f"{MIN_COMPLETION:.0%} completion floor")
+    if len(answered) < MIN_ANSWERED:
+        return (f"answered {len(answered)}, below the {MIN_ANSWERED}-item floor "
+                f"(80% of the {CORE_ITEMS}-item core)")
 
     times = sorted(a["ms"] for a in answered if isinstance(a.get("ms"), (int, float)))
     if not times:

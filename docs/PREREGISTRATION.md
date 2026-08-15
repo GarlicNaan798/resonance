@@ -158,3 +158,40 @@ disagreeing with the model. Exclusions will be reported with counts and reasons.
 *Amendments to this document after collection begins must be recorded as dated
 additions below, never by editing the text above. An amended pre-registration
 that hides its own amendments is worse than none.*
+
+---
+
+## Amendment 1 — 2026-08-15, before any data collection
+
+Recorded as a dated addition rather than by editing the text above, per the
+note at the end of this document. **No participant data exists at the time of
+writing**, so this is a design decision, not a mid-study change. Nothing here
+alters the hypothesis, the test, the decision rule or the total power
+requirement.
+
+**The ask is now a 30-item core, with the remaining 30 offered as optional.**
+Sixty items is roughly ten minutes, which is a large request of a stranger with
+no relationship to the project. Thirty is about five.
+
+This costs nothing statistically. **Power is set by total answered items, not by
+items per person**: 560 remains the floor. It changes only how those items are
+distributed — 19 participants if everyone takes the exit, 10 if everyone
+completes all 60, and in practice a mix. More participants slightly *improves*
+the pooled estimate, because responses cluster within people and more clusters
+is better, and it widens the sample, which is the one weakness §7 concedes.
+
+Two consequences, both handled:
+
+- **Item order is now shuffled per participant.** Without this every early
+  finisher would answer the same first 30 pairs, leaving half the item sample
+  with no responses and narrowing what the result generalises over. Answers
+  carry the item id, so scoring is unaffected by display order, and the
+  winner's left/right position is fixed per item in the key — shuffling the
+  sequence does not disturb the 30/30 position balance.
+- **The completion floor in §8 becomes absolute: 24 answered items** (80% of the
+  core block), replacing "80% of 60". Under the old rule every participant who
+  took the offered exit would have been excluded by design — the rule would have
+  discarded the majority of the sample. The floor still catches genuine
+  abandonment; `model/human_baseline_check.py` asserts both directions.
+
+Everything else stands unchanged.

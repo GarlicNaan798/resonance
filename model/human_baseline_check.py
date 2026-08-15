@@ -119,17 +119,31 @@ def main() -> None:
         assert f"{n - skips} answered items" in out, out
 
         # ---- pre-registered exclusions (docs/PREREGISTRATION.md section 8) ----
-        # Below the completion floor: excluded, and said out loud.
+        # Stopping at the core block is a COMPLETE response, not abandonment.
+        # The floor is absolute (24 items), so someone who answers 30 of 60 and
+        # takes the offered exit must be kept — a "80% of 60" rule would have
+        # discarded the majority of participants by design.
         answers = responses_for(items, "perfect", rng)
-        for a in answers[: n // 3]:
+        for a in answers[hb.CORE_ITEMS:]:
+            a["choice"] = None
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            hb.score([write("core-only.json", answers)])
+        assert "EXCLUDED" not in buf.getvalue(), "a core-only response was dropped"
+        assert f"{hb.CORE_ITEMS} answered items" in buf.getvalue(), buf.getvalue()
+
+        # Genuine abandonment, below the absolute floor: excluded.
+        answers = responses_for(items, "perfect", rng)
+        for a in answers[hb.MIN_ANSWERED - 1:]:
             a["choice"] = None
         try:
             with redirect_stdout(io.StringIO()):
-                hb.score([write("heavy-skipper.json", answers)])
+                hb.score([write("abandoned.json", answers)])
         except SystemExit as exc:
             assert "no responses survived" in str(exc), str(exc)
         else:
-            raise AssertionError("a 67%-complete response was scored anyway")
+            raise AssertionError(
+                f"a {hb.MIN_ANSWERED - 1}-item response was scored anyway")
 
         # Clicking through without reading: excluded on median time.
         fast = [dict(a, ms=400) for a in responses_for(items, "perfect", rng)]
