@@ -82,3 +82,8 @@ personal-os/
 
 # Publishers' PDFs are not ours to redistribute. See docs/papers/README.md.
 docs/papers/*.pdf
+
+# Study responses. Participant data must never reach the public repo — the
+# folder is tracked only so it exists; its contents are not.
+responses/*
+!responses/README.md

@@ -418,6 +418,33 @@ def excluded_reason(resp: dict, n_items: int) -> str | None:
     return None
 
 
+def refuse_if_tracked(files: list[str]) -> None:
+    """Stop if git is tracking a response file.
+
+    The repository is public. Participant data reaching it would be a real
+    breach, and `git add -A` is a habit. The .gitignore already covers
+    responses/, but an ignore rule is a promise and this is the check that the
+    promise held — the same reason every other guarantee in this project has
+    something that fails when it does not.
+    """
+    import subprocess
+    try:
+        out = subprocess.run(
+            ["git", "ls-files", "--error-unmatch", *files],
+            cwd=ROOT, capture_output=True, text=True, timeout=20,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return          # no git here; nothing to protect against
+    if out.returncode == 0 and out.stdout.strip():
+        tracked = "\n  ".join(out.stdout.strip().splitlines())
+        raise SystemExit(
+            "\nREFUSING TO SCORE: git is tracking these response files.\n  "
+            f"{tracked}\n\n"
+            "This repository is public. Run:\n"
+            "  git rm --cached <file>\n"
+            "and keep responses in responses/, which is gitignored.\n")
+
+
 def score(paths: list[str]) -> None:
     with open(KEY_JSON, encoding="utf-8") as fh:
         key_file = json.load(fh)
@@ -426,6 +453,7 @@ def score(paths: list[str]) -> None:
     files = [p for pat in paths for p in sorted(glob.glob(pat))]
     if not files:
         raise SystemExit(f"no response files matched: {paths}")
+    refuse_if_tracked(files)
 
     all_human, all_model, per_person = [], [], []
     b_total = c_total = 0
