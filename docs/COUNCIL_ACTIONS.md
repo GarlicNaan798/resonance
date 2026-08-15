@@ -188,3 +188,98 @@ recruitment rather than after.
 
 **The check, for anything in this plan: if it claims something is enforced, run
 the thing that would fail when it is not.**
+
+---
+
+# Second council — 2026-08-15
+
+Convened after Phase A. Deliberately kept short, because the sharpest thing a
+reviewer said was that convening it *was itself* the avoidance pattern.
+
+## The verdict
+
+**Nothing in Phase A moved the binding constraint.** Every advisor said so, in
+different words. The best line: *"an extremely rigorous trial protocol for a
+trial that has no subjects — a beautifully instrumented airplane with no
+runway."*
+
+Phase A was real work and mostly right. It also happened in the same window in
+which nobody was asked to take the quiz. Both are true.
+
+## One finding was false, and the correction matters
+
+An advisor claimed the abstention correction meant *"the flagship honest-AI
+metric was wrong by 25 points"*, and concluded that **61.8%, 66.2%, 53.5% and
+31.8% all deserve suspicion until independently re-derived.** One reviewer
+called it the session's most important finding.
+
+It is wrong. Checked against the repository: the string "75%" has never
+appeared in the product, the README, the model card or any published figure —
+the only occurrence in the codebase is an unrelated recalibration test. The 75%
+existed **only in the briefing written for the first council**. No shipped
+metric changed, and the accuracy figures were never affected.
+
+The narrower point survives and is worth keeping: an unaudited number went into
+a decision document and shaped a whole council session before anyone checked
+it. That is a briefing-discipline failure, not a measurement failure.
+
+Recording this because "every number here is suspect" is exactly the kind of
+claim that, left unchallenged, would destroy the one thing this project has.
+
+## Improvements worth making
+
+Short list on purpose. Four of five advisors said further building is waste.
+
+**Recruiting (the actual work, almost no code):**
+
+- **R1. Host the quiz at a URL.** It is already a single self-contained HTML
+  file; GitHub Pages turns it into a link. "Click this" converts far better
+  than "download and open this file", and it sidesteps the unsigned-binary
+  problem entirely — *the study needs no install at all.*
+- **R2. Recruit 14–16 people, not 10.** 560 items ÷ 60 = 10 only if everyone
+  finishes and nobody is excluded. Skips and the exclusion rules mean ten
+  responses is not ten complete responses. A reviewer caught this: *"recruiting
+  10 people isn't recruiting the study."*
+- **R3. Post where the rigour is the draw.** Show HN, r/programming and GitHub
+  fit an MIT-licensed tool whose story is a measured ceiling and four published
+  negative results. r/marketing gets the participants; the technical audience
+  gets the readers. Both, not one.
+- **R4. Lead with no-egress.** *"Runs locally, nothing leaves your machine,
+  verify it with `--network none`"* is a recruiting asset nobody was using.
+
+**Product (small, and only because two councils raised them):**
+
+- **P1. Plain-English labels for the six constructs.** "Salience, affect,
+  valuation, encoding, approach, control" reads as an academic paper. Both
+  Outsiders flagged it. Keep the formal names, add a plain gloss beside each.
+- **P2. Acknowledge the cold-start honestly on `/track`.** *"If the scorecard
+  aggregated anonymised results from other users I would not be the first
+  guinea pig."* Nobody is; say so rather than implying a community exists.
+
+**Not doing, and why:**
+
+- **Extending the comparator to subject lines, CTAs, thumbnails.** The best
+  expansionist argument yet — each new domain would get its own measured
+  ceiling rather than inheriting one — and still rejected. Four new domains
+  while the one tested domain has zero users is more building, which is the
+  diagnosed problem.
+- Per-tenant recalibration, code signing, a seventh construct. Unchanged from
+  Phase C: gated behind evidence.
+
+## The assumption nobody had examined
+
+Two advisors landed on the same thing from opposite directions, and it is
+sharper than anything in the first session:
+
+> **Nobody has measured whether a marketer *using* this tool makes better
+> decisions than one who does not.**
+
+Every number here — 61.8%, 76.0%, the ceiling, the abstention rate — describes
+the *ranker*. The product claim is about the *user*. The human-baseline study
+does not test it either: it measures human versus model on identical items, not
+human-with-tool versus human-alone.
+
+That is a different experiment, and it is the one the product's actual promise
+rests on. It cannot run without users, which is one more reason recruiting is
+the only thing that matters. Naming it now so it is not discovered later as a
+surprise.
