@@ -66,6 +66,13 @@ EMB = os.path.join(PROC, "embeddings.npz")
 RANKER = os.path.join(ROOT, "resonance", "lib", "inference", "ranker.json")
 
 QUIZ_HTML = os.path.join(PROC, "human_quiz.html")
+
+# Second copy, served by GitHub Pages. Recruiting converts far better on "click
+# this link" than on "download this file and open it", and a hosted page also
+# sidesteps the unsigned-binary problem entirely — taking part requires no
+# install at all. Safe to publish: the quiz carries no answer key, which is
+# asserted in model/human_baseline_check.py rather than assumed.
+PUBLIC_QUIZ = os.path.join(ROOT, "docs", "quiz", "index.html")
 QUIZ_JSON = os.path.join(PROC, "human_quiz.json")
 KEY_JSON = os.path.join(PROC, "human_key.json")
 
@@ -387,6 +394,15 @@ function dl(){const b=new Blob([payload()],{type:'application/json'});
 """
     doc = doc.replace("__ITEMS__", items).replace("__SEED__", str(seed))
     with open(QUIZ_HTML, "w", encoding="utf-8") as fh:
+        fh.write(doc)
+
+    # Rebuilding with a different seed republishes a different study. That is
+    # intended — the hosted page and the local key must always describe the same
+    # sample, and writing both from one call is what keeps them in step. A
+    # mismatch would be caught by score() (it compares seeds), but it is better
+    # not to create the opportunity.
+    os.makedirs(os.path.dirname(PUBLIC_QUIZ), exist_ok=True)
+    with open(PUBLIC_QUIZ, "w", encoding="utf-8") as fh:
         fh.write(doc)
 
 

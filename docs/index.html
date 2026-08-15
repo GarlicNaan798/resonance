@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resonance — headline judgement study</title>
+<meta name="description" content="A ten-minute blind study: can experienced marketers pick which headline won?">
+<style>
+ :root{--ink:#111;--muted:#5c5b58;--faint:#8a8985;--canvas:#fbfbfa;
+   --surface:#fff;--rule:#eaeaea;--amber:#fbf3db;--amber-ink:#7a5200}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--canvas);color:var(--ink);line-height:1.65;
+   font-family:"SF Pro Text",-apple-system,"Segoe UI",Roboto,Helvetica,sans-serif}
+ main{max-width:40rem;margin:0 auto;padding:4rem 1.5rem 6rem}
+ h1{font-family:Georgia,serif;font-weight:400;letter-spacing:-.025em;
+   line-height:1.12;font-size:2.3rem;margin:.5rem 0 1rem}
+ h2{font-size:1rem;margin:2.5rem 0 .5rem}
+ p{color:var(--muted)}
+ .eyebrow{font-family:ui-monospace,monospace;font-size:.7rem;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--faint);margin:0}
+ .cta{display:inline-block;background:var(--ink);color:#fff;text-decoration:none;
+   border-radius:6px;padding:.8rem 1.4rem;font-weight:500;margin:1.5rem 0 .5rem}
+ .cta:hover{background:#333}
+ ul{color:var(--muted);padding-left:1.1rem}
+ li{margin:.35rem 0}
+ .note{background:var(--amber);color:var(--amber-ink);border-radius:10px;
+   padding:1rem 1.25rem;font-size:.92rem;margin:1.5rem 0}
+ a{color:var(--ink)}
+ footer{margin-top:3.5rem;padding-top:1.25rem;border-top:1px solid var(--rule);
+   font-size:.82rem;color:var(--faint)}
+</style>
+</head>
+<body><main>
+
+<p class="eyebrow">Ten minutes · no account · nothing recorded about you</p>
+<h1>Can you tell which headline won?</h1>
+
+<p>You will see 60 pairs of real headlines. Each pair ran as a genuine
+randomised A/B test on the same article, at the same moment, to the same
+audience — so exactly one of them really did get more clicks.</p>
+
+<p>Your job is to pick which. That is the whole study.</p>
+
+<a class="cta" href="quiz/">Start the study</a>
+
+<h2>Why it is worth ten minutes</h2>
+<p>We built a model that predicts which headline wins. It scores 61.8% against
+a 50% coin flip. What nobody knows — including us — is whether that is any
+better than a person who writes copy for a living.</p>
+<p>This settles it. The model answers the same 60 pairs you do, and the two get
+compared directly. The result gets published either way, including the outcome
+where people beat the model.</p>
+
+<div class="note">
+<strong>Please do not look anything up.</strong> The headlines are from a public
+dataset, so the answers are findable if you try. We are measuring judgement, not
+search skill — and a realistic result is far more useful to us than a flattering
+one.
+</div>
+
+<h2>What is recorded</h2>
+<ul>
+  <li>Your 60 choices, and how long you spent on each</li>
+  <li>Roughly how many years you have worked with marketing copy</li>
+  <li>Whether copywriting is part of your paid work</li>
+</ul>
+<p>That is everything. No name, no email, no IP address, no cookies, no
+analytics. The page makes no network requests at all — open your browser's
+network tab and check. Nothing is transmitted anywhere: at the end you get a
+block of text, and you decide whether to send it back.</p>
+
+<h2>The study design, if you care</h2>
+<p>Pre-registered before any participant existed, including what each possible
+result would mean, so the outcome cannot be reinterpreted afterwards into
+whatever flatters us. The winner appears first in exactly 30 of the 60 items, so
+always picking the top option scores 50% by construction.</p>
+<p><a href="https://github.com/GarlicNaan798/resonance/blob/master/docs/PREREGISTRATION.md">Read the pre-registration</a>
+ · <a href="https://github.com/GarlicNaan798/resonance">the project on GitHub</a></p>
+
+<footer>
+Resonance is an open-source tool for ranking marketing copy. MIT licensed. It
+runs entirely on your own machine and sends nothing anywhere.
+</footer>
+
+</main></body>
+</html>
