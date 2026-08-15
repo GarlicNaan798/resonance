@@ -105,6 +105,39 @@ export default function ComparePage() {
           the time against a 50% baseline — an edge worth having before you
           spend media budget, not a substitute for testing.
         </p>
+
+        {/* The question a first-time user actually asks, answered where they
+            ask it. The README states the limitation but never answered it, and
+            a limitation without an answer just reads as a disclaimer. */}
+        <details className="mt-4 rounded-lg border border-rule bg-sunk p-4 text-sm">
+          <summary className="cursor-pointer font-medium">
+            That training data is 2013–15 clickbait. Why would it apply to my
+            copy?
+          </summary>
+          <div className="mt-3 space-y-2 text-muted">
+            <p>
+              It might not, and we have not measured whether it does. That is
+              the honest answer.
+            </p>
+            <p>
+              What plausibly carries across is the mechanics — concreteness,
+              specificity, curiosity, how a claim is framed — because those are
+              properties of language rather than of Upworthy. What almost
+              certainly does not carry is the calibration: the score thresholds
+              were fitted to that audience clicking those articles in that
+              decade.
+            </p>
+            <p>
+              So treat the ranking as a prior, not a verdict, and settle it with
+              evidence from your own campaigns.{" "}
+              <Link href="/track" className="underline underline-offset-4">
+                Seal a few predictions
+              </Link>{" "}
+              and after about ten resolved outcomes you stop guessing about
+              transfer and start measuring it.
+            </p>
+          </div>
+        </details>
       </div>
 
       <section className="space-y-3">

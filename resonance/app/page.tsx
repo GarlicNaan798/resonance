@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PERFORMANCE, PROHIBITED_CLAIMS } from "@/lib/constructs";
-import { TIERS } from "@/lib/inference/ranker";
+import { ABSTAINED, TIERS } from "@/lib/inference/ranker";
 
 /**
  * The pitch.
@@ -205,17 +205,31 @@ export default function Home() {
           </div>
 
           <div className="card p-7 sm:p-8">
-            <span className="tag tag-green self-start">Knows when it knows</span>
+            <span className="tag tag-green self-start">
+              It declines half the time
+            </span>
             <p className="mt-5 text-sm leading-relaxed text-muted">
-              On the{" "}
+              Said here rather than left for you to discover: the model answers
+              about{" "}
+              <span className="numeric text-ink">
+                {Math.round((1 - ABSTAINED.coverage) * 100)}%
+              </span>{" "}
+              of comparisons and declines the other half. On the widest-margin{" "}
               <span className="numeric text-ink">
                 {Math.round(highTier.coverage * 100)}%
               </span>{" "}
-              of comparisons where the margin is widest, accuracy rises to{" "}
-              <span className="numeric text-ink">{pct(highTier.accuracy)}</span>.
-              On the rest it declines to call it. A tool that abstains on the
-              hard cases is worth more than one that guesses confidently on all
-              of them.
+              it is right{" "}
+              <span className="numeric text-ink">{pct(highTier.accuracy)}</span>{" "}
+              of the time.
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              Declining is a result, not a failure. Forced to guess on the pairs
+              it passes on, it would score{" "}
+              <span className="numeric text-ink">
+                {pct(ABSTAINED.accuracyIfForced)}
+              </span>{" "}
+              — better than a coin, and nowhere near enough to spend a test
+              budget on. Being told which half is which is the point.
             </p>
           </div>
         </div>

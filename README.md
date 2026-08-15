@@ -66,6 +66,33 @@ calculation was fixed before collection — ≈560 answered items, 10 participan
 
 Whatever it returns gets published here, including the outcome where humans win.
 
+## "That's 2013–15 clickbait. Why would it apply to my copy?"
+
+The most reasonable objection anyone raises, and it deserves an answer rather
+than a disclaimer.
+
+**It might not, and we have not measured whether it does.**
+
+What plausibly transfers is the mechanics — concreteness, specificity,
+curiosity, how a claim is framed — because those are properties of language
+rather than of Upworthy. What almost certainly does not transfer is the
+**calibration**: the thresholds were fitted to that audience, clicking those
+articles, in that decade.
+
+So the ranking is a prior, not a verdict. The way to stop guessing about this is
+to seal a few predictions on your own campaigns and look at the track record
+after about ten resolved outcomes. That feature exists precisely because this
+question cannot be answered from our side.
+
+## It declines about half the time
+
+Also worth knowing before you install anything. The model answers roughly **50%**
+of comparisons and says "too close to call" on the rest.
+
+That is a result, not a malfunction. Forced to guess on the pairs it passes on,
+it would score **56.3%** — better than a coin, and nowhere near enough to justify
+spending a test budget. Knowing which half is which is most of the value.
+
 ## Two layers, deliberately separate
 
 1. **The ranker** predicts. It reads sentence embeddings, scores 61.8%, and

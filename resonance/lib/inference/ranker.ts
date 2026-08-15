@@ -241,6 +241,31 @@ export const TIERS: TierSpec[] = [
   { tier: "moderate", minMargin: 0.519, accuracy: 0.6951, coverage: 0.5 },
 ];
 
+/**
+ * The half of comparisons the model declines, and what declining is worth.
+ *
+ * Coverage is CUMULATIVE in the table above: 50% of comparisons clear the
+ * moderate threshold, so the model answers half and declines half. It is not
+ * "answers a quarter" — that is the high tier alone, and confusing the two
+ * understates the product by a factor of two. It was briefly stated that way in
+ * planning and the error is recorded here so it is not repeated.
+ *
+ * `accuracyIfForced` is derived from the same dev curve, by difference:
+ *
+ *     all      14,791 pairs @ 0.6289  ->  9,302 correct
+ *     answered  7,397 pairs @ 0.6951  ->  5,143 correct
+ *     declined  7,394 pairs           ->  4,159 correct  =  0.5626
+ *
+ * That is the number the abstention is worth arguing about. Forced to guess on
+ * the pairs it declines, the model manages 56.3% — six points above a coin, not
+ * zero. Abstaining is not "the model has nothing"; it is "what the model has
+ * here is too weak to spend money on".
+ */
+export const ABSTAINED = {
+  coverage: 0.5,
+  accuracyIfForced: 0.5626,
+} as const;
+
 function classify(margin: number): TierSpec | null {
   for (const t of TIERS) if (margin >= t.minMargin) return t;
   return null;
@@ -263,9 +288,16 @@ export async function rankVariants(texts: string[]): Promise<RankingResult> {
       `this clear-cut the model is right ${(spec.accuracy * 100).toFixed(0)}% of ` +
       `the time — measured, not estimated. Roughly ${(spec.coverage * 100).toFixed(0)}% ` +
       "of comparisons reach this confidence level."
-    : "These variants score too closely to separate. At margins this small the " +
-      "model is near chance, so the honest answer is that we cannot tell them " +
-      "apart — pick on other grounds, or run a live test.";
+    : // Lead with what WAS established. "Insufficient confidence" reads as the
+      // tool failing; "these are within noise of each other" is the same fact
+      // stated as a finding, which is what it actually is.
+      "These two are within noise of each other. The model can separate about " +
+      `${(ABSTAINED.coverage * 100).toFixed(0)}% of comparisons; this is not one ` +
+      "of them, so either choice is defensible and the difference is unlikely " +
+      "to be worth a test. Forced to guess on pairs like these it manages " +
+      `${(ABSTAINED.accuracyIfForced * 100).toFixed(0)}% — better than a coin, ` +
+      "not enough to spend on. Pick on brand, clarity or gut, and put the test " +
+      "budget somewhere it will settle something.";
 
   return {
     ranked,

@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
+import { PERFORMANCE } from "@/lib/constructs";
 import type { AnalysisResult, VariantComparison } from "@/lib/analyse";
 
 type ApiResponse =
@@ -86,6 +88,33 @@ export default function AnalysePage() {
           research. Every score traces back to human word ratings, and every
           module carries its own limitation.
         </p>
+
+        {/* Written because a reviewer with no context asked, reasonably, why a
+            53.5% feature that admits it does not explain the ranking ships at
+            all. If the answer cannot be stated in a sentence, the feature
+            should be cut instead. */}
+        <div className="mt-4 rounded-lg border border-rule bg-sunk p-4 text-sm">
+          <p className="font-medium">This is a vocabulary, not a predictor.</p>
+          <p className="mt-2 text-muted">
+            These six scores are a way to say <em>what</em> a piece of copy is
+            doing — concrete or abstract, urgent or calm, self-referential or
+            not — in terms grounded in published human ratings rather than
+            invented for a pitch deck. That is their whole job.
+          </p>
+          <p className="mt-2 text-muted">
+            They are a <strong>poor predictor</strong> of which variant wins:{" "}
+            <span className="numeric text-ink">
+              {(PERFORMANCE.moduleModelAccuracy * 100).toFixed(1)}%
+            </span>{" "}
+            against a 50% baseline, barely above chance. Use them to argue about
+            copy with a colleague, not to decide which variant to run. For that,{" "}
+            <Link href="/compare" className="underline underline-offset-4">
+              Compare
+            </Link>{" "}
+            uses a different and better model — and it does not read these
+            features at all, so this page cannot be its explanation.
+          </p>
+        </div>
       </div>
 
       <section className="space-y-4">

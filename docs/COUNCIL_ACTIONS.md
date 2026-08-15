@@ -17,9 +17,9 @@ says. Anything that is neither waits.
 |---|---|---|---|
 | 1 | No decision rule for the study | Fix | **Done** — `docs/PREREGISTRATION.md` |
 | 2 | Sampling fails the project's own standards | Fix | **Done** — §7, plus instrument now records experience |
-| 3 | Abstention *reads* as failure | Fix | Phase A |
-| 4 | Domain transfer never explained to a user | Fix | Phase A |
-| 5 | Diagnostic layer undefended | Decide | Phase A |
+| 3 | Abstention *reads* as failure | Fix | **Done** — and the rate was 50%, not 75% |
+| 4 | Domain transfer never explained to a user | Fix | **Done** — answered on /compare and in README |
+| 5 | Diagnostic layer undefended | Decide | **Done** — kept, justified on /analyse |
 | 6 | Unsigned binary scares people off | Fix, later | Phase C |
 | 7 | Pivot to "the notary is the product" | **Reject** | Not doing — reasoning below |
 | 8 | Recruit participants | Do | Phase B |
@@ -50,8 +50,16 @@ as the product failing.
   discover it by hitting it. A tool that says "I answer about a quarter of
   comparisons, and I'm right 76% of the time when I do" is honest; one that
   quietly shrugs feels broken.
-- Add the counterfactual: an unfiltered guess on those pairs would be right
-  ~55% of the time. Abstaining is worth more than that guess.
+- Add the counterfactual: measured at **56.3%**, six points above a coin.
+  Abstaining is not "the model has nothing"; it is "what it has here is too
+  weak to spend on".
+
+**Correction found while doing this.** The brief given to the council said the
+app abstains on ~75% of comparisons. It is ~50%: coverage in the tier table is
+cumulative, and the model answers at both the high AND moderate tiers. The
+Outsider's "three times out of four it just shrugs" was answering a worse
+product than the one that exists. The framing critique still stands at 50%,
+which is why this was fixed rather than dismissed.
 
 **Not doing:** lowering the abstention thresholds to answer more often. That
 trades calibration for the appearance of usefulness, which is the exact swap
