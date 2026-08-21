@@ -283,3 +283,100 @@ That is a different experiment, and it is the one the product's actual promise
 rests on. It cannot run without users, which is one more reason recruiting is
 the only thing that matters. Naming it now so it is not discovered later as a
 surprise.
+
+---
+
+# Third council, 2026-08-16
+
+Convened to ask for "further steps on product development". Five advisors,
+unanimous, and none of them answered the question as asked.
+
+## The verdict
+
+**There are no further product-development steps. The repeated asking is the
+finding.**
+
+Three councils, the same conclusion each time, and between them the one
+non-engineering task has stayed untouched while "go recruit humans" was
+converted into: a pre-registration, an instrument fix, UI reframing, a hosted
+quiz, a halved ask, gamification, a submit incentive, a 533-instance em dash
+sweep, and a contrast retune.
+
+Every one of those was defensible in isolation. Together they are a pattern.
+As one advisor put it: each session lowers the activation energy of the study
+instead of doing the study, and the activation energy was never the problem.
+
+## The thing nobody had said out loud
+
+Two advisors reached it independently, and it is the most useful sentence the
+council has produced across three sessions:
+
+> **The study can fail.** Right now the 61.8%-against-a-66.2%-ceiling story is
+> undefeated, because no human has tested it. Recruiting converts an undefeated
+> claim into a settled one, and it might settle the wrong way.
+
+The Outsider put the same thing plainly: *"The quiz is Schrodinger's verdict,
+and you keep taping the box shut tighter instead of opening it."*
+
+That is not a product problem and no council can fix it.
+
+## A confusion worth separating
+
+The developer's goal is a portfolio project, not a business, and correctly
+rejected startup-growth framing. But that rejection got over-applied.
+
+- A portfolio project does **not** need traction, retention, or an audience.
+- It **does** need the study run, because *"I built a rigorous evaluation and
+  never ran it"* is a worse artifact than a small, honestly-reported result.
+
+Those are separable, and conflating them is what licensed skipping the
+evidence.
+
+## The smallest possible action
+
+Smaller than "recruit 14", because the channel was never the obstacle:
+
+**Send the link to one person you already know. Today. One message.**
+
+Posting publicly still carries rejection surface. One DM to one friend is a
+five-second act with near none. If that does not happen, the obstacle is
+confirmed to be the ask itself rather than the tooling, and no further building
+addresses it.
+
+## A legitimate stopping point, if chosen honestly
+
+Named because it is a real option and not a consolation prize:
+
+**Declare the project finished as a launch-ready instrument.** A working tool,
+a live pre-registered study, and a README stating plainly "built, launch-ready,
+awaiting participants" is a defensible, finishable portfolio artifact today.
+
+The condition is that it must be *chosen*, not backed into after three more
+weeks of palette tuning while calling it in progress.
+
+## The one genuinely new idea in three councils
+
+The undervalued asset is not the ranker. It is the **audit trail**, as evidence
+of rigorous self-correction under zero external pressure, with git history as
+the receipts:
+
+- a ceiling corrected 0.788 to 0.662, in the unflattering direction
+- four published negative results
+- a governance audit that found the project's own test-set lock had no callers
+  and published it
+- a pre-registration committing all three outcomes to publication in advance
+- a wrong number told to a council and corrected in public
+
+You cannot fake that after the fact; the timestamps and diffs are the proof.
+Most candidates in eval, AI-safety and research-engineering hiring show a
+polished writeup. This repository can show the whole unedited mess, including
+the moments of being wrong.
+
+That reframes the audience: **run the study, then write the retrospective for a
+different room.** Not instead of the study. After it.
+
+## Correction
+
+One advisor asserted "zero code changes since Council 2". That is false, and
+their own brief listed the changes. The accurate statement is zero
+*participants*, which is what the rest of their argument rested on.
