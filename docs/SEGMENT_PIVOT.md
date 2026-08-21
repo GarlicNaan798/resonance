@@ -294,3 +294,113 @@ understand how you write your ads."
 Record the answers in `responses/interviews.md`, which is gitignored along with
 everything else in that folder. Five short paragraphs is enough. The point is
 to be able to re-read them when the answers stop feeling surprising.
+
+---
+
+## 7. Fourth council on the pivot, 2026-08-21
+
+The most useful session of the four, and three of its findings are aimed at
+errors in sections 1 to 6 above rather than at the product.
+
+### The finding that matters most
+
+One advisor was briefed to answer **as the target customer**: a plumber, a
+baker, a two-person studio, doing their own ads badly in the evenings. Asked
+whether they would use this, they said:
+
+> "Probably not, honestly. I do maybe two Facebook ads a month and one
+> newsletter subject line a week. That's not enough volume for me to build a new
+> habit around a tool."
+
+And on the honesty this project is built on:
+
+> "It flat out tells me it's never seen anything like what I write. That's a red
+> flag for trust, not a neutral disclaimer."
+
+**The candour that makes this project credible to a technical reviewer reads as
+a warning label to the actual buyer.** That is not a reason to stop being
+candid. It is a reason to stop assuming candour sells.
+
+They named exactly one slot where they would open it: **email subject lines,
+because Mailchimp does not auto-test those for them.** Four of five advisors
+converged on that same slot independently.
+
+And what they actually wanted was not this product:
+
+> "Something that just writes me three headline options in my own voice, not a
+> scorer."
+
+**The stated want is variant generation. Resonance does variant ranking.** That
+is the opposite end of the same workflow.
+
+### Three errors in my own analysis
+
+**1. The volume argument was made wrongly.** Section 6 says auto-optimisation
+needs impressions to learn, "which is the same noise problem this project
+already measured", and leans on the 66.2% ceiling. That conflates two different
+things. The ceiling measures noise in the *training labels* at Upworthy's
+sample sizes. Whether a shopkeeper's own campaign can resolve a difference is a
+separate question about *their* n.
+
+The conclusion survives, the justification does not. And the correct tool was
+already built: `requiredImpressions()` and `assessDecidability()` in
+`lib/power.ts` answer exactly "can this test ever settle, at your volume".
+The argument should be made with those, not by borrowing an unrelated number.
+
+**2. The narrowing arrived backwards.** Sections 2 and 6 were written from
+SEO blogs before a single owner-operator was spoken to. As one advisor put it:
+found a competitor, got worried, pre-wrote the positioning. **The five
+conversations were supposed to produce the narrowing, not ratify it.**
+
+**3. The stated reason for the pivot is not the real one.** "Competes with an
+untrained guess rather than a professional" is a story about what the effect
+size should be, with no data behind it. The defensible reasons are different and
+better:
+
+- **Recruitment.** Agencies are gatekept and busy. Owner-operators are
+  reachable. This segment is where the study actually gets participants.
+- **Legibility.** In a world where you can A/B test properly, any prior loses to
+  ground truth. The tool's real claim is only legible where no test is possible.
+
+### What survives, and is stronger than what it replaced
+
+**Restraint as the product, not the caveat.** The best idea in four councils:
+
+> "A tool that says 'no signal' half the time, in a market of tools that always
+> say something, is the actual differentiator. Nobody has pitched restraint as
+> the feature."
+
+Related, and a genuinely different product from the one currently built: the
+first question for this user is not "which of these two" but **"does this
+choice matter at all?"** Given a model that declines half the time, the honest
+answer is often "ship either, the difference will not show up at your volume".
+That is a *do not sweat this* tool, and `power.ts` already computes it.
+
+**A wider door than small business.** The structural niche is any low-frequency,
+high-stakes-per-instance text choice with no feedback loop: a nonprofit
+fundraising appeal, a grant application subject line, one-shot crisis comms.
+Same shape, more people who care.
+
+### The gate, now dated and named
+
+The previous gate was criticised precisely: *"a gate only holds if it is dated
+and named. Right now it isn't."* So:
+
+- **Message 15 people, not 5.** Some will not answer.
+- **All 15 sent before doing anything else.** Not spread over a week.
+- **Answers logged in `responses/interviews.md`** as they arrive.
+- **The gate closes when 5 have answered, or on a date chosen now**, whichever
+  comes first.
+
+No code, no docs, no palette, no fifth council until that is done.
+
+### The stop condition, stated in advance
+
+If the conversations come back as *"we already just run 5 variants on Meta and
+do not think about it"*, that is decisive. **The correct response is to stop,
+not to narrow a second time.** One more reframe after this one would be the
+pattern rather than a pivot.
+
+If they come back as *"email subject lines, and I have no idea which to send"*,
+that is the product, and it is a much smaller and more specific one than
+anything built so far.
