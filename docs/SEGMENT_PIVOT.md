@@ -120,7 +120,7 @@ Ordered. Each step is gated on the one before it, because the failure mode this
 project keeps hitting is building the next thing before checking the last
 assumption.
 
-### Step 0. Check the variant assumption. Five conversations, no code.
+### Step 0. Check the variant assumption. SUPERSEDED, see the revised version in section 6.
 
 Ask five owner-operators one question:
 
@@ -188,3 +188,109 @@ get and more relevant when it arrives. Three councils have said the binding
 constraint is participants rather than features. A better-fitting target
 customer does not change that, it just means the fourteen people are easier to
 find and are finally the right fourteen.
+
+---
+
+## 6. Step 0 desk research, and a competitor nobody had named
+
+Done 2026-08-21, before the conversations, to sharpen them.
+
+**Source quality is poor and the findings are treated as hypotheses, not
+facts.** Everything available is marketing-agency SEO content carrying
+fake-precise vendor numbers ("2.5x CTR", "67% conversion improvement", "43%
+lower CPA") with no methodology attached. None of it is quotable and none of it
+is in this repository's evidence base.
+
+One signal is worth acting on anyway, because it is about advice being given to
+exactly this segment right now:
+
+> The prevailing 2026 recommendation to small businesses is **"do not pick one.
+> Launch 5 to 10 variations and let the platform allocate delivery toward the
+> winners."**
+
+### Why that matters
+
+It names an incumbent competitor the whole project has ignored: **the ad
+platform's own auto-optimisation.** Meta and Google will already run every
+variant and shift budget toward what performs. If the platform picks for you,
+using real outcome data from your actual audience, a tool that picks in advance
+from a 2013-15 prior has to justify itself against that.
+
+It also, unexpectedly, solves the section 2 risk. If owner-operators are being
+told to generate 5 to 10 variants, and LLMs make producing them free, then
+**variant supply is no longer the bottleneck.** They will hold multiple
+candidates. The question shifts from "do they have two?" to "does anyone need to
+choose, or does the platform choose for them?"
+
+### Where Resonance still wins, and it is a narrower place than assumed
+
+Platform auto-optimisation needs impressions to learn, and learning costs money.
+That is the same noise problem this project already measured: distinguishing two
+variants requires volume, and below that volume the platform is guessing too.
+
+So the fit is strongest exactly where auto-optimisation is absent or too
+expensive to run:
+
+- **Email subject lines to a small list.** No auto-optimiser on most small
+  senders, and a 400-person list will never reach significance.
+- **A website headline, a Google Business post, a flyer, a shopfront sign.**
+  One slot, no test possible, the choice is made once.
+- **Small paid budgets.** Under a few hundred pounds the platform burns much of
+  the budget learning what a prior could have told you for free. This is the
+  allocator's original argument, and it is stronger for a small budget than a
+  large one.
+
+Weakest where the segment has real budget on Meta or Google and the platform
+can learn properly. There, the honest answer is to let the platform do it.
+
+### Consequence for the plan
+
+The step 0 questions change. One question was never enough, and the second one
+now matters more than the first.
+
+### Step 0, revised. Five conversations, six questions, no code.
+
+Ask in this order. Do not explain the product first; that biases every answer
+after it. Say only "I am working on something for small businesses and I want to
+understand how you write your ads."
+
+1. **"Last time you wrote an ad, an email subject line, or a headline for your
+   site, walk me through what you actually did."**
+   Open, unled. Let them describe it. Everything below is a follow-up you only
+   ask if they did not already answer it.
+
+2. **"Did you end up with more than one version, or just the one?"**
+   The section 2 assumption. If they use ChatGPT they almost certainly had
+   several, whether or not they thought of it as having options.
+
+3. **"How did you choose between them?"**
+   The real question. Listen for "I just picked one", "I asked my partner",
+   "I let Facebook decide". Each implies a different product.
+
+4. **"When you run ads, do you let the platform test versions and pick a winner
+   itself, or do you choose one and run that?"**
+   The competitor question from section 6. If the platform already does this
+   for them and they are happy with it, Resonance is competing with something
+   free and better-informed on paid social.
+
+5. **"Roughly what do you spend on a campaign?"**
+   Decides whether platform auto-optimisation can actually learn. Small budgets
+   are where a prior beats waiting for data.
+
+6. **"Where does the copy go that you cannot test at all?"**
+   Website headline, shopfront, flyer, Google Business post, a one-off email.
+   These are the uncontested slots, and possibly the real product.
+
+### How to read the answers
+
+- **Multiple versions, chose by gut, small budget, untestable slots.** Best
+  case. Proceed to step 1 as written.
+- **Multiple versions, but the platform picks and they are happy.** The pivot
+  survives but narrows to email, web and offline copy. The allocator and the
+  paid-ads framing get cut rather than reconsidered.
+- **One version, ship it, no testing anywhere.** Stop. The product needs to
+  generate variants before it can rank them, and that is a different project.
+
+Record the answers in `responses/interviews.md`, which is gitignored along with
+everything else in that folder. Five short paragraphs is enough. The point is
+to be able to re-read them when the answers stop feeling surprising.
