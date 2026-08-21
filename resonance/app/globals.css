@@ -26,7 +26,7 @@
 
   /* Warm monochrome, and the values are measured rather than chosen by eye.
      The first palette paired near-black ink at 18.2:1 with muted body text at
-     4.32:1 and captions at 2.72:1 — maximum glare next to text that fails WCAG
+     4.32:1 and captions at 2.72:1. Maximum glare next to text that fails WCAG
      AA, which is the combination that actually hurts to read. Ink is softened
      to 15.1:1, muted lifted to 7.2:1 (AAA) and faint to 5.1:1, checked against
      both the canvas and the sunk panel it sometimes sits on. */
